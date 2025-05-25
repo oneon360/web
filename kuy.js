@@ -11,7 +11,7 @@ var DRM_KEYS = {
     { kty: 'oct', kid: hexToBase64('5a86e42c58cf5d008546861c0f0fb22a'), k: hexToBase64('67b1172a05bcb38a91a304d7098ce7f5') }
   ],
   var10: [
-    { kty: 'oct', kid: hexToBase64('4d808f2b9a74536cadbd95be141888ed'), k: hexToBase64('9dd89f67b8885dc65721a8b1fbeae700') }
+    { kty: 'oct', kid: hexToBase64('87484c0b2a4c41b9b08249ef7817ad7f'), k: hexToBase64('ff4f3f232f747e5e7f616b4741fa5c32') }
   ],
   var11: [
     { kty: 'oct', kid: hexToBase64('0d3ff38c34985fdd81a37567646322b9'), k: hexToBase64('6b4504297769acefae2e50920b7c8a77') }
