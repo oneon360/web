@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DRM Key Converter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    textarea, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>DRM Key Converter Tool</h2>
+
+    <label for="conversionType">Jenis Konversi:</label>
+    <select id="conversionType">
+      <option value="hexToBase64">Hex → Base64</option>
+      <option value="base64ToHex">Base64 → Hex</option>
+      <option value="hexToJson">KID:KEY Hex → ClearKey JSON</option>
+      <option value="jsonToHex">ClearKey JSON → KID:KEY Hex</option>
+    </select>
+
+    <label for="inputText">Input:</label>
+    <textarea id="inputText" rows="6" placeholder="Masukkan data di sini..."></textarea>
+
+    <button onclick="convert()">Konversi</button>
+
+    <label for="outputText">Output:</label>
+    <textarea id="outputText" rows="6" readonly></textarea>
+  </div>
+
+  <script>
+    function hexToBase64(hex) {
+      return btoa(hex.match(/\w{2}/g).map(b => String.fromCharCode(parseInt(b, 16))).join(''));
+    }
+
+    function base64ToHex(base64) {
+      return atob(base64).split('').map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+    }
+
+    function convert() {
+      const type = document.getElementById('conversionType').value;
+      const input = document.getElementById('inputText').value.trim();
+      const output = document.getElementById('outputText');
+
+      try {
+        let result = '';
+
+        if (type === 'hexToBase64') {
+          result = hexToBase64(input);
+        } else if (type === 'base64ToHex') {
+          result = base64ToHex(input);
+        } else if (type === 'hexToJson') {
+          const [kidHex, keyHex] = input.split(':');
+          const kid = hexToBase64(kidHex);
+          const key = hexToBase64(keyHex);
+          result = JSON.stringify({
+            keys: [{ kty: 'oct', kid, k }],
+            type: 'temporary'
+          }, null, 2);
+        } else if (type === 'jsonToHex') {
+          const parsed = JSON.parse(input);
+          const kidHex = base64ToHex(parsed.keys[0].kid);
+          const keyHex = base64ToHex(parsed.keys[0].k);
+          result = `${kidHex}:${keyHex}`;
+        }
+
+        output.value = result;
+      } catch (err) {
+        output.value = 'Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
