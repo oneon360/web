@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DRM Key Generator</title>
+</head>
+<body>
+  <h2>Generate DRM Key URL</h2>
+
+  <label for="id">DRM ID (contoh: var10):</label><br>
+  <input type="text" id="id" value="var10"><br><br>
+
+  <button onclick="generate()">Generate URL</button><br><br>
+
+  <textarea id="result" rows="5" cols="100" readonly></textarea>
+
+  <script>
+    const SECRET_KEY = 'lumayan';
+    const TOKEN_SECRET = 'token_rahasia_123';
+
+    async function generate() {
+      const id = document.getElementById('id').value.trim();
+      if (!id) return alert('ID tidak boleh kosong');
+
+      const sig = await generateHMAC(id, SECRET_KEY);
+      const token = await generateHMAC(id, TOKEN_SECRET);
+
+      const url = `https://drm-key-proxy.portfalcon.workers.dev/drmkey?id=${id}&sig=${sig}&token=${token}`;
+
+      document.getElementById('result').value = url;
+    }
+
+    async function generateHMAC(message, secret) {
+      const encoder = new TextEncoder();
+      const key = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(secret),
+        { name: 'HMAC', hash: 'SHA-256' },
+        false,
+        ['sign']
+      );
+
+      const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(message));
+      return base64urlEncode(new Uint8Array(signature));
+    }
+
+    function base64urlEncode(buffer) {
+      return btoa(String.fromCharCode(...buffer))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+  </script>
+</body>
+</html>
