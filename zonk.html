@@ -1,37 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>DRM Key Generator</title>
+  <meta charset="UTF-8" />
+  <title>Generate DRM Signature</title>
 </head>
 <body>
-  <h2>Generate DRM Key URL</h2>
-
-  <label for="id">DRM ID (contoh: var10):</label><br>
-  <input type="text" id="id" value="var10"><br><br>
-
-  <button onclick="generate()">Generate URL</button><br><br>
-
-  <textarea id="result" rows="5" cols="100" readonly></textarea>
+  <h2>Generate HMAC Signature for DRM ID</h2>
+  <label for="drmId">DRM ID:</label>
+  <input type="text" id="drmId" value="var10" />
+  <br/><br/>
+  <label for="secret">Secret Key:</label>
+  <input type="text" id="secret" value="lumayan_rahasia_drm" />
+  <br/><br/>
+  <button onclick="generateSig()">Generate Signature</button>
+  <p><b>Signature (sig):</b> <span id="signature"></span></p>
 
   <script>
-    const SECRET_KEY = 'lumayan';
-    const TOKEN_SECRET = 'token_rahasia_123';
-
-    async function generate() {
-      const id = document.getElementById('id').value.trim();
-      if (!id) return alert('ID tidak boleh kosong');
-
-      const sig = await generateHMAC(id, SECRET_KEY);
-      const token = await generateHMAC(id, TOKEN_SECRET);
-
-      const url = `https://drm-key-proxy.portfalcon.workers.dev/drmkey?id=${id}&sig=${sig}&token=${token}`;
-
-      document.getElementById('result').value = url;
-    }
-
-    async function generateHMAC(message, secret) {
+    async function generateSig() {
+      const drmId = document.getElementById('drmId').value;
+      const secret = document.getElementById('secret').value;
       const encoder = new TextEncoder();
+      
       const key = await crypto.subtle.importKey(
         'raw',
         encoder.encode(secret),
@@ -40,13 +29,19 @@
         ['sign']
       );
 
-      const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(message));
-      return base64urlEncode(new Uint8Array(signature));
+      const signature = await crypto.subtle.sign(
+        'HMAC',
+        key,
+        encoder.encode(drmId)
+      );
+
+      const sigBase64url = base64urlEncode(new Uint8Array(signature));
+      document.getElementById('signature').textContent = sigBase64url;
     }
 
     function base64urlEncode(buffer) {
-      return btoa(String.fromCharCode(...buffer))
-        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      let base64 = btoa(String.fromCharCode(...buffer));
+      return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     }
   </script>
 </body>
