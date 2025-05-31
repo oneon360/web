@@ -56,7 +56,9 @@
           ['sign']
         );
 
-        const signatureBuffer = await crypto.subtle.sign('HMAC', key, encoder.encode(id));
+        // ✅ Fix: sign "id=var10", bukan hanya "var10"
+        const message = `id=${id}`;
+        const signatureBuffer = await crypto.subtle.sign('HMAC', key, encoder.encode(message));
         const sigBase64url = base64urlEncode(signatureBuffer);
 
         const finalUrl = `${baseUrl}?id=${encodeURIComponent(id)}&sig=${encodeURIComponent(sigBase64url)}`;
