@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>JSON to keyId:key Converter</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    textarea { width: 100%; height: 100px; }
+    #output { margin-top: 20px; font-weight: bold; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <h2>JSON to keyId:key (Hex Format) Converter</h2>
+  <p>Masukkan JSON seperti: <code>{"kty":"oct","kid":"...","k":"..."}</code></p>
+  <textarea id="jsonInput" placeholder='{"kty":"oct","kid":"...","k":"..."}'></textarea>
+  <button onclick="convert()">Convert</button>
+  <div id="output"></div>
+
+  <script>
+    function base64ToHex(b64) {
+      const raw = atob(b64.replace(/-/g, '+').replace(/_/g, '/'));
+      return [...raw].map(c => c.charCodeAt(0).toString(16).padStart(2, '0')).join('');
+    }
+
+    function convert() {
+      const input = document.getElementById("jsonInput").value;
+      try {
+        const json = JSON.parse(input);
+        if (!json.kid || !json.k) throw "Missing keys";
+        const keyIdHex = base64ToHex(json.kid);
+        const keyHex = base64ToHex(json.k);
+        document.getElementById("output").textContent = `${keyIdHex}:${keyHex}`;
+      } catch (e) {
+        document.getElementById("output").textContent = "❌ Invalid JSON or missing fields.";
+      }
+    }
+  </script>
+</body>
+</html>
