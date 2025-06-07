@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DRM JSON Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    input, textarea, button { margin: 10px 0; padding: 8px; width: 100%; }
+    pre { background: #eee; padding: 10px; white-space: pre-wrap; word-wrap: break-word; }
+  </style>
+</head>
+<body>
+
+  <h2>DRM JSON Generator</h2>
+
+  <label for="id">Unique ID:</label>
+  <input type="text" id="id" placeholder="Contoh: 9aB4xZ">
+
+  <label for="name">Channel Name:</label>
+  <input type="text" id="name" placeholder="Contoh: RTV">
+
+  <label for="key1">Key 1:</label>
+  <input type="text" id="key1" placeholder="Contoh: 87484c0b2a4c41b9b08249ef7817ad7f">
+
+  <label for="key2">Key 2:</label>
+  <input type="text" id="key2" placeholder="Contoh: ff4f3f232f747e5e7f616b4741fa5c32">
+
+  <button onclick="generateJSON()">Generate JSON</button>
+
+  <h3>Output:</h3>
+  <pre id="output">{}</pre>
+
+  <script>
+    function generateJSON() {
+      const id = document.getElementById("id").value.trim();
+      const name = document.getElementById("name").value.trim();
+      const key1 = document.getElementById("key1").value.trim();
+      const key2 = document.getElementById("key2").value.trim();
+
+      if (!id || !name || !key1 || !key2) {
+        alert("Semua kolom harus diisi!");
+        return;
+      }
+
+      const json = {
+        [id]: {
+          name: name,
+          key: `${key1}:${key2}`
+        }
+      };
+
+      document.getElementById("output").textContent = JSON.stringify(json, null, 2);
+    }
+  </script>
+
+</body>
+</html>
