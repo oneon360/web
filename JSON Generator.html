@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Multi DRM JSON Generator</title>
+  <title>DRM JSON Inline Generator</title>
   <style>
     body { font-family: Arial, sans-serif; background: #f9f9f9; padding: 20px; }
     textarea, pre, button { width: 100%; padding: 10px; margin-top: 10px; }
@@ -11,9 +11,9 @@
 </head>
 <body>
 
-  <h2>DRM JSON Generator (Multi-Entry)</h2>
+  <h2>DRM JSON Generator (Inline Format)</h2>
 
-  <label for="input">Masukkan data (format: key1:key2 ↵ nama):</label>
+  <label for="input">Masukkan data (key1:key2 lalu nama channel):</label>
   <textarea id="input" rows="10" placeholder="Contoh:
 d386001215594043a8995db796ad9e9c:3404792cb4c804902acdc6ca65c1a298
 RCTI
@@ -22,9 +22,9 @@ RCTI WORLD
 036e85de0bb448eeb21d39ab300da48e:4c6f9b15dfab2a169b2b78a498c4d77d
 GTV"></textarea>
 
-  <button onclick="generateJSON()">Generate JSON</button>
+  <button onclick="generateJSON()">Generate Inline JSON</button>
 
-  <label for="output">Hasil JSON:</label>
+  <label for="output">Hasil Format JSON (Inline):</label>
   <pre id="output">{}</pre>
 
   <script>
@@ -40,21 +40,20 @@ GTV"></textarea>
     function generateJSON() {
       const input = document.getElementById("input").value.trim();
       const lines = input.split('\n').map(line => line.trim()).filter(line => line !== '');
-      const result = {};
-      
+      const entries = [];
+
       for (let i = 0; i < lines.length - 1; i += 2) {
         const key = lines[i];
         const name = lines[i + 1];
         if (key.includes(':') && name) {
           const id = generateID();
-          result[id] = {
-            name: name,
-            key: key
-          };
+          const entry = `"${id}": { "name": "${name}", "key": "${key}" }`;
+          entries.push(entry);
         }
       }
 
-      document.getElementById("output").textContent = JSON.stringify(result, null, 2);
+      const output = entries.join(',\n');
+      document.getElementById("output").textContent = output || '{}';
     }
   </script>
 
