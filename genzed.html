@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JSON to M3U Generator</title>
+</head>
+<body>
+  <h2>Paste JSON (custom format)</h2>
+  <textarea id="jsonInput" rows="20" cols="100" placeholder="Paste your raw JSON-ish array here..."></textarea><br>
+  <button onclick="generateM3U()">Generate M3U</button>
+  <h2>Result (.m3u format)</h2>
+  <pre id="output"></pre>
+
+  <script>
+    function generateM3U() {
+      const input = document.getElementById("jsonInput").value;
+      const lines = input.split(/},?\s*{\s*/g);
+      let m3u = "#EXTM3U\n\n";
+
+      lines.forEach(line => {
+        const groupMatch = line.match(/group-title="([^"]+)"/);
+        const logoMatch = line.match(/tvg-logo="([^"]*)"/);
+        const nameMatch = line.match(/"([^"]+)",/); // Channel name
+        const urlMatch = line.match(/"url"\s*:\s*"([^"]+)"/);
+        const imageMatch = line.match(/"image"\s*:\s*"([^"]+)"/);
+        const licenseMatch = line.match(/"license_key"\s*:\s*"([^"]+)"/);
+        const userAgentMatch = line.match(/"User-Agent"\s*:\s*"([^"]+)"/);
+
+        const name = nameMatch ? nameMatch[1] : "No Name";
+        const group = groupMatch ? groupMatch[1] : "Undefined";
+        const logo = logoMatch ? logoMatch[1] : (imageMatch ? imageMatch[1] : "");
+        const url = urlMatch ? urlMatch[1] : "";
+
+        m3u += `#EXTINF:-1 group-title="${group}" tvg-logo="${logo}",${name}\n`;
+
+        if (userAgentMatch) {
+          m3u += `#EXTVLCOPT:http-user-agent=${userAgentMatch[1]}\n`;
+        }
+
+        if (licenseMatch) {
+          m3u += `#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey\n`;
+          m3u += `#KODIPROP:inputstream.adaptive.license_key=${licenseMatch[1]}\n`;
+        }
+
+        m3u += `${url}\n\n`;
+      });
+
+      document.getElementById("output").innerText = m3u.trim();
+    }
+  </script>
+</body>
+</html>
