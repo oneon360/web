@@ -101,8 +101,7 @@
     },
     {
       "type": "paragraph",
-      "text": "Bacalah teks berikut:<br><br>Hati Yona menciut setelah mendengar perkataan Winda.
-Kata menciut memiliki arti . . .'<br><br>Apa tujuan dari pengisian formulir tersebut?",
+      "text": "Bacalah teks berikut:<br><br>'Hati Yona menciut setelah mendengar perkataan Winda.'<br><br>Kata menciut memiliki arti . . .",
       "options": ["Kecewa", "Marah", "Takut", "Sedih"],
       "answer": "c"
     },
