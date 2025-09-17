@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Input Soal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style> textarea {font-family: monospace;} </style>
+</head>
+<body class="bg-light">
+<div class="container py-5">
+  <div class="card p-4">
+    <h4>🔑 Halaman Admin - Input Soal</h4>
+    <div id="loginBox">
+      <input type="password" id="adminPass" class="form-control mb-2" placeholder="Masukkan Password">
+      <button class="btn btn-primary" onclick="loginAdmin()">Login</button>
+    </div>
+    <div id="adminPanel" class="d-none">
+      <p>Edit soal dalam format JSON:</p>
+      <textarea id="jsonInput" class="form-control" rows="15"></textarea>
+      <button class="btn btn-success mt-3" onclick="saveJSON()">Simpan Soal</button>
+    </div>
+  </div>
+</div>
+<script>
+const ADMIN_PASSWORD="12345";
+let soal=JSON.parse(localStorage.getItem("soalData"))||{
+  "Pendidikan Pancasila":[],"Bahasa Indonesia":[],"Matematika":[],"IPAS":[],"Seni Rupa":[]
+};
+function loginAdmin(){
+  if(document.getElementById("adminPass").value===ADMIN_PASSWORD){
+    document.getElementById("loginBox").classList.add("d-none");
+    document.getElementById("adminPanel").classList.remove("d-none");
+    document.getElementById("jsonInput").value=JSON.stringify(soal,null,2);
+  }else alert("Password salah!");
+}
+function saveJSON(){
+  try{
+    soal=JSON.parse(document.getElementById("jsonInput").value);
+    localStorage.setItem("soalData",JSON.stringify(soal));
+    alert("Soal berhasil disimpan!");
+  }catch(e){alert("Format JSON tidak valid!");}
+}
+</script>
+</body>
+</html>
