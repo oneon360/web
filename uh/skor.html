@@ -75,15 +75,24 @@ function renderTable(){
         </tbody>
       </table>
       <p><strong>Total Skor:</strong> ${total} &nbsp; | &nbsp; <strong>Rata-rata:</strong> ${rata}</p>
+      <button class="btn btn-sm btn-danger mb-4" onclick="hapusSiswa('${nama}')">❌ Hapus Data ${nama}</button>
     `;
 
     container.innerHTML += table;
   }
 }
 
+// Fungsi hapus semua hasil ulangan per siswa
+function hapusSiswa(nama){
+  if(confirm("Yakin ingin menghapus semua data milik " + nama + " ?")){
+    hasil = hasil.filter(h => h.nama !== nama);
+    localStorage.setItem("hasilSiswa", JSON.stringify(hasil));
+    renderTable();
+  }
+}
+
 // Fungsi unduh Excel
 function downloadExcel(){
-  // Data tetap diekspor dalam format tabel agar mudah dibaca Excel
   const ws = XLSX.utils.json_to_sheet(hasil);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Rekap");
