@@ -133,70 +133,72 @@ Kata menciut memiliki arti . . .'<br><br>Apa tujuan dari pengisian formulir ters
   ],
 
 
+
   "Matematika": [
     {
       "type": "text",
-      "text": "Hasil dari 25 + 36 adalah?",
-      "options": ["51", "61", "71", "81"],
+      "text": "Manakah yang lebih besar: 3/4 atau 5/8?",
+      "options": ["3/4", "5/8", "Sama besar", "Tidak bisa dibandingkan"],
+      "answer": "a"
+    },
+    {
+      "type": "paragraph",
+      "text": "Urutkan pecahan berikut dari yang terkecil ke terbesar: 3/4, 2/3, 5/6",
+      "options": ["2/3, 3/4, 5/6", "3/4, 2/3, 5/6", "5/6, 3/4, 2/3", "2/3, 5/6, 3/4"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 2/3 × 3/4 adalah…",
+      "options": ["1/2", "1/3", "1/4", "1/5"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 5 × 3/7 adalah…",
+      "options": ["15/7", "8/7", "2/7", "10/7"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 0,4 × 0,5 adalah…",
+      "options": ["0,2", "0,25", "0,3", "0,15"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 3/4 ÷ 2/5 adalah…",
+      "options": ["15/8", "6/9", "5/8", "8/15"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 2 1/2 ÷ 1 1/5 adalah…",
+      "options": ["2 1/2", "2 1/4", "2 2/3", "2"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 0,6 ÷ 0,2 adalah…",
+      "options": ["2", "3", "4", "5"],
       "answer": "b"
     },
     {
       "type": "table",
-      "text": "Lengkapilah tabel penjumlahan berikut!",
-      "table": "<table class='table table-bordered'><tr><th>Soal</th><th>Hasil</th></tr><tr><td>12 + 8</td><td>?</td></tr><tr><td>15 + 5</td><td>?</td></tr></table>",
-      "options": ["20 dan 20", "21 dan 20", "19 dan 21", "22 dan 19"],
-      "answer": "b"
+      "text": "Lengkapi hasil perkalian pecahan berikut:",
+      "table": "<table class='table table-bordered'><tr><th>Pecahan 1</th><th>Pecahan 2</th><th>Hasil</th></tr><tr><td>2/5</td><td>3/4</td><td>?</td></tr><tr><td>1 1/3</td><td>2/3</td><td>?</td></tr></table>",
+      "options": ["3/10 & 8/9", "6/20 & 8/9", "3/10 & 2/3", "6/20 & 2/3"],
+      "answer": "a"
     },
-    {
-      "type": "text",
-      "text": "Hasil dari 7 x 8 adalah?",
-      "options": ["54", "56", "64", "48"],
-      "answer": "b"
-    },
-    {
-      "type": "text",
-      "text": "Bilangan prima antara 10 dan 20 adalah?",
-      "options": ["11, 12, 13", "11, 13, 17, 19", "12, 14, 16", "10, 15, 18"],
-      "answer": "b"
-    },
+
     {
       "type": "paragraph",
-      "text": "Seorang pedagang memiliki 120 mangga. Ia membagikan kepada 12 pembeli dengan jumlah sama. Berapa mangga tiap orang?",
-      "options": ["10", "12", "15", "20"],
-      "answer": "d"
-    },
-    {
-      "type": "text",
-      "text": "Nilai dari 3² + 4² adalah?",
-      "options": ["9", "16", "25", "7"],
-      "answer": "c"
-    },
-    {
-      "type": "text",
-      "text": "Hasil dari 100 - 45 adalah?",
-      "options": ["45", "55", "65", "75"],
-      "answer": "b"
-    },
-    {
-      "type": "image",
-      "text": "Perhatikan gambar segitiga berikut. Jika alas = 8 cm, tinggi = 6 cm, berapakah luasnya?",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Triangle_equilateral.svg/200px-Triangle_equilateral.svg.png",
-      "options": ["24 cm²", "28 cm²", "30 cm²", "36 cm²"],
-      "answer": "a"
-    },
-    {
-      "type": "text",
-      "text": "Hasil dari 9 x 9 adalah?",
-      "options": ["81", "72", "99", "79"],
-      "answer": "a"
-    },
-    {
-      "type": "text",
-      "text": "Hasil dari 144 ÷ 12 adalah?",
-      "options": ["10", "11", "12", "13"],
+      "text": "Bacalah soal berikut:<br><br>'Seorang siswa membeli 1 1/2 kg gula. Ia ingin membaginya menjadi paket masing-masing 1/3 kg. Berapa paket gula yang dapat dibuat?'",
+      "options": ["3 paket", "4 paket", "5 paket", "6 paket"],
       "answer": "c"
     }
   ],
+
 
   
   "IPAS": [
