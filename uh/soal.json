@@ -291,13 +291,6 @@
       "answer": "a"
     },
     {
-      "type": "image",
-      "text": "Perhatikan gambar berikut. Bagian manakah yang menunjukkan proporsi yang benar?",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Human_proportions.svg/330px-Human_proportions.svg.png",
-      "options": ["a. Kepala terlalu besar", "b. Proporsi sesuai tubuh", "c. Tangan terlalu panjang", "d. Kaki terlalu pendek"],
-      "answer": "b"
-    },
-    {
       "type": "paragraph",
       "text": "Langkah pertama sebelum menggambar model adalah?",
       "options": ["Memilih objek dan mengamati", "Mengarsir seluruh gambar", "Menambahkan warna langsung", "Menyalin gambar orang lain"],
@@ -317,8 +310,8 @@
     },
     {
       "type": "image",
-      "text": "Perhatikan gambar ini. Teknik apa yang digunakan pada bagian bayangan?",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Graphite_sketch_example.jpg/330px-Graphite_sketch_example.jpg",
+      "text": "Perhatikan gambar ini. Teknik apa yang digunakan pada gambar?",
+      "image": "https://faber-castell.co.id/cfind/source/thumb/images/tutorial-/pensil-castell-9000/cover_w251_h251_tw731_th732_x1143_y140_6-banner-cara-gambar-dengan-pencil-castell9000.jpg",
       "options": ["Arsir", "Garis", "Pointilis", "Blok"],
       "answer": "a"
     },
@@ -340,6 +333,13 @@
       "table": "<table class='table table-bordered'><tr><th>Teknik</th><th>Penjelasan</th></tr><tr><td>Arsir</td><td>?</td></tr><tr><td>Pointilis</td><td>?</td></tr></table>",
       "options": ["Bayangan menggunakan garis; Gambar titik-titik", "Gambar cepat; Goresan tebal", "Titik-titik; Bayangan garis", "Sketsa; Blok gelap"],
       "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Komposisi sentra pada menggambar model artinya?",
+      "options": ["Objek berada di tengah bidang gambar", "Objek acak di seluruh gambar", "Objek kecil di sudut gambar", "Objek berada di tepi gambar"],
+      "answer": "a"
     }
+     
   ]
 }
