@@ -2,120 +2,161 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Ulangan Kelas 6</title>
+  <title>Admin Input Soal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 20px; }
     .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
     h1 { text-align: center; }
-    .soal { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 6px; background: #fafafa; }
-    img { max-width: 100%; height: auto; margin-top: 10px; }
-    table { border-collapse: collapse; margin-top: 10px; width: 100%; }
-    table, th, td { border: 1px solid #444; padding: 6px; text-align: center; }
-    .options label { display: block; margin-top: 5px; }
-    .submit-btn { display: block; width: 100%; padding: 12px; background: green; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
-    .submit-btn:hover { background: darkgreen; }
+    label { font-weight: bold; display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+    .hidden { display: none; }
+    .options input { margin-bottom: 5px; }
+    .btn { padding: 10px 20px; margin-top: 15px; border: none; cursor: pointer; border-radius: 6px; }
+    .btn-add { background: green; color: white; }
+    .btn-add:hover { background: darkgreen; }
+    .btn-row { background: dodgerblue; color: white; margin-top: 5px; }
+    .btn-row:hover { background: navy; }
+    pre { background: #222; color: #0f0; padding: 15px; border-radius: 6px; overflow-x: auto; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Ulangan Harian Kelas 6</h1>
-    <form id="quizForm"></form>
-    <button type="button" class="submit-btn" onclick="submitQuiz()">Kumpulkan Jawaban</button>
+    <h1>Admin Input Soal</h1>
+
+    <label for="soalText">Teks Soal:</label>
+    <textarea id="soalText" rows="3"></textarea>
+
+    <label for="soalType">Tipe Soal:</label>
+    <select id="soalType" onchange="updateForm()">
+      <option value="multiple-choice">Pilihan Ganda</option>
+      <option value="essay">Esai</option>
+      <option value="image">Gambar</option>
+      <option value="table">Tabel</option>
+    </select>
+
+    <!-- Input untuk pilihan ganda -->
+    <div id="mcOptions">
+      <label>Opsi Jawaban:</label>
+      <input type="text" id="optA" placeholder="Opsi A">
+      <input type="text" id="optB" placeholder="Opsi B">
+      <input type="text" id="optC" placeholder="Opsi C">
+      <input type="text" id="optD" placeholder="Opsi D">
+      <label for="answer">Jawaban Benar (a/b/c/d):</label>
+      <input type="text" id="answer" placeholder="contoh: a">
+    </div>
+
+    <!-- Input untuk esai -->
+    <div id="essayOptions" class="hidden">
+      <label>Jawaban Benar:</label>
+      <input type="text" id="essayAnswer" placeholder="contoh: Jakarta">
+    </div>
+
+    <!-- Input untuk gambar -->
+    <div id="imageOptions" class="hidden">
+      <label>URL Gambar:</label>
+      <input type="text" id="imageUrl" placeholder="https://...">
+      <label>Opsi Jawaban:</label>
+      <input type="text" id="imgOptA" placeholder="Opsi A">
+      <input type="text" id="imgOptB" placeholder="Opsi B">
+      <input type="text" id="imgOptC" placeholder="Opsi C">
+      <input type="text" id="imgOptD" placeholder="Opsi D">
+      <label>Jawaban Benar (a/b/c/d):</label>
+      <input type="text" id="imgAnswer" placeholder="contoh: b">
+    </div>
+
+    <!-- Input untuk tabel -->
+    <div id="tableOptions" class="hidden">
+      <label>Tabel Data:</label>
+      <table id="tableInput" border="1" style="width:100%; margin-top:10px;">
+        <tr>
+          <td><input type="text" placeholder="Kolom 1"></td>
+          <td><input type="text" placeholder="Kolom 2"></td>
+        </tr>
+      </table>
+      <button type="button" class="btn btn-row" onclick="addRow()">+ Tambah Baris</button>
+      <label>Jawaban Benar:</label>
+      <input type="text" id="tableAnswer" placeholder="contoh: 54">
+    </div>
+
+    <button type="button" class="btn btn-add" onclick="addSoal()">+ Tambah Soal ke JSON</button>
+
+    <h2>Hasil JSON:</h2>
+    <pre id="jsonOutput">[]</pre>
   </div>
 
   <script>
-    // Contoh soal JSON (4 tipe: pilihan ganda, isian, gambar, tabel)
-    const soalData = [
-      {
-        "text": "Siapakah pencetus Pancasila?",
-        "type": "multiple-choice",
-        "options": ["Soekarno", "Hatta", "Sudirman", "Yamin"],
-        "answer": "a"
-      },
-      {
-        "text": "Tuliskan nama ibu kota Indonesia!",
-        "type": "essay",
-        "answer": "Jakarta"
-      },
-      {
-        "text": "Perhatikan gambar berikut. Apa nama hewan pada gambar?",
-        "type": "image",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/7/73/Lion_waiting_in_Namibia.jpg",
-        "options": ["Harimau", "Singa", "Macan Tutul", "Cheetah"],
-        "answer": "b"
-      },
-      {
-        "text": "Hitunglah hasil dari tabel berikut: berapa jumlah keseluruhan siswa laki-laki dan perempuan?",
-        "type": "table",
-        "table": [
-          ["Kelas", "Laki-laki", "Perempuan"],
-          ["6A", "15", "13"],
-          ["6B", "12", "14"]
-        ],
-        "answer": "54"
+    let soalArray = [];
+
+    function updateForm() {
+      document.getElementById("mcOptions").classList.add("hidden");
+      document.getElementById("essayOptions").classList.add("hidden");
+      document.getElementById("imageOptions").classList.add("hidden");
+      document.getElementById("tableOptions").classList.add("hidden");
+
+      let type = document.getElementById("soalType").value;
+      if (type === "multiple-choice") document.getElementById("mcOptions").classList.remove("hidden");
+      if (type === "essay") document.getElementById("essayOptions").classList.remove("hidden");
+      if (type === "image") document.getElementById("imageOptions").classList.remove("hidden");
+      if (type === "table") document.getElementById("tableOptions").classList.remove("hidden");
+    }
+
+    function addRow() {
+      let table = document.getElementById("tableInput");
+      let cols = table.rows[0].cells.length;
+      let row = table.insertRow();
+      for (let i = 0; i < cols; i++) {
+        let cell = row.insertCell();
+        cell.innerHTML = `<input type="text" placeholder="Data ${i+1}">`;
       }
-    ];
+    }
 
-    // Render soal
-    const quizForm = document.getElementById("quizForm");
+    function addSoal() {
+      let text = document.getElementById("soalText").value;
+      let type = document.getElementById("soalType").value;
+      let soal = { text, type };
 
-    soalData.forEach((soal, index) => {
-      const div = document.createElement("div");
-      div.className = "soal";
-
-      let html = `<p><b>${index + 1}. ${soal.text}</b></p>`;
-
-      if (soal.type === "multiple-choice" && soal.options) {
-        html += '<div class="options">';
-        soal.options.forEach((opt, i) => {
-          const abjad = String.fromCharCode(97 + i); // a,b,c,...
-          html += `
-            <label>
-              <input type="radio" name="q${index}" value="${abjad}"> ${opt}
-            </label>`;
-        });
-        html += '</div>';
-      } 
-      else if (soal.type === "essay") {
-        html += `<input type="text" name="q${index}" style="width:100%; padding:6px;">`;
-      } 
-      else if (soal.type === "image") {
-        html += `<img src="${soal.image}" alt="gambar soal">`;
-        html += '<div class="options">';
-        soal.options.forEach((opt, i) => {
-          const abjad = String.fromCharCode(97 + i);
-          html += `
-            <label>
-              <input type="radio" name="q${index}" value="${abjad}"> ${opt}
-            </label>`;
-        });
-        html += '</div>';
-      } 
-      else if (soal.type === "table") {
-        html += "<table>";
-        soal.table.forEach((row, rIndex) => {
-          html += "<tr>";
-          row.forEach(cell => {
-            html += rIndex === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
-          });
-          html += "</tr>";
-        });
-        html += "</table>";
-        html += `<p>Jawaban: <input type="text" name="q${index}" style="width:100%; padding:6px;"></p>`;
+      if (type === "multiple-choice") {
+        soal.options = [
+          document.getElementById("optA").value,
+          document.getElementById("optB").value,
+          document.getElementById("optC").value,
+          document.getElementById("optD").value
+        ];
+        soal.answer = document.getElementById("answer").value;
+      }
+      if (type === "essay") {
+        soal.answer = document.getElementById("essayAnswer").value;
+      }
+      if (type === "image") {
+        soal.image = document.getElementById("imageUrl").value;
+        soal.options = [
+          document.getElementById("imgOptA").value,
+          document.getElementById("imgOptB").value,
+          document.getElementById("imgOptC").value,
+          document.getElementById("imgOptD").value
+        ];
+        soal.answer = document.getElementById("imgAnswer").value;
+      }
+      if (type === "table") {
+        let table = document.getElementById("tableInput");
+        let rows = [];
+        for (let i = 0; i < table.rows.length; i++) {
+          let cells = [];
+          for (let j = 0; j < table.rows[i].cells.length; j++) {
+            let val = table.rows[i].cells[j].querySelector("input").value;
+            cells.push(val);
+          }
+          rows.push(cells);
+        }
+        soal.table = rows;
+        soal.answer = document.getElementById("tableAnswer").value;
       }
 
-      div.innerHTML = html;
-      quizForm.appendChild(div);
-    });
-
-    function submitQuiz() {
-      const data = new FormData(quizForm);
-      let hasil = {};
-      data.forEach((val, key) => {
-        hasil[key] = val;
-      });
-      alert("Jawaban Anda:\n" + JSON.stringify(hasil, null, 2));
+      soalArray.push(soal);
+      document.getElementById("jsonOutput").textContent = JSON.stringify(soalArray, null, 2);
+      
+      alert("Soal ditambahkan ke JSON!");
     }
   </script>
 </body>
