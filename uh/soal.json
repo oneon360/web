@@ -267,68 +267,79 @@
   ],
 
 
-  "Seni Rupa": [
+   "Seni Rupa": [
     {
       "type": "text",
-      "text": "Seni rupa yang memiliki panjang, lebar, dan tinggi disebut?",
-      "options": ["2 dimensi", "3 dimensi", "Lukisan", "Sketsa"],
+      "text": "Apa yang dimaksud dengan menggambar model?",
+      "options": [
+        "Menggambar dari imajinasi saja",
+        "Menggambar objek nyata sebagai referensi",
+        "Menggambar tanpa menggunakan alat gambar",
+        "Menggambar model 3D menggunakan komputer"
+      ],
       "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Prinsip utama dalam menggambar model adalah?",
+      "options": [
+        "Memperhatikan proporsi dan bentuk objek",
+        "Memakai warna cerah tanpa aturan",
+        "Menggambar secepat mungkin",
+        "Menyalin gambar orang lain"
+      ],
+      "answer": "a"
     },
     {
       "type": "image",
-      "text": "Perhatikan gambar patung berikut. Patung termasuk karya seni?",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/The_Thinker%2C_Rodin.jpg/330px-The_Thinker%2C_Rodin.jpg",
-      "options": ["2 dimensi", "3 dimensi", "Grafis", "Sketsa"],
+      "text": "Perhatikan gambar berikut. Bagian manakah yang menunjukkan proporsi yang benar?",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Human_proportions.svg/330px-Human_proportions.svg.png",
+      "options": ["a. Kepala terlalu besar", "b. Proporsi sesuai tubuh", "c. Tangan terlalu panjang", "d. Kaki terlalu pendek"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Langkah pertama sebelum menggambar model adalah?",
+      "options": ["Memilih objek dan mengamati", "Mengarsir seluruh gambar", "Menambahkan warna langsung", "Menyalin gambar orang lain"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Teknik menggambar yang menggunakan goresan halus untuk membuat bayangan disebut?",
+      "options": ["Blok", "Arsir", "Pointilis", "Garis"],
       "answer": "b"
     },
     {
       "type": "text",
-      "text": "Alat untuk menggambar di komputer disebut?",
-      "options": ["Mouse", "Pensil", "Kuas", "Spidol"],
+      "text": "Teknik menggambar dengan menempelkan titik-titik untuk membentuk gambar disebut?",
+      "options": ["Sketsa", "Dussel", "Pointilis", "Blok"],
+      "answer": "c"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar ini. Teknik apa yang digunakan pada bagian bayangan?",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Graphite_sketch_example.jpg/330px-Graphite_sketch_example.jpg",
+      "options": ["Arsir", "Garis", "Pointilis", "Blok"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Teknik menggambar menggunakan bidang gelap dan terang untuk membentuk objek disebut?",
+      "options": ["Blok", "Sketsa", "Garis", "Dussel"],
       "answer": "a"
     },
     {
       "type": "paragraph",
-      "text": "Batik adalah warisan budaya Indonesia. Apa yang menjadi ciri khas batik?",
-      "options": ["Warna polos", "Motif hias", "Ukuran besar", "Lukisan minyak"],
+      "text": "Komposisi simetris dan asimetris, komposisi sentra, keseimbangan, proporsi, dan kesatuan termasuk prinsip apa dalam menggambar model?",
+      "options": ["Teknik menggambar", "Prinsip menggambar model", "Alat menggambar", "Jenis sketsa"],
       "answer": "b"
-    },
-    {
-      "type": "text",
-      "text": "Warna primer adalah?",
-      "options": ["Merah, Kuning, Biru", "Hijau, Ungu, Oranye", "Merah, Hitam, Putih", "Biru, Coklat, Pink"],
-      "answer": "a"
     },
     {
       "type": "table",
-      "text": "Cocokkan alat dengan fungsinya!",
-      "table": "<table class='table table-bordered'><tr><th>Alat</th><th>Fungsi</th></tr><tr><td>Kuas</td><td>?</td></tr><tr><td>Palet</td><td>?</td></tr></table>",
-      "options": ["Mewarnai, Mencampur cat", "Menggambar, Menghapus", "Mencetak, Melukis", "Menyapu, Membersihkan"],
+      "text": "Cocokkan teknik dengan penjelasannya:",
+      "table": "<table class='table table-bordered'><tr><th>Teknik</th><th>Penjelasan</th></tr><tr><td>Arsir</td><td>?</td></tr><tr><td>Pointilis</td><td>?</td></tr></table>",
+      "options": ["Bayangan menggunakan garis; Gambar titik-titik", "Gambar cepat; Goresan tebal", "Titik-titik; Bayangan garis", "Sketsa; Blok gelap"],
       "answer": "a"
     },
-    {
-      "type": "text",
-      "text": "Teknik menggambar dengan garis-garis sejajar disebut?",
-      "options": ["Arsir", "Blok", "Dab", "Gradasi"],
-      "answer": "a"
-    },
-    {
-      "type": "text",
-      "text": "Seni rupa yang dinikmati dengan indera penglihatan disebut?",
-      "options": ["Seni musik", "Seni tari", "Seni rupa", "Seni drama"],
-      "answer": "c"
-    },
-    {
-      "type": "paragraph",
-      "text": "Lukisan pemandangan menimbulkan rasa tenang bagi yang melihatnya. Hal ini menunjukkan fungsi seni sebagai?",
-      "options": ["Hiburan", "Iklan", "Ekonomi", "Politik"],
-      "answer": "a"
-    },
-    {
-      "type": "text",
-      "text": "Alat untuk menghapus pensil adalah?",
-      "options": ["Penggaris", "Kuas", "Penghapus", "Spidol"],
-      "answer": "c"
-    }
   ]
 }
