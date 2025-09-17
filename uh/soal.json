@@ -192,68 +192,70 @@
       "answer": "c"
     }
   ],
+{
   "IPAS": [
     {
+      "text": "Bagian tubuh manakah yang berfungsi sebagai kerangka tubuh?",
       "type": "text",
-      "text": "Sumber energi terbesar di bumi adalah?",
-      "options": ["Matahari", "Angin", "Air", "Batu bara"],
+      "options": ["Otot", "Rangka", "Sendi", "Saraf"],
+      "answer": "b",
+      "image": "https://example.com/images/rangka.png"
+    },
+    {
+      "text": "Sendi yang memungkinkan gerakan ke segala arah disebut …",
+      "type": "text",
+      "options": ["Sendi engsel", "Sendi putar", "Sendi peluru", "Sendi pelana"],
+      "answer": "c"
+    },
+    {
+      "text": "Otot bekerja bersama rangka dan sendi untuk …",
+      "type": "text",
+      "options": ["Mencerna makanan", "Mengatur hormon", "Menggerakkan tubuh", "Melindungi organ"],
+      "answer": "c",
+      "image": "https://example.com/images/otot.png"
+    },
+    {
+      "text": "Bagian sistem saraf yang menghubungkan otak dan seluruh tubuh adalah …",
+      "type": "text",
+      "options": ["Saraf pusat", "Saraf tepi", "Sumsum tulang belakang", "Otak kecil"],
+      "answer": "c"
+    },
+    {
+      "text": "Penyakit berikut yang menyerang sistem gerak adalah …",
+      "type": "text",
+      "options": ["Osteoporosis", "Diabetes", "Asma", "Hepatitis"],
       "answer": "a"
     },
     {
-      "type": "paragraph",
-      "text": "Air bersih sangat penting untuk kehidupan. Apa yang terjadi jika kita kekurangan air?",
-      "options": ["Tanaman subur", "Tubuh sehat", "Kesulitan hidup", "Udara segar"],
-      "answer": "c"
-    },
-    {
-      "type": "text",
-      "text": "Benda yang dapat ditarik magnet disebut?",
-      "options": ["Plastik", "Kayu", "Besi", "Kaca"],
-      "answer": "c"
-    },
-    {
-      "type": "image",
-      "text": "Perhatikan gambar berikut. Apa jenis perubahan wujud yang ditunjukkan es menjadi air?",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Melting_icecubes.jpg/330px-Melting_icecubes.jpg",
-      "options": ["Membeku", "Mencair", "Menguap", "Menyublim"],
-      "answer": "b"
-    },
-    {
-      "type": "text",
-      "text": "Planet yang dikenal sebagai planet biru adalah?",
-      "options": ["Mars", "Bumi", "Venus", "Saturnus"],
-      "answer": "b"
-    },
-    {
+      "text": "Perhatikan tabel berikut tentang jenis sendi:\n\n| Jenis Sendi | Contoh | Gerakan |\n|------------|--------|---------|\n| Engsel | Siku | Maju mundur |\n| Peluru | Bahu | Semua arah |\n| Putar | Leher | Memutar |\n\nJenis sendi yang memungkinkan gerakan ke segala arah adalah …",
       "type": "table",
-      "text": "Cocokkan hewan dengan jenis makanannya!",
-      "table": "<table class='table table-bordered'><tr><th>Hewan</th><th>Makanan</th></tr><tr><td>Sapi</td><td>?</td></tr><tr><td>Singa</td><td>?</td></tr></table>",
-      "options": ["Rumput, Daging", "Daging, Rumput", "Buah, Daging", "Serangga, Rumput"],
+      "options": ["Engsel", "Peluru", "Putar", "Pelana"],
+      "answer": "b"
+    },
+    {
+      "text": "Gambar berikut menunjukkan bagian tubuh yang disebut …",
+      "type": "image",
+      "image": "https://example.com/images/saraf.png",
+      "options": ["Otot", "Rangka", "Saraf", "Sendi"],
+      "answer": "c"
+    },
+    {
+      "text": "Otot lurik biasanya ditemukan pada …",
+      "type": "text",
+      "options": ["Jantung", "Lengan dan kaki", "Perut", "Saraf"],
+      "answer": "b"
+    },
+    {
+      "text": "Fungsi utama sistem saraf adalah …",
+      "type": "text",
+      "options": ["Menggerakkan tubuh", "Mengirimkan sinyal tubuh", "Menahan tulang", "Mencerna makanan"],
+      "answer": "b"
+    },
+    {
+      "text": "Penyakit osteoporosis menyebabkan …",
+      "type": "text",
+      "options": ["Kerapuhan tulang", "Kelemahan otot", "Gangguan saraf", "Peradangan sendi"],
       "answer": "a"
-    },
-    {
-      "type": "text",
-      "text": "Lapisan udara yang melindungi bumi disebut?",
-      "options": ["Stratosfer", "Atmosfer", "Hidrosfer", "Litosfer"],
-      "answer": "b"
-    },
-    {
-      "type": "paragraph",
-      "text": "Tanaman membutuhkan cahaya matahari untuk fotosintesis. Apa hasil utama dari fotosintesis?",
-      "options": ["Air", "Karbohidrat", "Mineral", "Protein"],
-      "answer": "b"
-    },
-    {
-      "type": "text",
-      "text": "Alat untuk mengukur suhu adalah?",
-      "options": ["Barometer", "Termometer", "Higrometer", "Anemometer"],
-      "answer": "b"
-    },
-    {
-      "type": "text",
-      "text": "Bumi berputar pada porosnya disebut?",
-      "options": ["Revolusi", "Rotasi", "Orbit", "Gravitasi"],
-      "answer": "b"
     }
   ],
   "Seni Rupa": [
