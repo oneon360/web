@@ -194,67 +194,67 @@
   ],
   "IPAS": [
     {
-      "text": "Bagian tubuh manakah yang berfungsi sebagai kerangka tubuh?",
       "type": "text",
-      "options": ["Otot", "Rangka", "Sendi", "Saraf"],
-      "answer": "b",
-      "image": "https://example.com/images/rangka.png"
-    },
-    {
-      "text": "Sendi yang memungkinkan gerakan ke segala arah disebut …",
-      "type": "text",
-      "options": ["Sendi engsel", "Sendi putar", "Sendi peluru", "Sendi pelana"],
-      "answer": "c"
-    },
-    {
-      "text": "Otot bekerja bersama rangka dan sendi untuk …",
-      "type": "text",
-      "options": ["Mencerna makanan", "Mengatur hormon", "Menggerakkan tubuh", "Melindungi organ"],
-      "answer": "c",
-      "image": "https://example.com/images/otot.png"
-    },
-    {
-      "text": "Bagian sistem saraf yang menghubungkan otak dan seluruh tubuh adalah …",
-      "type": "text",
-      "options": ["Saraf pusat", "Saraf tepi", "Sumsum tulang belakang", "Otak kecil"],
-      "answer": "c"
-    },
-    {
-      "text": "Penyakit berikut yang menyerang sistem gerak adalah …",
-      "type": "text",
-      "options": ["Osteoporosis", "Diabetes", "Asma", "Hepatitis"],
-      "answer": "a"
-    },
-    {
-      "text": "Perhatikan tabel berikut tentang jenis sendi:\n\n| Jenis Sendi | Contoh | Gerakan |\n|------------|--------|---------|\n| Engsel | Siku | Maju mundur |\n| Peluru | Bahu | Semua arah |\n| Putar | Leher | Memutar |\n\nJenis sendi yang memungkinkan gerakan ke segala arah adalah …",
-      "type": "table",
-      "options": ["Engsel", "Peluru", "Putar", "Pelana"],
+      "text": "Rangka berfungsi untuk…",
+      "options": ["Menggerakkan tubuh", "Memberi bentuk tubuh", "Mengatur pernapasan", "Mencerna makanan"],
       "answer": "b"
     },
     {
-      "text": "Gambar berikut menunjukkan bagian tubuh yang disebut …",
       "type": "image",
-      "image": "https://example.com/images/saraf.png",
-      "options": ["Otot", "Rangka", "Saraf", "Sendi"],
+      "text": "Perhatikan gambar tulang berikut. Tulang ini termasuk jenis…",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/32/Human_skeleton_front.png",
+      "options": ["Tulang pipa", "Tulang pipih", "Tulang pendek", "Tulang tidak beraturan"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Sendi engsel memungkinkan gerakan…",
+      "options": ["Ke segala arah", "Ke satu arah", "Melingkar", "Tidak bergerak"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah:<br><br>'Otot bekerja dengan rangka dan sendi agar tubuh dapat bergerak.'<br><br>Fungsi utama otot adalah…",
+      "options": ["Memberi bentuk tubuh", "Melindungi organ", "Menggerakkan tubuh", "Menyimpan cadangan energi"],
       "answer": "c"
     },
     {
-      "text": "Otot lurik biasanya ditemukan pada …",
-      "type": "text",
-      "options": ["Jantung", "Lengan dan kaki", "Perut", "Saraf"],
-      "answer": "b"
-    },
-    {
-      "text": "Fungsi utama sistem saraf adalah …",
-      "type": "text",
-      "options": ["Menggerakkan tubuh", "Mengirimkan sinyal tubuh", "Menahan tulang", "Mencerna makanan"],
-      "answer": "b"
-    },
-    {
-      "text": "Penyakit osteoporosis menyebabkan …",
-      "type": "text",
-      "options": ["Kerapuhan tulang", "Kelemahan otot", "Gangguan saraf", "Peradangan sendi"],
+      "type": "table",
+      "text": "Perhatikan tabel berikut dan pilih pasangan yang benar antara bagian tubuh dan fungsinya!",
+      "table": "<table class='table table-bordered'><tr><th>Bagian Tubuh</th><th>Fungsi</th></tr><tr><td>Otot bisep</td><td>?</td></tr><tr><td>Rangka</td><td>?</td></tr><tr><td>Sendi lutut</td><td>?</td></tr></table>",
+      "options": ["Menggerakkan lengan, Memberi bentuk, Menggerakkan kaki", "Memberi bentuk, Menggerakkan lengan, Menggerakkan kaki", "Menggerakkan kaki, Memberi bentuk, Menggerakkan lengan", "Menggerakkan lengan, Menggerakkan kaki, Memberi bentuk"],
       "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Sistem saraf pusat terdiri dari…",
+      "options": ["Otak dan sumsum tulang belakang", "Otak dan otot", "Sumsum tulang belakang dan sendi", "Otak dan rangka"],
+      "answer": "a"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar berikut. Sistem saraf ini termasuk…",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Central_nervous_system.svg",
+      "options": ["Sistem saraf pusat", "Sistem saraf tepi", "Sistem pernapasan", "Sistem peredaran darah"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Cedera pada otot dapat menyebabkan…",
+      "options": ["Tubuh menjadi lebih tinggi", "Kesulitan bergerak", "Tubuh melengkung", "Peningkatan energi"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah:<br><br>'Penyakit osteoarthritis menyerang persendian sehingga sulit bergerak.'<br><br>Penyakit ini menyerang…",
+      "options": ["Rangka", "Otot", "Sendi", "Sistem saraf"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Fungsi rangka tidak termasuk…",
+      "options": ["Memberi bentuk tubuh", "Melindungi organ vital", "Membantu bergerak", "Mencerna makanan"],
+      "answer": "d"
     }
   ],
   "Seni Rupa": [
