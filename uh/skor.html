@@ -16,41 +16,57 @@
       <button class="btn btn-primary" onclick="loginAdmin()">Login</button>
     </div>
     <div id="rekapPanel" class="d-none">
+      <button class="btn btn-success mb-3" onclick="fetchData()">🔄 Refresh Data</button>
       <div id="rekapContent"></div>
-      <button class="btn btn-success mt-3" onclick="downloadExcel()">📥 Unduh Excel</button>
+      <button class="btn btn-primary mt-3" onclick="downloadExcel()">📥 Unduh Excel</button>
     </div>
   </div>
 </div>
+
 <script>
-const ADMIN_PASSWORD = "12345";
+const ADMIN_PASSWORD = "12345";  
+const WEB_APP_URL = "https://script.google.com/a/macros/guru.sd.belajar.id/s/AKfycbwpHJY63zAtFdSG85xKH8eRTfk4RC8JLSzOaSmqvl50dOFllomVgYHSaikxSu1kJew/exec"; // ganti dengan URL Web App Anda
 
-// Ambil data dari localStorage (array hasil per ulangan siswa)
-let hasil = JSON.parse(localStorage.getItem("hasilSiswa")) || [];
+let hasil = []; // akan diisi dari Google Sheets
 
-// Fungsi login admin
+// Login admin
 function loginAdmin(){
   if(document.getElementById("adminPass").value === ADMIN_PASSWORD){
     document.getElementById("loginBox").classList.add("d-none");
     document.getElementById("rekapPanel").classList.remove("d-none");
-    renderTable();
+    fetchData();
   } else {
     alert("Password salah!");
   }
 }
 
-// Fungsi render tabel dengan grouping per siswa
+// Ambil data dari Google Sheets
+async function fetchData(){
+  try {
+    const res = await fetch(WEB_APP_URL);
+    hasil = await res.json();  // hasil berupa array objek {nama, mapel, skor, tanggal}
+    renderTable();
+  } catch(err){
+    alert("Gagal mengambil data: " + err.message);
+  }
+}
+
+// Render tabel dengan grouping per siswa
 function renderTable(){
   const container = document.getElementById("rekapContent");
   container.innerHTML = "";
 
-  // Kelompokkan berdasarkan nama
+  if(hasil.length === 0){
+    container.innerHTML = "<p>Belum ada data siswa.</p>";
+    return;
+  }
+
   const grouped = {};
   hasil.forEach(h => {
     if(!grouped[h.nama]) grouped[h.nama] = [];
     grouped[h.nama].push(h);
   });
 
-  // Buat tabel untuk tiap siswa
   for(const nama in grouped){
     let total = 0;
     let count = grouped[nama].length;
@@ -65,7 +81,7 @@ function renderTable(){
     `;
 
     grouped[nama].forEach(h => {
-      total += h.skor;
+      total += parseInt(h.skor);
       table += `<tr><td>${h.mapel}</td><td>${h.skor}</td><td>${h.tanggal}</td></tr>`;
     });
 
@@ -75,24 +91,18 @@ function renderTable(){
         </tbody>
       </table>
       <p><strong>Total Skor:</strong> ${total} &nbsp; | &nbsp; <strong>Rata-rata:</strong> ${rata}</p>
-      <button class="btn btn-sm btn-danger mb-4" onclick="hapusSiswa('${nama}')">❌ Hapus Data ${nama}</button>
     `;
 
     container.innerHTML += table;
   }
 }
 
-// Fungsi hapus semua hasil ulangan per siswa
-function hapusSiswa(nama){
-  if(confirm("Yakin ingin menghapus semua data milik " + nama + " ?")){
-    hasil = hasil.filter(h => h.nama !== nama);
-    localStorage.setItem("hasilSiswa", JSON.stringify(hasil));
-    renderTable();
-  }
-}
-
-// Fungsi unduh Excel
+// Export ke Excel
 function downloadExcel(){
+  if(hasil.length === 0){
+    alert("Belum ada data untuk diekspor.");
+    return;
+  }
   const ws = XLSX.utils.json_to_sheet(hasil);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Rekap");
