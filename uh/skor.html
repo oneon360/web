@@ -6,30 +6,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body { background:#f8f9fa; }
+    .small-muted { font-size:0.85rem; color:#666; }
+  </style>
 </head>
 <body class="bg-light">
 <div class="container py-5">
   <div class="card p-4 shadow">
     <h4>📊 Rekap Nilai Ulangan</h4>
-    <div id="loginBox">
+
+    <div id="loginBox" class="mb-3">
       <input type="password" id="adminPass" class="form-control mb-2" placeholder="Password Admin">
       <button class="btn btn-primary" onclick="loginAdmin()">Login</button>
+      <div class="small-muted mt-2">Catatan: pastikan Web App Google Apps Script Anda sudah di-deploy sebagai "Anyone, even anonymous".</div>
     </div>
+
     <div id="rekapPanel" class="d-none">
-      <button class="btn btn-success mb-3" onclick="fetchData()">🔄 Refresh Data</button>
+      <div class="mb-3">
+        <button class="btn btn-success" onclick="fetchData()">🔄 Refresh Data</button>
+        <button class="btn btn-primary ms-2" onclick="downloadExcel()">📥 Unduh Excel</button>
+      </div>
+
       <div id="rekapContent"></div>
-      <button class="btn btn-primary mt-3" onclick="downloadExcel()">📥 Unduh Excel</button>
+      <div id="debugLog" class="mt-3 small text-muted"></div>
     </div>
   </div>
 </div>
 
 <script>
-const ADMIN_PASSWORD = "12345";  
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwuERqx4rx2qqRO0xipSENzwqSfMbPbbaBfa6nLBoAAk80VVlvvvmRvjZqo9lDwcJ06eg/exec"; // ganti dengan URL Web App Anda
+const ADMIN_PASSWORD = "12345";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwuERqx4rx2qqRO0xipSENzwqSfMbPbbaBfa6nLBoAAk80VVlvvvmRvjZqo9lDwcJ06eg/exec"; // <- ganti dengan URL Web App Anda
 
-let hasil = []; // akan diisi dari Google Sheets
+let hasil = []; // akan diisi array normal {nama,mapel,skor,tanggal}
 
-// Login admin
 function loginAdmin(){
   if(document.getElementById("adminPass").value === ADMIN_PASSWORD){
     document.getElementById("loginBox").classList.add("d-none");
@@ -40,36 +50,116 @@ function loginAdmin(){
   }
 }
 
-// Ambil data dari Google Sheets
+/** helper: tampilkan debug kecil di halaman */
+function setDebug(msg){
+  const el = document.getElementById("debugLog");
+  el.textContent = msg;
+  console.debug(msg);
+}
+
+/** Normalisasi satu row response menjadi {nama,mapel,skor,tanggal} */
+function normalizeRow(row){
+  // Jika row adalah array: gunakan indeks 0..3 (fallback)
+  if(Array.isArray(row)){
+    return {
+      nama: row[0] || "",
+      mapel: row[1] || "",
+      skor: Number(row[2]) || 0,
+      tanggal: row[3] || ""
+    };
+  }
+  // Jika object: cari key case-insensitive
+  if(row && typeof row === "object"){
+    const map = {};
+    for(const k of Object.keys(row)){
+      map[k.toLowerCase().trim()] = row[k];
+    }
+    return {
+      nama: map.nama || map.name || map['nama siswa'] || "",
+      mapel: map.mapel || map.subject || map.mata_pelajaran || map['mapel'] || "",
+      skor: Number(map.skor || map.score || map.nilai || 0) || 0,
+      tanggal: map.tanggal || map.date || map.waktu || ""
+    };
+  }
+  // fallback
+  return {nama:"", mapel:"", skor:0, tanggal:""};
+}
+
+/** Mengubah berbagai bentuk JSON menjadi array */
+function toArraySafe(data){
+  if (Array.isArray(data)) return data;
+  if (data === null || data === undefined) return [];
+  if (typeof data === "object"){
+    // jika object error {status:"error", message: "..."}
+    if (data.status && data.status.toLowerCase && data.status.toLowerCase() === "error"){
+      throw new Error(data.message || "Server mengembalikan error");
+    }
+    // jika object memiliki numeric keys like {"0": {...}, "1": {...}}
+    const keys = Object.keys(data);
+    const allNumeric = keys.length > 0 && keys.every(k => /^\d+$/.test(k));
+    if(allNumeric){
+      return keys.map(k => data[k]);
+    }
+    // jika object tunggal (bukan array) => bungkus
+    return [data];
+  }
+  // tipe lain
+  return [];
+}
+
 async function fetchData(){
+  setDebug("Mengambil data dari server...");
   try {
     const res = await fetch(WEB_APP_URL);
-    hasil = await res.json();  // hasil berupa array objek {nama, mapel, skor, tanggal}
+    const text = await res.text();
+    setDebug("Raw response length: " + text.length);
+    // coba parse JSON
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch(parseErr){
+      throw new Error("Response bukan JSON valid: " + parseErr.message + ". Response preview: " + text.slice(0,400));
+    }
+    console.log("Raw parsed data:", data);
+
+    // normalisasi jadi array
+    const arr = toArraySafe(data);
+    // normalize setiap row ke bentuk yang konsisten
+    hasil = arr.map(r => normalizeRow(r));
+
+    console.log("Normalized hasil:", hasil);
+    if(hasil.length === 0){
+      document.getElementById("rekapContent").innerHTML = "<p>Belum ada data siswa.</p>";
+      setDebug("Tidak ada baris data setelah normalisasi.");
+      return;
+    }
+
     renderTable();
+    setDebug(`Data berhasil dimuat (${hasil.length} baris).`);
   } catch(err){
+    console.error(err);
     alert("Gagal mengambil data: " + err.message);
+    setDebug("Error: " + err.message);
+    document.getElementById("rekapContent").innerHTML = `<div class="alert alert-danger">Gagal mengambil data: ${err.message}</div>`;
   }
 }
 
-// Render tabel dengan grouping per siswa
 function renderTable(){
   const container = document.getElementById("rekapContent");
   container.innerHTML = "";
 
-  if(hasil.length === 0){
-    container.innerHTML = "<p>Belum ada data siswa.</p>";
-    return;
-  }
-
+  // kelompokkan per nama
   const grouped = {};
   hasil.forEach(h => {
-    if(!grouped[h.nama]) grouped[h.nama] = [];
-    grouped[h.nama].push(h);
+    const key = (h.nama || "(Tanpa nama)").toString();
+    if(!grouped[key]) grouped[key] = [];
+    grouped[key].push(h);
   });
 
   for(const nama in grouped){
+    const rows = grouped[nama];
     let total = 0;
-    let count = grouped[nama].length;
+    let count = rows.length;
 
     let table = `
       <h5 class="mt-3">${nama}</h5>
@@ -79,25 +169,33 @@ function renderTable(){
         </thead>
         <tbody>
     `;
-
-    grouped[nama].forEach(h => {
-      total += parseInt(h.skor);
-      table += `<tr><td>${h.mapel}</td><td>${h.skor}</td><td>${h.tanggal}</td></tr>`;
+    rows.forEach(r => {
+      const skor = Number(r.skor) || 0;
+      total += skor;
+      table += `<tr><td>${escapeHtml(r.mapel)}</td><td>${escapeHtml(skor)}</td><td>${escapeHtml(r.tanggal)}</td></tr>`;
     });
 
-    let rata = (total / count).toFixed(2);
-
+    const rata = (count === 0) ? "0.00" : (total / count).toFixed(2);
     table += `
         </tbody>
       </table>
       <p><strong>Total Skor:</strong> ${total} &nbsp; | &nbsp; <strong>Rata-rata:</strong> ${rata}</p>
     `;
-
     container.innerHTML += table;
   }
 }
 
-// Export ke Excel
+/** Escape sederhana untuk keamanan tampilan */
+function escapeHtml(s){
+  if(s === null || s === undefined) return "";
+  return String(s)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function downloadExcel(){
   if(hasil.length === 0){
     alert("Belum ada data untuk diekspor.");
