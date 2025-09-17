@@ -2,68 +2,70 @@
   "Pendidikan Pancasila": [
     {
       "type": "text",
-      "text": "Siapakah pencetus Pancasila?",
-      "options": ["Soekarno", "Hatta", "Sudirman", "Yamin"],
-      "answer": "a"
+      "text": "Pancasila merupakan pandangan hidup bangsa Indonesia karena…",
+      "options": ["Hanya sebagai simbol negara", "Menjadi pedoman dalam kehidupan sehari-hari", "Hanya untuk dihafalkan", "Sebagai alat bermain anak-anak"],
+      "answer": "b"
     },
     {
       "type": "image",
-      "text": "Perhatikan lambang negara berikut. Apa makna dari simbol Garuda Pancasila?",
+      "text": "Perhatikan gambar berikut. Lambang ini disebut…",
       "image": "https://upload.wikimedia.org/wikipedia/commons/9/90/National_emblem_of_Indonesia_Garuda_Pancasila.svg",
-      "options": ["Kebanggaan daerah", "Identitas bangsa", "Bendera nasional", "Lagu kebangsaan"],
+      "options": ["Bendera Merah Putih", "Garuda Pancasila", "Lambang Provinsi", "Logo sekolah"],
       "answer": "b"
     },
     {
       "type": "text",
-      "text": "Sila ke-3 berbunyi?",
-      "options": ["Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan", "Keadilan sosial bagi seluruh rakyat Indonesia"],
-      "answer": "b"
+      "text": "Sila pertama Pancasila berbunyi…",
+      "options": ["Ketuhanan Yang Maha Esa", "Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan"],
+      "answer": "a"
     },
     {
       "type": "paragraph",
-      "text": "Bacalah paragraf berikut:<br><br>'Gotong royong adalah ciri khas bangsa Indonesia. Dengan semangat gotong royong, kita dapat mewujudkan persatuan dan kesatuan.'<br><br>Pernyataan tersebut mencerminkan sila ke berapa?",
+      "text": "Bacalah paragraf berikut:<br><br>'Setiap warga negara harus menghormati sesama dan hidup rukun. Hal ini menunjukkan pengamalan Pancasila dalam kehidupan sehari-hari.'<br><br>Tindakan tersebut sesuai dengan sila ke…",
       "options": ["Sila ke-1", "Sila ke-2", "Sila ke-3", "Sila ke-5"],
-      "answer": "c"
+      "answer": "b"
     },
     {
       "type": "table",
-      "text": "Perhatikan tabel berikut dan tentukan sila yang sesuai!",
-      "table": "<table class='table table-bordered'><tr><th>Kegiatan</th><th>Sila</th></tr><tr><td>Musyawarah kelas</td><td>?</td></tr><tr><td>Beribadah sesuai agama</td><td>?</td></tr></table>",
-      "options": ["Sila 1 & 4", "Sila 2 & 5", "Sila 3 & 4", "Sila 1 & 2"],
-      "answer": "a"
+      "text": "Cocokkan contoh kegiatan dengan sila Pancasila yang sesuai!",
+      "table": "<table class='table table-bordered'><tr><th>Kegiatan</th><th>Sila</th></tr><tr><td>Beribadah sesuai agama</td><td>?</td></tr><tr><td>Musyawarah kelas</td><td>?</td></tr><tr><td>Membantu teman yang kesusahan</td><td>?</td></tr></table>",
+      "options": ["Sila 1, Sila 3, Sila 2", "Sila 1, Sila 2, Sila 2", "Sila 2, Sila 3, Sila 5", "Sila 1, Sila 2, Sila 5"],
+      "answer": "d"
     },
     {
       "type": "text",
-      "text": "Sila pertama Pancasila berbunyi?",
-      "options": ["Ketuhanan Yang Maha Esa", "Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Kerakyatan dengan hikmat kebijaksanaan"],
-      "answer": "a"
-    },
-    {
-      "type": "text",
-      "text": "Makna sila kedua adalah?",
-      "options": ["Menghargai perbedaan", "Menjaga persatuan", "Mengutamakan musyawarah", "Menjaga lingkungan"],
-      "answer": "a"
+      "text": "Menghormati perbedaan pendapat teman di kelas adalah bentuk pengamalan…",
+      "options": ["Sila pertama", "Sila kedua", "Sila ketiga", "Sila keempat"],
+      "answer": "b"
     },
     {
       "type": "image",
-      "text": "Siapakah tokoh proklamator kemerdekaan RI pada gambar berikut?",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Soekarno_1949.jpg/330px-Soekarno_1949.jpg",
-      "options": ["Soekarno", "Hatta", "Tan Malaka", "Sudirman"],
-      "answer": "a"
-    },
-    {
-      "type": "text",
-      "text": "Sila ke-5 mengajarkan kita untuk?",
-      "options": ["Beribadah sesuai agama", "Bersatu dalam perbedaan", "Menghargai pendapat", "Bersikap adil kepada semua"],
+      "text": "Gambar berikut menunjukkan siswa sedang bergotong-royong. Nilai Pancasila yang ditunjukkan adalah…",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Community_work.jpg",
+      "options": ["Persatuan Indonesia", "Kemanusiaan yang adil dan beradab", "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan", "Keadilan sosial bagi seluruh rakyat Indonesia"],
       "answer": "d"
     },
     {
       "type": "paragraph",
-      "text": "Bacalah:<br><br>'Setiap warga negara berhak mendapatkan perlakuan yang adil di mata hukum.'<br><br>Pernyataan tersebut sesuai dengan sila ke berapa?",
+      "text": "Bacalah paragraf berikut:<br><br>'Dalam kehidupan sehari-hari, kita harus jujur, disiplin, dan bertanggung jawab. Hal ini mencerminkan nilai Pancasila.'<br><br>Nilai Pancasila yang dimaksud termasuk sila ke…",
+      "options": ["Sila 1 dan 2", "Sila 2 dan 3", "Sila 3 dan 4", "Sila 4 dan 5"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Mengutamakan musyawarah untuk mencapai keputusan yang adil adalah pengamalan sila…",
       "options": ["Sila ke-2", "Sila ke-3", "Sila ke-4", "Sila ke-5"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Bersikap adil terhadap semua teman tanpa membeda-bedakan merupakan pengamalan sila…",
+      "options": ["Sila ke-1", "Sila ke-2", "Sila ke-4", "Sila ke-5"],
       "answer": "d"
     }
   ],
+
+
   "Bahasa Indonesia": [
     {
       "type": "text",
@@ -254,8 +256,8 @@
     },
     {
       "type": "text",
-      "text": "Fungsi rangka tidak termasuk…",
-      "options": ["Memberi bentuk tubuh", "Melindungi organ vital", "Membantu bergerak", "Mencerna makanan"],
+      "text": "Berikut bukan termasuk fungsi otot adalah ...",
+      "options": ["Memompa jantung", "Membantu mempertahankan postur tubuh", "Membantu bergerak", "Memberikan respon ke otak"],
       "answer": "d"
     }
   ],
