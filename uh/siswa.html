@@ -2,115 +2,92 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Ulangan Kelas 6</title>
+  <title>Ulangan Siswa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    img { max-width: 100%; height: auto; margin: 10px 0; }
-    .question-box { padding:15px; border:1px solid #ddd; border-radius:8px; margin-bottom:15px; background:#fff; }
-    table { margin:10px 0; }
+    body {background:#f8f9fa;}
+    .soal img {
+      max-width: 100%;     /* gambar tidak melebihi lebar kontainer */
+      height: auto;        /* menjaga proporsi */
+      display: block;
+      margin: 10px auto;   /* rata tengah */
+      max-height: 300px;   /* batasi tinggi maksimal */
+      object-fit: contain; /* menjaga agar gambar tidak pecah */
+    }
+    .soal table {
+      margin: 10px 0;
+    }
   </style>
 </head>
-<body class="bg-light">
-<div class="container py-5">
+<body>
+<div class="container py-4">
   <div class="card p-4 shadow">
-    <h4>📝 Halaman Ulangan Siswa</h4>
-    <div class="mb-3">
-      <label>Nama Siswa</label>
-      <input type="text" id="studentName" class="form-control">
-    </div>
-    <div class="mb-3">
-      <label>Mata Pelajaran</label>
-      <select id="subjectSelect" class="form-select">
-        <option value="">-- Pilih --</option>
-        <option>Pendidikan Pancasila</option>
-        <option>Bahasa Indonesia</option>
-        <option>Matematika</option>
-        <option>IPAS</option>
-        <option>Seni Rupa</option>
-      </select>
-    </div>
-    <button class="btn btn-primary mb-3" onclick="loadQuestions()">Mulai</button>
-
-    <form id="quizForm" class="d-none">
-      <div id="questionContainer"></div>
-      <button type="button" class="btn btn-success mt-3" onclick="submitAnswers()">Kumpulkan Jawaban</button>
-    </form>
-
-    <div id="result" class="alert alert-info mt-3 d-none"></div>
+    <h4 class="mb-3">📘 Ulangan Siswa</h4>
+    <form id="quizForm"></form>
+    <button class="btn btn-success mt-3" onclick="submitQuiz()">Kumpulkan</button>
+    <div id="resultBox" class="alert alert-info mt-3 d-none"></div>
   </div>
 </div>
 
 <script>
 let soal = JSON.parse(localStorage.getItem("soalData")) || {};
 
-function loadQuestions(){
-  const subject = document.getElementById("subjectSelect").value;
-  const name = document.getElementById("studentName").value.trim();
-  if(!subject || !name){ alert("Isi nama & pilih mapel!"); return; }
-
-  const container = document.getElementById("questionContainer");
-  container.innerHTML = "";
-
-  soal[subject].forEach((q,i)=>{
-    let html = `<div class="question-box">
-      <p><b>${i+1}. ${q.text}</b></p>`;
-
-    // tipe soal
-    if(q.type === "text" || q.type === "paragraph"){
-      html += q.options.map((opt,j)=>`
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
-          <label class="form-check-label">${opt}</label>
-        </div>`).join("");
+function renderSoal(){
+  const form = document.getElementById("quizForm");
+  form.innerHTML = "";
+  let nomor = 1;
+  for(let mapel in soal){
+    if(soal[mapel].length>0){
+      let section = document.createElement("div");
+      section.innerHTML = `<h5 class="mt-3">${mapel}</h5>`;
+      soal[mapel].forEach((s,i)=>{
+        let div = document.createElement("div");
+        div.className="soal mb-3";
+        let html = `<p><b>${nomor++}. ${s.text}</b></p>`;
+        if(s.type==="image" && s.image){
+          html+=`<img src="${s.image}" alt="gambar soal">`;
+        }
+        if(s.type==="table" && s.table){
+          html+=s.table;
+        }
+        if(s.options){
+          s.options.forEach((opt,j)=>{
+            const abjad = String.fromCharCode(97+j); // a,b,c,...
+            html+=`<div class="form-check">
+              <input class="form-check-input" type="radio" name="q_${mapel}_${i}" value="${abjad}">
+              <label class="form-check-label">${opt}</label>
+            </div>`;
+          });
+        }else{
+          html+=`<textarea class="form-control" name="q_${mapel}_${i}" rows="2"></textarea>`;
+        }
+        div.innerHTML=html;
+        section.appendChild(div);
+      });
+      form.appendChild(section);
     }
-
-    if(q.type === "image"){
-      html += `<img src="${q.image}" alt="Soal Gambar">`;
-      html += q.options.map((opt,j)=>`
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
-          <label class="form-check-label">${opt}</label>
-        </div>`).join("");
-    }
-
-    if(q.type === "table"){
-      html += q.table; // tabel sudah berupa HTML string
-      html += q.options.map((opt,j)=>`
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
-          <label class="form-check-label">${opt}</label>
-        </div>`).join("");
-    }
-
-    html += `</div>`;
-    container.innerHTML += html;
-  });
-
-  document.getElementById("quizForm").classList.remove("d-none");
+  }
 }
 
-function submitAnswers(){
-  const subject = document.getElementById("subjectSelect").value;
-  const name = document.getElementById("studentName").value.trim();
-  let score = 0;
-
-  soal[subject].forEach((q,i)=>{
-    let ans;
-    let sel = document.querySelector(`input[name="q${i}"]:checked`);
-    if(sel) ans = sel.value;
-
-    if(ans && ans.toLowerCase() === q.answer.toLowerCase()) score += 10;
-  });
-
-  document.getElementById("result").classList.remove("d-none");
-  document.getElementById("result").innerText = `${name} mendapat skor ${score}`;
-
-  // simpan hasil ke localStorage
-  let hasil = JSON.parse(localStorage.getItem("hasilSiswa")) || [];
-  hasil.push({nama:name, mapel:subject, skor:score, tanggal:new Date().toLocaleString()});
-  localStorage.setItem("hasilSiswa", JSON.stringify(hasil));
+function submitQuiz(){
+  let score=0, total=0;
+  for(let mapel in soal){
+    soal[mapel].forEach((s,i)=>{
+      total++;
+      let name=`q_${mapel}_${i}`;
+      let val=document.querySelector(`[name="${name}"]:checked`)?.value 
+              || document.querySelector(`[name="${name}"]`)?.value;
+      if(s.answer && val && val.toLowerCase()===s.answer.toLowerCase()){
+        score++;
+      }
+    });
+  }
+  let hasil=`Skor Anda: ${score} dari ${total} soal (Nilai: ${(score/total*100).toFixed(0)})`;
+  document.getElementById("resultBox").innerText=hasil;
+  document.getElementById("resultBox").classList.remove("d-none");
 }
+renderSoal();
 </script>
 </body>
 </html>
