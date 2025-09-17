@@ -5,6 +5,11 @@
   <title>Ulangan Kelas 6</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    img.soal-img {max-width:100%; height:auto; margin:10px 0;}
+    .soal-paragraph {background:#f8f9fa; padding:10px; border-radius:6px;}
+    .soal-table {margin:10px 0;}
+  </style>
 </head>
 <body class="bg-light">
 <div class="container py-5">
@@ -33,40 +38,70 @@
     <div id="result" class="alert alert-info mt-3 d-none"></div>
   </div>
 </div>
+
 <script>
-let soal=JSON.parse(localStorage.getItem("soalData"))||{};
+let soal = JSON.parse(localStorage.getItem("soalData")) || {};
+
 function loadQuestions(){
   const subject=document.getElementById("subjectSelect").value;
   const name=document.getElementById("studentName").value.trim();
   if(!subject||!name){alert("Isi nama & mapel!");return;}
+
   const container=document.getElementById("questionContainer");
   container.innerHTML="";
+
   soal[subject].forEach((q,i)=>{
+    let content="";
+    if(q.type==="image"){
+      content=`<p><b>${i+1}. ${q.text}</b></p>
+               <img src="${q.image}" alt="Soal Gambar" class="soal-img">`;
+    }else if(q.type==="table"){
+      content=`<p><b>${i+1}. ${q.text}</b></p>
+               <div class="soal-table">${q.table}</div>`;
+    }else if(q.type==="paragraph"){
+      content=`<p><b>${i+1}. Pertanyaan berbasis paragraf:</b></p>
+               <div class="soal-paragraph">${q.text}</div>`;
+    }else{ // default text
+      content=`<p><b>${i+1}. ${q.text}</b></p>`;
+    }
+
+    const optionsHTML=q.options.map((opt,j)=>`
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
+        <label class="form-check-label">${opt}</label>
+      </div>`).join("");
+
     container.innerHTML+=`
-      <div class="p-3 border rounded mb-2">
-        <p><b>${i+1}. ${q.text}</b></p>
-        ${q.options.map((opt,j)=>`
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
-            <label class="form-check-label">${opt}</label>
-          </div>`).join("")}
+      <div class="p-3 border rounded mb-3">
+        ${content}
+        ${optionsHTML}
       </div>`;
   });
+
   document.getElementById("quizForm").classList.remove("d-none");
 }
+
 function submitAnswers(){
   const subject=document.getElementById("subjectSelect").value;
   const name=document.getElementById("studentName").value.trim();
   let score=0;
+
   soal[subject].forEach((q,i)=>{
-    const ans=document.querySelector(`input[name="q${i}"]:checked`);
-    if(ans&&ans.value===q.answer)score+=10;
+    const ans=document.querySelector(\`input[name="q\${i}"]:checked\`);
+    if(ans && ans.value===q.answer) score+=10;
   });
+
   document.getElementById("result").classList.remove("d-none");
-  document.getElementById("result").innerText=`${name} mendapat skor ${score}`;
+  document.getElementById("result").innerText=\`\${name} mendapat skor \${score}\`;
+
   // simpan hasil ke localStorage
   let hasil=JSON.parse(localStorage.getItem("hasilSiswa"))||[];
-  hasil.push({nama:name,mapel:subject,skor:score,tanggal:new Date().toLocaleString()});
+  hasil.push({
+    nama:name,
+    mapel:subject,
+    skor:score,
+    tanggal:new Date().toLocaleString()
+  });
   localStorage.setItem("hasilSiswa",JSON.stringify(hasil));
 }
 </script>
