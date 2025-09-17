@@ -2,14 +2,34 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>SDN 1 KANDANGAN KOTA</title>
-  <title>ULANGAN HARIAN KELAS 6</title>
+  <title>SDN 1 KANDANGAN KOTA - Ulangan Harian Kelas 6</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .question-box { padding:15px; border:1px solid #ddd; border-radius:8px; margin-bottom:15px; background:#fff; }
+    .kop {
+      text-align: center;
+      margin-bottom: 25px;
+      border-bottom: 3px double #000;
+      padding-bottom: 10px;
+    }
+    .kop img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+    }
+    .kop h2, .kop h4, .kop p {
+      margin: 0;
+      line-height: 1.4;
+    }
+    .question-box { 
+      padding:15px; 
+      border:1px solid #ddd; 
+      border-radius:8px; 
+      margin-bottom:15px; 
+      background:#fff; 
+    }
     img {
-      max-width: 100%;     /* gambar tidak melebihi lebar kontainer */
+      max-width: 100%;
       height: auto;
       display: block;
       margin: 10px auto;
@@ -20,9 +40,20 @@
   </style>
 </head>
 <body class="bg-light">
-<div class="container py-5">
+<div class="container py-4">
+  
+  <!-- KOP SEKOLAH -->
+  <div class="kop">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Lambang_Kabupaten_Hulu_Sungai_Selatan.png" alt="Logo Sekolah">
+    <h2>SDN 1 KANDANGAN KOTA</h2>
+    <h4>ULANGAN HARIAN KELAS 6</h4>
+    <p>Tahun Pelajaran 2025</p>
+    <p>Jl. Jendral Achmad Yani, Kecamatan Kandangan</p>
+    <p>NISN: 30301968</p>
+  </div>
+
   <div class="card p-4 shadow">
-    <h4>📝 Ulangan Harian</h4>
+    <h5>📝 Halaman Ulangan Siswa</h5>
     <div class="mb-3">
       <label>Nama Siswa</label>
       <input type="text" id="studentName" class="form-control">
