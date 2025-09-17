@@ -71,7 +71,7 @@
     {
       "type": "text",
       "text": "Perbedaan utama antara surat resmi dan surat pribadi adalah…",
-      "options": ["Surat resmi untuk teman, surat pribadi untuk perusahaan", "Surat resmi bersifat formal, surat pribadi bersifat santai", "Surat resmi ditulis dengan tinta biru, surat pribadi tinta hitam", "Tidak ada perbedaan"],
+      "options": ["Surat resmi untuk teman, surat pribadi untuk perusahaan", "Surat resmi bersifat formal, surat pribadi bersifat biasa saja", "Surat resmi ditulis dengan tinta biru, surat pribadi tinta hitam", "Tidak ada perbedaan"],
       "answer": "b"
     },
     {
@@ -90,7 +90,7 @@
     {
       "type": "paragraph",
       "text": "Bacalah teks berikut:<br><br>'Untuk melakukan pendaftaran, silakan isi formulir dengan lengkap dan benar. Cantumkan nama, alamat, dan nomor telepon.'<br><br>Apa tujuan dari pengisian formulir tersebut?",
-      "options": ["Untuk mengisi waktu luang", "Untuk memberikan informasi yang benar kepada pihak terkait", "Untuk membuat surat pribadi", "Untuk bermain"],
+      "options": ["Untuk mengisi waktu luang", "Untuk memberikan informasi yang benar kepada pihak terkait", "Untuk membuat surat pribadi", "Untuk latihan menulis"],
       "answer": "b"
     },
     {
@@ -100,11 +100,11 @@
       "answer": "a"
     },
     {
-      "type": "image",
-      "text": "Perhatikan gambar berikut. Tindakan yang dilakukan siswa menunjukkan kemampuan…",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/8/80/Students_discussion.jpg",
-      "options": ["Menyusun surat pribadi", "Berdiskusi dan berbicara di depan umum", "Mengisi formulir", "Membaca sejarah"],
-      "answer": "b"
+      "type": "paragraph",
+      "text": "Bacalah teks berikut:<br><br>Hati Yona menciut setelah mendengar perkataan Winda.
+Kata menciut memiliki arti . . .'<br><br>Apa tujuan dari pengisian formulir tersebut?",
+      "options": ["Kecewa", "Marah", "Takut", "Sedih"],
+      "answer": "c"
     },
     {
       "type": "text",
@@ -121,7 +121,7 @@
     {
       "type": "text",
       "text": "Salah satu tujuan berdiskusi di kelas adalah…",
-      "options": ["Bersaing dengan teman", "Menyampaikan dan mempertukarkan ide dengan baik", "Mengisi waktu kosong", "Menyalin jawaban teman"],
+      "options": ["Bersaing dengan teman", "Menyampaikan dan mempertukarkan ide dengan baik", "Menampilkan diri agar populer", "Memperoleh dukungan dari orang lain"],
       "answer": "b"
     },
     {
