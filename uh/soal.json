@@ -1,0 +1,323 @@
+{
+  "Pendidikan Pancasila": [
+    {
+      "type": "text",
+      "text": "Siapakah pencetus Pancasila?",
+      "options": ["Soekarno", "Hatta", "Sudirman", "Yamin"],
+      "answer": "a"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan lambang negara berikut. Apa makna dari simbol Garuda Pancasila?",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/90/National_emblem_of_Indonesia_Garuda_Pancasila.svg",
+      "options": ["Kebanggaan daerah", "Identitas bangsa", "Bendera nasional", "Lagu kebangsaan"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Sila ke-3 berbunyi?",
+      "options": ["Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan", "Keadilan sosial bagi seluruh rakyat Indonesia"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah paragraf berikut:<br><br>'Gotong royong adalah ciri khas bangsa Indonesia. Dengan semangat gotong royong, kita dapat mewujudkan persatuan dan kesatuan.'<br><br>Pernyataan tersebut mencerminkan sila ke berapa?",
+      "options": ["Sila ke-1", "Sila ke-2", "Sila ke-3", "Sila ke-5"],
+      "answer": "c"
+    },
+    {
+      "type": "table",
+      "text": "Perhatikan tabel berikut dan tentukan sila yang sesuai!",
+      "table": "<table class='table table-bordered'><tr><th>Kegiatan</th><th>Sila</th></tr><tr><td>Musyawarah kelas</td><td>?</td></tr><tr><td>Beribadah sesuai agama</td><td>?</td></tr></table>",
+      "options": ["Sila 1 & 4", "Sila 2 & 5", "Sila 3 & 4", "Sila 1 & 2"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Sila pertama Pancasila berbunyi?",
+      "options": ["Ketuhanan Yang Maha Esa", "Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Kerakyatan dengan hikmat kebijaksanaan"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Makna sila kedua adalah?",
+      "options": ["Menghargai perbedaan", "Menjaga persatuan", "Mengutamakan musyawarah", "Menjaga lingkungan"],
+      "answer": "a"
+    },
+    {
+      "type": "image",
+      "text": "Siapakah tokoh proklamator kemerdekaan RI pada gambar berikut?",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Soekarno_1949.jpg/330px-Soekarno_1949.jpg",
+      "options": ["Soekarno", "Hatta", "Tan Malaka", "Sudirman"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Sila ke-5 mengajarkan kita untuk?",
+      "options": ["Beribadah sesuai agama", "Bersatu dalam perbedaan", "Menghargai pendapat", "Bersikap adil kepada semua"],
+      "answer": "d"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah:<br><br>'Setiap warga negara berhak mendapatkan perlakuan yang adil di mata hukum.'<br><br>Pernyataan tersebut sesuai dengan sila ke berapa?",
+      "options": ["Sila ke-2", "Sila ke-3", "Sila ke-4", "Sila ke-5"],
+      "answer": "d"
+    }
+  ],
+  "Bahasa Indonesia": [
+    {
+      "type": "text",
+      "text": "Kalimat efektif adalah?",
+      "options": ["Kalimat bertele-tele", "Kalimat singkat, jelas, padat", "Kalimat panjang", "Kalimat sulit dimengerti"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah teks:<br><br>'Air sangat penting bagi kehidupan. Tanpa air, manusia, hewan, dan tumbuhan tidak dapat hidup.'<br><br>Apa ide pokok paragraf tersebut?",
+      "options": ["Air dibutuhkan tumbuhan", "Air penting bagi kehidupan", "Air sulit didapatkan", "Air bersih harus dijaga"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Antonim kata 'baik' adalah?",
+      "options": ["Bagus", "Buruk", "Indah", "Benar"],
+      "answer": "b"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar berikut. Apa isi gambar tersebut?",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Water_drop_001.jpg/330px-Water_drop_001.jpg",
+      "options": ["Air bersih", "Api", "Udara", "Awan"],
+      "answer": "a"
+    },
+    {
+      "type": "table",
+      "text": "Cocokkan sinonim berikut!",
+      "table": "<table class='table table-bordered'><tr><th>Kata</th><th>Sinonim</th></tr><tr><td>Indah</td><td>?</td></tr><tr><td>Cepat</td><td>?</td></tr></table>",
+      "options": ["Elok, Kilat", "Cantik, Lari", "Buruk, Cepat", "Bagus, Lama"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Kalimat tanya yang tepat untuk 'Budi pergi ke sekolah' adalah?",
+      "options": ["Siapa yang pergi ke sekolah?", "Kapan kamu sekolah?", "Mengapa sekolah penting?", "Dimana pasar berada?"],
+      "answer": "a"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah paragraf:<br><br>'Hutan adalah paru-paru dunia. Tanpa hutan, udara akan kotor.'<br><br>Apa pesan dari paragraf ini?",
+      "options": ["Hutan tempat bermain", "Hutan bisa ditebang", "Hutan penting dijaga", "Hutan membuat panas"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Kalimat perintah adalah?",
+      "options": ["Ibu membeli sayur", "Tolong tutup pintu!", "Budi sedang tidur", "Ayah membaca koran"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Makna kata 'hemat' adalah?",
+      "options": ["Menghabiskan uang", "Menggunakan secukupnya", "Menyimpan berlebihan", "Membeli banyak barang"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Antonim kata 'besar' adalah?",
+      "options": ["Kecil", "Luas", "Agung", "Tinggi"],
+      "answer": "a"
+    }
+  ],
+  "Matematika": [
+    {
+      "type": "text",
+      "text": "Hasil dari 25 + 36 adalah?",
+      "options": ["51", "61", "71", "81"],
+      "answer": "b"
+    },
+    {
+      "type": "table",
+      "text": "Lengkapilah tabel penjumlahan berikut!",
+      "table": "<table class='table table-bordered'><tr><th>Soal</th><th>Hasil</th></tr><tr><td>12 + 8</td><td>?</td></tr><tr><td>15 + 5</td><td>?</td></tr></table>",
+      "options": ["20 dan 20", "21 dan 20", "19 dan 21", "22 dan 19"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 7 x 8 adalah?",
+      "options": ["54", "56", "64", "48"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Bilangan prima antara 10 dan 20 adalah?",
+      "options": ["11, 12, 13", "11, 13, 17, 19", "12, 14, 16", "10, 15, 18"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seorang pedagang memiliki 120 mangga. Ia membagikan kepada 12 pembeli dengan jumlah sama. Berapa mangga tiap orang?",
+      "options": ["10", "12", "15", "20"],
+      "answer": "d"
+    },
+    {
+      "type": "text",
+      "text": "Nilai dari 3² + 4² adalah?",
+      "options": ["9", "16", "25", "7"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 100 - 45 adalah?",
+      "options": ["45", "55", "65", "75"],
+      "answer": "b"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar segitiga berikut. Jika alas = 8 cm, tinggi = 6 cm, berapakah luasnya?",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Triangle_equilateral.svg/200px-Triangle_equilateral.svg.png",
+      "options": ["24 cm²", "28 cm²", "30 cm²", "36 cm²"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 9 x 9 adalah?",
+      "options": ["81", "72", "99", "79"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 144 ÷ 12 adalah?",
+      "options": ["10", "11", "12", "13"],
+      "answer": "c"
+    }
+  ],
+  "IPAS": [
+    {
+      "type": "text",
+      "text": "Sumber energi terbesar di bumi adalah?",
+      "options": ["Matahari", "Angin", "Air", "Batu bara"],
+      "answer": "a"
+    },
+    {
+      "type": "paragraph",
+      "text": "Air bersih sangat penting untuk kehidupan. Apa yang terjadi jika kita kekurangan air?",
+      "options": ["Tanaman subur", "Tubuh sehat", "Kesulitan hidup", "Udara segar"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Benda yang dapat ditarik magnet disebut?",
+      "options": ["Plastik", "Kayu", "Besi", "Kaca"],
+      "answer": "c"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar berikut. Apa jenis perubahan wujud yang ditunjukkan es menjadi air?",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Melting_icecubes.jpg/330px-Melting_icecubes.jpg",
+      "options": ["Membeku", "Mencair", "Menguap", "Menyublim"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Planet yang dikenal sebagai planet biru adalah?",
+      "options": ["Mars", "Bumi", "Venus", "Saturnus"],
+      "answer": "b"
+    },
+    {
+      "type": "table",
+      "text": "Cocokkan hewan dengan jenis makanannya!",
+      "table": "<table class='table table-bordered'><tr><th>Hewan</th><th>Makanan</th></tr><tr><td>Sapi</td><td>?</td></tr><tr><td>Singa</td><td>?</td></tr></table>",
+      "options": ["Rumput, Daging", "Daging, Rumput", "Buah, Daging", "Serangga, Rumput"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Lapisan udara yang melindungi bumi disebut?",
+      "options": ["Stratosfer", "Atmosfer", "Hidrosfer", "Litosfer"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tanaman membutuhkan cahaya matahari untuk fotosintesis. Apa hasil utama dari fotosintesis?",
+      "options": ["Air", "Karbohidrat", "Mineral", "Protein"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Alat untuk mengukur suhu adalah?",
+      "options": ["Barometer", "Termometer", "Higrometer", "Anemometer"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Bumi berputar pada porosnya disebut?",
+      "options": ["Revolusi", "Rotasi", "Orbit", "Gravitasi"],
+      "answer": "b"
+    }
+  ],
+  "Seni Rupa": [
+    {
+      "type": "text",
+      "text": "Seni rupa yang memiliki panjang, lebar, dan tinggi disebut?",
+      "options": ["2 dimensi", "3 dimensi", "Lukisan", "Sketsa"],
+      "answer": "b"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar patung berikut. Patung termasuk karya seni?",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/The_Thinker%2C_Rodin.jpg/330px-The_Thinker%2C_Rodin.jpg",
+      "options": ["2 dimensi", "3 dimensi", "Grafis", "Sketsa"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Alat untuk menggambar di komputer disebut?",
+      "options": ["Mouse", "Pensil", "Kuas", "Spidol"],
+      "answer": "a"
+    },
+    {
+      "type": "paragraph",
+      "text": "Batik adalah warisan budaya Indonesia. Apa yang menjadi ciri khas batik?",
+      "options": ["Warna polos", "Motif hias", "Ukuran besar", "Lukisan minyak"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Warna primer adalah?",
+      "options": ["Merah, Kuning, Biru", "Hijau, Ungu, Oranye", "Merah, Hitam, Putih", "Biru, Coklat, Pink"],
+      "answer": "a"
+    },
+    {
+      "type": "table",
+      "text": "Cocokkan alat dengan fungsinya!",
+      "table": "<table class='table table-bordered'><tr><th>Alat</th><th>Fungsi</th></tr><tr><td>Kuas</td><td>?</td></tr><tr><td>Palet</td><td>?</td></tr></table>",
+      "options": ["Mewarnai, Mencampur cat", "Menggambar, Menghapus", "Mencetak, Melukis", "Menyapu, Membersihkan"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Teknik menggambar dengan garis-garis sejajar disebut?",
+      "options": ["Arsir", "Blok", "Dab", "Gradasi"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Seni rupa yang dinikmati dengan indera penglihatan disebut?",
+      "options": ["Seni musik", "Seni tari", "Seni rupa", "Seni drama"],
+      "answer": "c"
+    },
+    {
+      "type": "paragraph",
+      "text": "Lukisan pemandangan menimbulkan rasa tenang bagi yang melihatnya. Hal ini menunjukkan fungsi seni sebagai?",
+      "options": ["Hiburan", "Iklan", "Ekonomi", "Politik"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Alat untuk menghapus pensil adalah?",
+      "options": ["Penggaris", "Kuas", "Penghapus", "Spidol"],
+      "answer": "c"
+    }
+  ]
+}
