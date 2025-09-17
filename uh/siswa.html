@@ -57,13 +57,12 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
 let soal = {};
 const soalURL = "https://oneon360.github.io/web/uh/soal.json";
 
-// URL Web App dari Google Apps Script
+// Ganti dengan URL Web App Anda
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwuERqx4rx2qqRO0xipSENzwqSfMbPbbaBfa6nLBoAAk80VVlvvvmRvjZqo9lDwcJ06eg/exec";
 
-// Ambil soal dari JSON GitHub
-async function fetchSoal() {
-  try {
-    let res = await fetch(soalURL);
+async function fetchSoal(){
+  try{
+    const res = await fetch(soalURL);
     if(!res.ok) throw new Error("Gagal mengambil soal");
     soal = await res.json();
   } catch(err){
@@ -84,11 +83,12 @@ async function loadQuestions(){
     let html = `<div class="question-box"><p><b>${i+1}. ${q.text}</b></p>`;
     if(q.image) html += `<img src="${q.image}" alt="Soal Gambar">`;
     if(q.table) html += q.table;
-    html += q.options.map((opt,j)=>`
-      <div class="form-check">
+    html += q.options.map((opt,j)=>
+      `<div class="form-check">
         <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
         <label class="form-check-label">${opt}</label>
-      </div>`).join("");
+      </div>`
+    ).join("");
     html += `</div>`;
     container.innerHTML += html;
   });
@@ -109,21 +109,19 @@ async function submitAnswers(){
   document.getElementById("result").classList.remove("d-none");
   document.getElementById("result").innerText = `${name} mendapat skor ${score}`;
 
-  // Simpan lokal (opsional)
-  let hasil = JSON.parse(localStorage.getItem("hasilSiswa"))||[];
-  hasil.push({nama:name,mapel:subject,skor:score,tanggal:new Date().toLocaleString()});
-  localStorage.setItem("hasilSiswa", JSON.stringify(hasil));
-
-  // Kirim ke Google Sheets
-  try {
-    const res = await fetch(WEB_APP_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({nama:name,mapel:subject,skor:score,tanggal:new Date().toLocaleString()})
+  // Kirim ke Google Sheets via Web App
+  try{
+    await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        nama: name,
+        mapel: subject,
+        skor: score,
+        tanggal: new Date().toLocaleString()
+      }),
+      headers: {"Content-Type":"application/json"}
     });
-    const json = await res.json();
-    if(json.status==="success") console.log("Data berhasil dikirim");
-    else console.error("Gagal kirim data:", json);
+    console.log("Data berhasil dikirim ke Google Sheets");
   } catch(err){
     console.error("Gagal kirim data:", err);
   }
