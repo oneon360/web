@@ -192,6 +192,8 @@
       "answer": "c"
     }
   ],
+
+  
   "IPAS": [
     {
       "type": "text",
@@ -202,7 +204,7 @@
     {
       "type": "image",
       "text": "Perhatikan gambar tulang berikut. Tulang ini termasuk jenis…",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/3/32/Human_skeleton_front.png",
+      "image": "https://www.harapanrakyat.com/wp-content/uploads/2020/10/2.-Karakteristik-Tulang-Pipa-Definisi-Hingga-Struktur-dan-Jenis-Jenisnya--1068x601.jpg",
       "options": ["Tulang pipa", "Tulang pipih", "Tulang pendek", "Tulang tidak beraturan"],
       "answer": "a"
     },
@@ -234,7 +236,7 @@
     {
       "type": "image",
       "text": "Perhatikan gambar berikut. Sistem saraf ini termasuk…",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Central_nervous_system.svg",
+      "image": "https://images.fineartamerica.com/images-medium-large-5/17-central-nervous-system-pixologicstudioscience-photo-library.jpg",
       "options": ["Sistem saraf pusat", "Sistem saraf tepi", "Sistem pernapasan", "Sistem peredaran darah"],
       "answer": "a"
     },
@@ -257,6 +259,8 @@
       "answer": "d"
     }
   ],
+
+
   "Seni Rupa": [
     {
       "type": "text",
