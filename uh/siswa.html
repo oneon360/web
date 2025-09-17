@@ -9,11 +9,11 @@
     .question-box { padding:15px; border:1px solid #ddd; border-radius:8px; margin-bottom:15px; background:#fff; }
     img {
       max-width: 100%;     /* gambar tidak melebihi lebar kontainer */
-      height: auto;        /* menjaga proporsi */
+      height: auto;
       display: block;
-      margin: 10px auto;   /* rata tengah */
-      max-height: 300px;   /* batasi tinggi maksimal */
-      object-fit: contain; /* menjaga agar gambar tidak pecah */
+      margin: 10px auto;
+      max-height: 300px;
+      object-fit: contain;
     }
     table { margin:10px 0; }
   </style>
@@ -49,12 +49,34 @@
 </div>
 
 <script>
-let soal = JSON.parse(localStorage.getItem("soalData")) || {};
+let soal = {};
+const soalURL = "https://oneon360.github.io/web/uh/soal.json";
 
-function loadQuestions(){
+// Ambil soal dari JSON GitHub
+async function fetchSoal() {
+  try {
+    let res = await fetch(soalURL);
+    if (!res.ok) throw new Error("Gagal mengambil soal");
+    soal = await res.json();
+  } catch (err) {
+    alert("Tidak bisa memuat soal: " + err.message);
+  }
+}
+
+async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   const name = document.getElementById("studentName").value.trim();
   if(!subject || !name){ alert("Isi nama & pilih mapel!"); return; }
+
+  // pastikan soal sudah di-load
+  if(Object.keys(soal).length === 0){
+    await fetchSoal();
+  }
+
+  if(!soal[subject]){ 
+    alert("Soal untuk mapel ini belum tersedia!");
+    return;
+  }
 
   const container = document.getElementById("questionContainer");
   container.innerHTML = "";
@@ -63,7 +85,6 @@ function loadQuestions(){
     let html = `<div class="question-box">
       <p><b>${i+1}. ${q.text}</b></p>`;
 
-    // tipe soal
     if(q.type === "text" || q.type === "paragraph"){
       html += q.options.map((opt,j)=>`
         <div class="form-check">
@@ -82,7 +103,7 @@ function loadQuestions(){
     }
 
     if(q.type === "table"){
-      html += q.table; // tabel sudah berupa HTML string
+      html += q.table;
       html += q.options.map((opt,j)=>`
         <div class="form-check">
           <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
@@ -106,14 +127,12 @@ function submitAnswers(){
     let ans;
     let sel = document.querySelector(`input[name="q${i}"]:checked`);
     if(sel) ans = sel.value;
-
     if(ans && ans.toLowerCase() === q.answer.toLowerCase()) score += 10;
   });
 
   document.getElementById("result").classList.remove("d-none");
   document.getElementById("result").innerText = `${name} mendapat skor ${score}`;
 
-  // simpan hasil ke localStorage
   let hasil = JSON.parse(localStorage.getItem("hasilSiswa")) || [];
   hasil.push({nama:name, mapel:subject, skor:score, tanggal:new Date().toLocaleString()});
   localStorage.setItem("hasilSiswa", JSON.stringify(hasil));
