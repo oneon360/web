@@ -66,70 +66,73 @@
   ],
 
 
+
   "Bahasa Indonesia": [
     {
       "type": "text",
-      "text": "Kalimat efektif adalah?",
-      "options": ["Kalimat bertele-tele", "Kalimat singkat, jelas, padat", "Kalimat panjang", "Kalimat sulit dimengerti"],
+      "text": "Perbedaan utama antara surat resmi dan surat pribadi adalah…",
+      "options": ["Surat resmi untuk teman, surat pribadi untuk perusahaan", "Surat resmi bersifat formal, surat pribadi bersifat santai", "Surat resmi ditulis dengan tinta biru, surat pribadi tinta hitam", "Tidak ada perbedaan"],
       "answer": "b"
-    },
-    {
-      "type": "paragraph",
-      "text": "Bacalah teks:<br><br>'Air sangat penting bagi kehidupan. Tanpa air, manusia, hewan, dan tumbuhan tidak dapat hidup.'<br><br>Apa ide pokok paragraf tersebut?",
-      "options": ["Air dibutuhkan tumbuhan", "Air penting bagi kehidupan", "Air sulit didapatkan", "Air bersih harus dijaga"],
-      "answer": "b"
-    },
-    {
-      "type": "text",
-      "text": "Antonim kata 'baik' adalah?",
-      "options": ["Bagus", "Buruk", "Indah", "Benar"],
-      "answer": "b"
-    },
-    {
-      "type": "image",
-      "text": "Perhatikan gambar berikut. Apa isi gambar tersebut?",
-      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Water_drop_001.jpg/330px-Water_drop_001.jpg",
-      "options": ["Air bersih", "Api", "Udara", "Awan"],
-      "answer": "a"
     },
     {
       "type": "table",
-      "text": "Cocokkan sinonim berikut!",
-      "table": "<table class='table table-bordered'><tr><th>Kata</th><th>Sinonim</th></tr><tr><td>Indah</td><td>?</td></tr><tr><td>Cepat</td><td>?</td></tr></table>",
-      "options": ["Elok, Kilat", "Cantik, Lari", "Buruk, Cepat", "Bagus, Lama"],
+      "text": "Cocokkan bagian-bagian surat resmi dengan fungsinya!",
+      "table": "<table class='table table-bordered'><tr><th>Bagian Surat</th><th>Fungsi</th></tr><tr><td>Kepala Surat</td><td>?</td></tr><tr><td>Isi Surat</td><td>?</td></tr><tr><td>Penutup</td><td>?</td></tr></table>",
+      "options": ["Identitas pengirim, pesan, salam penutup", "Tanggal, alamat, tanda tangan", "Alamat tujuan, salam pembuka, tanggal", "Judul, subjudul, tanda tangan"],
       "answer": "a"
     },
     {
       "type": "text",
-      "text": "Kalimat tanya yang tepat untuk 'Budi pergi ke sekolah' adalah?",
-      "options": ["Siapa yang pergi ke sekolah?", "Kapan kamu sekolah?", "Mengapa sekolah penting?", "Dimana pasar berada?"],
-      "answer": "a"
+      "text": "Bagian yang berisi pesan atau maksud dari surat disebut…",
+      "options": ["Kepala surat", "Isi surat", "Penutup", "Salam pembuka"],
+      "answer": "b"
     },
     {
       "type": "paragraph",
-      "text": "Bacalah paragraf:<br><br>'Hutan adalah paru-paru dunia. Tanpa hutan, udara akan kotor.'<br><br>Apa pesan dari paragraf ini?",
-      "options": ["Hutan tempat bermain", "Hutan bisa ditebang", "Hutan penting dijaga", "Hutan membuat panas"],
-      "answer": "c"
-    },
-    {
-      "type": "text",
-      "text": "Kalimat perintah adalah?",
-      "options": ["Ibu membeli sayur", "Tolong tutup pintu!", "Budi sedang tidur", "Ayah membaca koran"],
+      "text": "Bacalah teks berikut:<br><br>'Untuk melakukan pendaftaran, silakan isi formulir dengan lengkap dan benar. Cantumkan nama, alamat, dan nomor telepon.'<br><br>Apa tujuan dari pengisian formulir tersebut?",
+      "options": ["Untuk mengisi waktu luang", "Untuk memberikan informasi yang benar kepada pihak terkait", "Untuk membuat surat pribadi", "Untuk bermain"],
       "answer": "b"
     },
     {
       "type": "text",
-      "text": "Makna kata 'hemat' adalah?",
-      "options": ["Menghabiskan uang", "Menggunakan secukupnya", "Menyimpan berlebihan", "Membeli banyak barang"],
+      "text": "Cara menulis alamat email yang benar adalah…",
+      "options": ["nama@domain.com", "nama_domain", "nama@domain", "nama domain.com"],
+      "answer": "a"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar berikut. Tindakan yang dilakukan siswa menunjukkan kemampuan…",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/8/80/Students_discussion.jpg",
+      "options": ["Menyusun surat pribadi", "Berdiskusi dan berbicara di depan umum", "Mengisi formulir", "Membaca sejarah"],
       "answer": "b"
     },
     {
       "type": "text",
-      "text": "Antonim kata 'besar' adalah?",
-      "options": ["Kecil", "Luas", "Agung", "Tinggi"],
+      "text": "Bahasa Indonesia berasal dari bahasa…",
+      "options": ["Belanda", "Melayu", "Inggris", "Sansekerta"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah paragraf berikut:<br><br>'Seorang siswa menyiapkan presentasi tentang lingkungan. Ia menulis poin-poin penting agar mudah disampaikan di depan kelas.'<br><br>Kemampuan yang dilatih siswa tersebut adalah…",
+      "options": ["Menyusun dan menyajikan gagasan", "Mengisi formulir", "Menulis surat resmi", "Membaca cerita fiksi"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Salah satu tujuan berdiskusi di kelas adalah…",
+      "options": ["Bersaing dengan teman", "Menyampaikan dan mempertukarkan ide dengan baik", "Mengisi waktu kosong", "Menyalin jawaban teman"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Ketika menulis surat elektronik (email), hal penting yang harus dicantumkan adalah…",
+      "options": ["Alamat penerima dan subjek email", "Hanya nama penerima", "Tanggal lahir pengirim", "Nomor telepon semua teman"],
       "answer": "a"
     }
   ],
+
+
   "Matematika": [
     {
       "type": "text",
