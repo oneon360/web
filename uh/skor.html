@@ -9,43 +9,85 @@
 </head>
 <body class="bg-light">
 <div class="container py-5">
-  <div class="card p-4">
+  <div class="card p-4 shadow">
     <h4>📊 Rekap Nilai Ulangan</h4>
     <div id="loginBox">
       <input type="password" id="adminPass" class="form-control mb-2" placeholder="Password Admin">
       <button class="btn btn-primary" onclick="loginAdmin()">Login</button>
     </div>
     <div id="rekapPanel" class="d-none">
-      <table class="table table-bordered mt-3">
-        <thead><tr><th>Nama</th><th>Mapel</th><th>Skor</th><th>Tanggal</th></tr></thead>
-        <tbody id="rekapBody"></tbody>
-      </table>
-      <button class="btn btn-success" onclick="downloadExcel()">Unduh Excel</button>
+      <div id="rekapContent"></div>
+      <button class="btn btn-success mt-3" onclick="downloadExcel()">📥 Unduh Excel</button>
     </div>
   </div>
 </div>
 <script>
-const ADMIN_PASSWORD="12345";
-let hasil=JSON.parse(localStorage.getItem("hasilSiswa"))||[];
+const ADMIN_PASSWORD = "12345";
+
+// Ambil data dari localStorage (array hasil per ulangan siswa)
+let hasil = JSON.parse(localStorage.getItem("hasilSiswa")) || [];
+
+// Fungsi login admin
 function loginAdmin(){
-  if(document.getElementById("adminPass").value===ADMIN_PASSWORD){
+  if(document.getElementById("adminPass").value === ADMIN_PASSWORD){
     document.getElementById("loginBox").classList.add("d-none");
     document.getElementById("rekapPanel").classList.remove("d-none");
     renderTable();
-  }else alert("Password salah!");
+  } else {
+    alert("Password salah!");
+  }
 }
+
+// Fungsi render tabel dengan grouping per siswa
 function renderTable(){
-  const body=document.getElementById("rekapBody");
-  body.innerHTML="";
-  hasil.forEach(h=>{
-    body.innerHTML+=`<tr><td>${h.nama}</td><td>${h.mapel}</td><td>${h.skor}</td><td>${h.tanggal}</td></tr>`;
+  const container = document.getElementById("rekapContent");
+  container.innerHTML = "";
+
+  // Kelompokkan berdasarkan nama
+  const grouped = {};
+  hasil.forEach(h => {
+    if(!grouped[h.nama]) grouped[h.nama] = [];
+    grouped[h.nama].push(h);
   });
+
+  // Buat tabel untuk tiap siswa
+  for(const nama in grouped){
+    let total = 0;
+    let count = grouped[nama].length;
+
+    let table = `
+      <h5 class="mt-3">${nama}</h5>
+      <table class="table table-sm table-bordered">
+        <thead class="table-light">
+          <tr><th>Mapel</th><th>Skor</th><th>Waktu</th></tr>
+        </thead>
+        <tbody>
+    `;
+
+    grouped[nama].forEach(h => {
+      total += h.skor;
+      table += `<tr><td>${h.mapel}</td><td>${h.skor}</td><td>${h.tanggal}</td></tr>`;
+    });
+
+    let rata = (total / count).toFixed(2);
+
+    table += `
+        </tbody>
+      </table>
+      <p><strong>Total Skor:</strong> ${total} &nbsp; | &nbsp; <strong>Rata-rata:</strong> ${rata}</p>
+    `;
+
+    container.innerHTML += table;
+  }
 }
+
+// Fungsi unduh Excel
 function downloadExcel(){
-  const ws=XLSX.utils.json_to_sheet(hasil);
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,"Rekap");
-  XLSX.writeFile(wb,"rekap_ulangan.xlsx");
+  // Data tetap diekspor dalam format tabel agar mudah dibaca Excel
+  const ws = XLSX.utils.json_to_sheet(hasil);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Rekap");
+  XLSX.writeFile(wb, "rekap_ulangan.xlsx");
 }
 </script>
 </body>
