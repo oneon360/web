@@ -1,0 +1,142 @@
+{
+
+
+
+
+  "Bahasa Indonesia": [
+    {
+      "type": "text",
+      "text": "Perbedaan utama antara surat resmi dan surat pribadi adalah…",
+      "options": ["Surat resmi untuk teman, surat pribadi untuk perusahaan", "Surat resmi bersifat formal, surat pribadi bersifat biasa saja", "Surat resmi ditulis dengan tinta biru, surat pribadi tinta hitam", "Tidak ada perbedaan"],
+      "answer": "b"
+    },
+    {
+      "type": "table",
+      "text": "Cocokkan bagian-bagian surat resmi dengan fungsinya!",
+      "table": "<table class='table table-bordered'><tr><th>Bagian Surat</th><th>Fungsi</th></tr><tr><td>Kepala Surat</td><td>?</td></tr><tr><td>Isi Surat</td><td>?</td></tr><tr><td>Penutup</td><td>?</td></tr></table>",
+      "options": ["Identitas pengirim, pesan, salam penutup", "Tanggal, alamat, tanda tangan", "Alamat tujuan, salam pembuka, tanggal", "Judul, subjudul, tanda tangan"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Bagian yang berisi pesan atau maksud dari surat disebut…",
+      "options": ["Kepala surat", "Isi surat", "Penutup", "Salam pembuka"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah teks berikut:<br><br>'Untuk melakukan pendaftaran, silakan isi formulir dengan lengkap dan benar. Cantumkan nama, alamat, dan nomor telepon.'<br><br>Apa tujuan dari pengisian formulir tersebut?",
+      "options": ["Untuk mengisi waktu luang", "Untuk memberikan informasi yang benar kepada pihak terkait", "Untuk membuat surat pribadi", "Untuk latihan menulis"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Cara menulis alamat email yang benar adalah…",
+      "options": ["nama@domain.com", "nama_domain", "nama@domain", "nama domain.com"],
+      "answer": "a"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah teks berikut:<br><br>'Hati Yona menciut setelah mendengar perkataan Winda.'<br><br>Kata menciut memiliki arti . . .",
+      "options": ["Kecewa", "Marah", "Takut", "Sedih"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Bahasa Indonesia berasal dari bahasa…",
+      "options": ["Belanda", "Melayu", "Inggris", "Sansekerta"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah paragraf berikut:<br><br>'Seorang siswa menyiapkan presentasi tentang lingkungan. Ia menulis poin-poin penting agar mudah disampaikan di depan kelas.'<br><br>Kemampuan yang dilatih siswa tersebut adalah…",
+      "options": ["Menyusun dan menyajikan gagasan", "Mengisi formulir", "Menulis surat resmi", "Membaca cerita fiksi"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Salah satu tujuan berdiskusi di kelas adalah…",
+      "options": ["Bersaing dengan teman", "Menyampaikan dan mempertukarkan ide dengan baik", "Menampilkan diri agar populer", "Memperoleh dukungan dari orang lain"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Ketika menulis surat elektronik (email), hal penting yang harus dicantumkan adalah…",
+      "options": ["Alamat penerima dan subjek email", "Hanya nama penerima", "Tanggal lahir pengirim", "Nomor telepon semua teman"],
+      "answer": "a"
+    }
+  ],
+
+
+  
+  "IPAS": [
+    {
+      "type": "text",
+      "text": "Rangka berfungsi untuk…",
+      "options": ["Menggerakkan tubuh", "Memberi bentuk tubuh", "Mengatur pernapasan", "Mencerna makanan"],
+      "answer": "b"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar tulang berikut. Tulang ini termasuk jenis…",
+      "image": "https://www.harapanrakyat.com/wp-content/uploads/2020/10/2.-Karakteristik-Tulang-Pipa-Definisi-Hingga-Struktur-dan-Jenis-Jenisnya--1068x601.jpg",
+      "options": ["Tulang pipa", "Tulang pipih", "Tulang pendek", "Tulang tidak beraturan"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Sendi engsel memungkinkan gerakan…",
+      "options": ["Ke segala arah", "Ke satu arah", "Melingkar", "Tidak bergerak"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah:<br><br>'Otot bekerja dengan rangka dan sendi agar tubuh dapat bergerak.'<br><br>Fungsi utama otot adalah…",
+      "options": ["Memberi bentuk tubuh", "Melindungi organ", "Menggerakkan tubuh", "Menyimpan cadangan energi"],
+      "answer": "c"
+    },
+    {
+      "type": "table",
+      "text": "Perhatikan tabel berikut dan pilih pasangan yang benar antara bagian tubuh dan fungsinya!",
+      "table": "<table class='table table-bordered'><tr><th>Bagian Tubuh</th><th>Fungsi</th></tr><tr><td>Otot bisep</td><td>?</td></tr><tr><td>Rangka</td><td>?</td></tr><tr><td>Sendi lutut</td><td>?</td></tr></table>",
+      "options": ["Menggerakkan lengan, Memberi bentuk, Menggerakkan kaki", "Memberi bentuk, Menggerakkan lengan, Menggerakkan kaki", "Menggerakkan kaki, Memberi bentuk, Menggerakkan lengan", "Menggerakkan lengan, Menggerakkan kaki, Memberi bentuk"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Sistem saraf pusat terdiri dari…",
+      "options": ["Otak dan sumsum tulang belakang", "Otak dan otot", "Sumsum tulang belakang dan sendi", "Otak dan rangka"],
+      "answer": "a"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar berikut. Sistem saraf ini termasuk…",
+      "image": "https://images.fineartamerica.com/images-medium-large-5/17-central-nervous-system-pixologicstudioscience-photo-library.jpg",
+      "options": ["Sistem saraf pusat", "Sistem saraf tepi", "Sistem pernapasan", "Sistem peredaran darah"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Cedera pada otot dapat menyebabkan…",
+      "options": ["Tubuh menjadi lebih tinggi", "Kesulitan bergerak", "Tubuh melengkung", "Peningkatan energi"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah:<br><br>'Penyakit osteoarthritis menyerang persendian sehingga sulit bergerak.'<br><br>Penyakit ini menyerang…",
+      "options": ["Rangka", "Otot", "Sendi", "Sistem saraf"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Berikut bukan termasuk fungsi otot adalah ...",
+      "options": ["Memompa jantung", "Membantu mempertahankan postur tubuh", "Membantu bergerak", "Memberikan respon ke otak"],
+      "answer": "d"
+    }
+
+
+
+
+     
+  ]
+}
