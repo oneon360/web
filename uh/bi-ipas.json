@@ -1,4 +1,70 @@
 {
+  "Pendidikan Pancasila": [
+    {
+      "type": "text",
+      "text": "Pancasila merupakan pandangan hidup bangsa Indonesia karena…",
+      "options": ["Hanya sebagai simbol negara", "Menjadi pedoman dalam kehidupan sehari-hari", "Hanya untuk dihafalkan", "Sebagai bahan belajar"],
+      "answer": "b"
+    },
+    {
+      "type": "image",
+      "text": "Perhatikan gambar berikut. Lambang kepala banteng mewakili Pancasila yaitu sila ke ...",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/9/90/National_emblem_of_Indonesia_Garuda_Pancasila.svg",
+      "options": ["2", "3", "4", "5"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Apa bunyi sila Pancasila dengan gambar mata rantai ?",
+      "options": ["Ketuhanan Yang Maha Esa", "Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan"],
+      "answer": "b"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah paragraf berikut:<br><br>'Setiap warga negara harus menghormati sesama dan hidup rukun. Hal ini menunjukkan pengamalan Pancasila dalam kehidupan sehari-hari.'<br><br>Tindakan tersebut sesuai dengan sila ke…",
+      "options": ["Sila ke-1", "Sila ke-2", "Sila ke-3", "Sila ke-5"],
+      "answer": "b"
+    },
+    {
+      "type": "table",
+      "text": "Cocokkan contoh kegiatan dengan sila Pancasila yang sesuai!",
+      "table": "<table class='table table-bordered'><tr><th>Kegiatan</th><th>Sila</th></tr><tr><td>Beribadah sesuai agama</td><td>?</td></tr><tr><td>Membantu teman yang kesusahan</td><td>?</td></tr><tr><td>Musyawarah kelas</td><td>?</td></tr></table>",
+      "options": ["Sila 3, Sila 4, Sila 5", "Sila 1, Sila 2, Sila 5", "Sila 2, Sila 3, Sila 5", "Sila 1, Sila 2, Sila 4"],
+      "answer": "d"
+    },
+    {
+      "type": "text",
+      "text": "Menghormati perbedaan pendapat teman di kelas adalah bentuk pengamalan…",
+      "options": ["Sila pertama", "Sila kedua", "Sila ketiga", "Sila keempat"],
+      "answer": "b"
+    },
+    {
+      "type": "image",
+      "text": "Gambar berikut menunjukkan kegiatan di masyarakat. Nilai Pancasila yang ditunjukkan adalah…",
+      "image": "https://ularan-buleleng.desa.id/assets/files/artikel/sedang_16401349742,.jpeg",
+      "options": ["Persatuan Indonesia", "Kemanusiaan yang adil dan beradab", "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan", "Keadilan sosial bagi seluruh rakyat Indonesia"],
+      "answer": "a"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacalah paragraf berikut:<br><br>'Dalam kehidupan sehari-hari, kita harus jujur, disiplin, dan bertanggung jawab. Hal ini mencerminkan nilai Pancasila.'<br><br>Nilai Pancasila yang dimaksud termasuk sila ke…",
+      "options": ["Sila 1 dan 2", "Sila 2 dan 3", "Sila 3 dan 4", "Sila 4 dan 5"],
+      "answer": "b"
+    },
+    {
+      "type": "text",
+      "text": "Mengutamakan musyawarah untuk mencapai keputusan yang adil adalah pengamalan sila…",
+      "options": ["Sila ke-2", "Sila ke-3", "Sila ke-4", "Sila ke-5"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Bersikap adil terhadap semua teman tanpa membeda-bedakan merupakan pengamalan sila…",
+      "options": ["Sila ke-1", "Sila ke-2", "Sila ke-4", "Sila ke-5"],
+      "answer": "d"
+    }
+  ],
+
 
 
 
