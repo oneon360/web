@@ -65,8 +65,73 @@
       "options": ["Alamat penerima dan subjek email", "Hanya nama penerima", "Tanggal lahir pengirim", "Nomor telepon semua teman"],
       "answer": "a"
     }
+    
   ],
+    "Matematika": [
+    {
+      "type": "text",
+      "text": "Manakah yang lebih besar: 3/4 atau 5/8?",
+      "options": ["3/4", "5/8", "Sama besar", "Tidak bisa dibandingkan"],
+      "answer": "a"
+    },
+    {
+      "type": "paragraph",
+      "text": "Urutkan pecahan berikut dari yang terkecil ke terbesar: 3/4, 2/3, 5/6",
+      "options": ["2/3, 3/4, 5/6", "3/4, 2/3, 5/6", "5/6, 3/4, 2/3", "2/3, 5/6, 3/4"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 2/3 × 3/4 adalah…",
+      "options": ["1/2", "1/3", "1/4", "1/5"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 5 × 3/7 adalah…",
+      "options": ["15/7", "8/7", "2/7", "10/7"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 0,4 × 0,5 adalah…",
+      "options": ["0,2", "0,25", "0,3", "0,15"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 3/4 ÷ 2/5 adalah…",
+      "options": ["15/8", "6/9", "5/8", "8/15"],
+      "answer": "a"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 2 1/2 ÷ 1 1/5 adalah…",
+      "options": ["2 1/2", "2 1/4", "2 2/3", "2"],
+      "answer": "c"
+    },
+    {
+      "type": "text",
+      "text": "Hasil dari 0,6 ÷ 0,2 adalah…",
+      "options": ["2", "3", "4", "5"],
+      "answer": "b"
+    },
+    {
+      "type": "table",
+      "text": "Lengkapi hasil perkalian pecahan berikut:",
+      "table": "<table class='table table-bordered'><tr><th>Pecahan 1</th><th>Pecahan 2</th><th>Hasil</th></tr><tr><td>2/5</td><td>3/4</td><td>?</td></tr><tr><td>1 1/3</td><td>2/3</td><td>?</td></tr></table>",
+      "options": ["3/10 & 8/9", "6/20 & 8/9", "3/10 & 2/3", "6/20 & 2/3"],
+      "answer": "a"
+    },
 
+    {
+      "type": "paragraph",
+      "text": "Bacalah soal berikut:<br><br>'Seorang siswa membeli 1 1/2 kg gula. Ia ingin membaginya menjadi paket masing-masing 1/3 kg. Berapa paket gula yang dapat dibuat?'",
+      "options": ["3 paket", "4 paket", "5 paket", "6 paket"],
+      "answer": "c"
+    }
+      
+],
 
   
   "IPAS": [
