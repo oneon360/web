@@ -81,7 +81,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
 <script>
 let soal = {};
 let currentName = "";
-const soalURL = "https://oneon360.github.io/web/uh/soal.json";
+const soalURL = "https://oneon360.github.io/web/uh/bi-ipas.json";
 const siswaURL = "https://oneon360.github.io/web/uh/play/nama.json";
 // Ganti dengan URL Web App Anda
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
@@ -154,7 +154,7 @@ async function loadQuestions(){
   const container = document.getElementById("questionContainer");
   container.innerHTML = "";
   soal[subject].forEach((q,i)=>{
-    let html = `<div class="question-box"><p><b>${i+1}. ${q.text}</b></p>`;
+    let html = `<div class="question-box" id="qbox${i}"><p><b>${i+1}. ${q.text}</b></p>`;
     if(q.image) html += `<img src="${q.image}" alt="Soal Gambar">`;
     if(q.table) html += q.table;
     html += q.options.map((opt,j)=>
@@ -170,39 +170,85 @@ async function loadQuestions(){
   document.getElementById("quizForm").classList.remove("d-none");
 }
 
+// === CEK & SUBMIT ===
 async function submitAnswers(){
   const subject = document.getElementById("subjectSelect").value;
-  let score = 0;
+  let unanswered = [];
+  
   soal[subject].forEach((q,i)=>{
     let sel = document.querySelector(`input[name="q${i}"]:checked`);
-    if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
+    if(!sel) unanswered.push(i);
   });
 
-  document.getElementById("result").classList.remove("d-none");
-  document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
-
-  // Kirim ke Google Sheets via Web App
-  try{
-    let res = await fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action:"submit",
-        nama: currentName,
-        mapel: subject,
-        skor: score,
-        tanggal: new Date().toLocaleString()
-      }),
-      headers: {"Content-Type":"application/json"}
-    });
-    let out = await res.json();
-    if(out.status==="error"){
-      alert(out.message);
-    } else {
-      console.log("Data berhasil dikirim ke Google Sheets");
-    }
-  } catch(err){
-    console.error("Gagal kirim data:", err);
+  if(unanswered.length > 0){
+    document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth", block:"center"});
+    alert("⚠️ Masih ada soal yang belum dijawab! Silakan lengkapi terlebih dahulu.");
+    return;
   }
+
+  // === Konfirmasi dengan hitung mundur 30 detik ===
+  let confirmDiv = document.createElement("div");
+  confirmDiv.className = "alert alert-warning mt-3";
+  let timeLeft = 30;
+  confirmDiv.innerHTML = `
+    <p>⏳ Apakah kamu yakin ingin mengakhiri ulangan? <b>${timeLeft}</b> detik untuk konfirmasi.</p>
+    <button id="btnYes" class="btn btn-danger btn-sm me-2">Ya, saya yakin</button>
+    <button id="btnNo" class="btn btn-secondary btn-sm">Tidak, periksa lagi</button>
+  `;
+  document.getElementById("quizForm").appendChild(confirmDiv);
+
+  let timer = setInterval(()=>{
+    timeLeft--;
+    confirmDiv.querySelector("b").innerText = timeLeft;
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      confirmDiv.remove();
+      alert("❌ Waktu konfirmasi habis, silakan tekan Kumpulkan lagi jika ingin mengakhiri.");
+    }
+  },1000);
+
+  confirmDiv.querySelector("#btnYes").onclick = async ()=>{
+    clearInterval(timer);
+    confirmDiv.remove();
+
+    // hitung skor
+    let score = 0;
+    soal[subject].forEach((q,i)=>{
+      let sel = document.querySelector(`input[name="q${i}"]:checked`);
+      if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
+    });
+
+    document.getElementById("result").classList.remove("d-none");
+    document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
+
+    // Kirim ke Google Sheets via Web App
+    try{
+      let res = await fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action:"submit",
+          nama: currentName,
+          mapel: subject,
+          skor: score,
+          tanggal: new Date().toLocaleString()
+        }),
+        headers: {"Content-Type":"application/json"}
+      });
+      let out = await res.json();
+      if(out.status==="error"){
+        alert(out.message);
+      } else {
+        console.log("Data berhasil dikirim ke Google Sheets");
+      }
+    } catch(err){
+      console.error("Gagal kirim data:", err);
+    }
+  };
+
+  confirmDiv.querySelector("#btnNo").onclick = ()=>{
+    clearInterval(timer);
+    confirmDiv.remove();
+  };
 }
 </script>
 </body>
