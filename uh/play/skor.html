@@ -99,14 +99,19 @@ function toArraySafe(data){
 async function fetchData(){
   try {
     const res = await fetch(WEB_APP_URL);
-    const text = await res.text();
-    let data = JSON.parse(text);
+    const data = await res.json();
+
+    if(data.status==="error"){
+      setDebug("Error dari server: "+data.message);
+      return;
+    }
+
     hasil = toArraySafe(data).map(r => normalizeRow(r));
     renderTable();
     setDebug(`Data berhasil dimuat (${hasil.length} baris).`);
   } catch(err){
     alert("Gagal ambil data: " + err.message);
-    setDebug(err.message);
+    setDebug("Fetch error: " + err.message);
   }
 }
 
