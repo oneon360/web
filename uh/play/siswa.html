@@ -12,7 +12,6 @@
 .question-box{padding:15px;border:1px solid #ddd;border-radius:8px;margin-bottom:15px;background:#fff;}
 img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;object-fit:contain;}
 .mapel-disabled { color:#999; font-style:italic; }
-#confirmEnd { display:none; }
 </style>
 </head>
 <body class="bg-light">
@@ -30,6 +29,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
   <p>Tahun Pelajaran 2025</p>
 </div>
 
+<!-- Petunjuk pengerjaan -->
 <div class="alert alert-warning">
   <h5>📌 Petunjuk Pengerjaan:</h5>
   <ul>
@@ -64,16 +64,8 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
 
   <form id="quizForm" class="d-none">
     <div id="questionContainer"></div>
-    <button type="button" class="btn btn-success mt-3" onclick="prepareSubmit()">Kumpulkan Jawaban</button>
+    <button type="button" class="btn btn-success mt-3" onclick="submitAnswers()">Kumpulkan Jawaban</button>
   </form>
-
-  <!-- Konfirmasi akhir ulangan -->
-  <div id="confirmEnd" class="alert alert-danger mt-3">
-    <p>⚠️ Apakah kamu yakin ingin mengakhiri ulangan? Jawaban tidak bisa diubah lagi.</p>
-    <p id="countdown">Waktu konfirmasi: 30 detik</p>
-    <button class="btn btn-danger me-2" id="btnConfirmEnd" onclick="submitAnswers()">Ya, Akhiri</button>
-    <button class="btn btn-secondary" onclick="cancelSubmit()">Batal</button>
-  </div>
 
   <div id="result" class="alert alert-info mt-3 d-none"></div>
 </div>
@@ -85,15 +77,14 @@ let currentName = "";
 const soalURL = "https://oneon360.github.io/web/uh/soal.json";
 const siswaURL = "https://oneon360.github.io/web/uh/play/nama.json";
 
-// URL Web App
+// Ganti dengan URL Web App Anda
 const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
 
 // Daftar mapel
 const ALL_MAPEL = ["Pendidikan Pancasila","Bahasa Indonesia","Matematika","IPAS","Seni Rupa"];
 let aktifMapel = [];
-let countdownTimer;
 
-/* --- Ambil daftar siswa --- */
+// Ambil daftar siswa
 async function fetchSiswa(){
   try{
     const res = await fetch(siswaURL);
@@ -109,24 +100,26 @@ async function fetchSiswa(){
 }
 fetchSiswa();
 
-/* --- Ambil daftar mapel aktif --- */
+// Ambil daftar mapel aktif
 async function fetchMapel(){
   try {
     const res = await fetch(WEB_APP_URL+"?action=mapel");
-    const data = await res.json();
-    if(data.status==="success"){
-      aktifMapel = data.aktif || [];
+    const json = await res.json();
+    if(json.status==="success"){
+      aktifMapel = Array.isArray(json.data) ? json.data : [];
       renderMapelOptions();
     } else {
-      alert("Gagal ambil mapel: " + data.message);
+      alert("Gagal ambil mapel: " + json.message);
     }
   } catch(err){
-    console.error(err);
+    console.error("Fetch mapel error:", err);
   }
 }
 fetchMapel();
+// auto refresh mapel tiap 30 detik
+setInterval(fetchMapel, 30000);
 
-/* --- Render mapel aktif & nonaktif --- */
+// Render mapel aktif & nonaktif
 function renderMapelOptions(){
   const sel = document.getElementById("subjectSelect");
   sel.innerHTML = "<option value=''>-- Pilih Pelajaran --</option>";
@@ -143,7 +136,7 @@ function renderMapelOptions(){
   });
 }
 
-/* --- Konfirmasi nama --- */
+// Konfirmasi nama
 document.getElementById("studentName").addEventListener("change", ()=>{
   const val = document.getElementById("studentName").value;
   if(val){
@@ -153,6 +146,7 @@ document.getElementById("studentName").addEventListener("change", ()=>{
     document.getElementById("confirmBox").classList.add("d-none");
   }
 });
+
 function confirmYes(){
   currentName = document.getElementById("studentName").value;
   document.getElementById("confirmBox").classList.add("d-none");
@@ -163,7 +157,7 @@ function confirmNo(){
   document.getElementById("confirmBox").classList.add("d-none");
 }
 
-/* --- Ambil soal --- */
+// Ambil soal
 async function fetchSoal(){
   try{
     const res = await fetch(soalURL);
@@ -174,7 +168,7 @@ async function fetchSoal(){
   }
 }
 
-/* --- Load soal --- */
+// Load soal
 async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
@@ -183,7 +177,7 @@ async function loadQuestions(){
   try{
     let cek = await fetch(WEB_APP_URL+"?action=cek&nama="+encodeURIComponent(currentName)+"&mapel="+encodeURIComponent(subject));
     let res = await cek.json();
-    if(res.sudah){
+    if(res.status==="success" && res.data.sudah){
       alert("⚠️ Nama "+currentName+" sudah mengerjakan "+subject+". Hubungi guru untuk reset.");
       return;
     }
@@ -211,74 +205,86 @@ async function loadQuestions(){
   document.getElementById("quizForm").classList.remove("d-none");
 }
 
-/* --- Persiapan Submit (konfirmasi 30 detik) --- */
-function prepareSubmit(){
+// Submit jawaban
+async function submitAnswers(){
   const subject = document.getElementById("subjectSelect").value;
   let unanswered = [];
+  
   soal[subject].forEach((q,i)=>{
     let sel = document.querySelector(`input[name="q${i}"]:checked`);
     if(!sel) unanswered.push(i);
   });
+
+  // === Validasi soal kosong ===
   if(unanswered.length > 0){
     document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth", block:"center"});
-    alert("⚠️ Masih ada soal yang belum dijawab!");
+    alert("⚠️ Masih ada soal yang belum dijawab! Silakan lengkapi terlebih dahulu.");
     return;
   }
-  // tampilkan konfirmasi akhir
-  document.getElementById("confirmEnd").style.display="block";
-  let counter = 30;
-  document.getElementById("countdown").innerText = "Waktu konfirmasi: "+counter+" detik";
-  countdownTimer = setInterval(()=>{
-    counter--;
-    if(counter<=0){
-      clearInterval(countdownTimer);
-      submitAnswers();
-    }else{
-      document.getElementById("countdown").innerText = "Waktu konfirmasi: "+counter+" detik";
+
+  // === Konfirmasi dengan hitung mundur 30 detik ===
+  let confirmDiv = document.createElement("div");
+  confirmDiv.className = "alert alert-warning mt-3";
+  let timeLeft = 30;
+  confirmDiv.innerHTML = `
+    <p>⏳ Apakah kamu yakin ingin mengakhiri ulangan? <b>${timeLeft}</b> detik untuk konfirmasi.</p>
+    <button id="btnYes" class="btn btn-danger btn-sm me-2">Ya, saya yakin</button>
+    <button id="btnNo" class="btn btn-secondary btn-sm">Tidak, periksa lagi</button>
+  `;
+  document.getElementById("quizForm").appendChild(confirmDiv);
+
+  let timer = setInterval(()=>{
+    timeLeft--;
+    confirmDiv.querySelector("b").innerText = timeLeft;
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      confirmDiv.remove();
+      alert("❌ Waktu konfirmasi habis, silakan tekan Kumpulkan lagi jika ingin mengakhiri.");
     }
   },1000);
-}
-function cancelSubmit(){
-  clearInterval(countdownTimer);
-  document.getElementById("confirmEnd").style.display="none";
-}
 
-/* --- Submit jawaban --- */
-async function submitAnswers(){
-  clearInterval(countdownTimer);
-  document.getElementById("confirmEnd").style.display="none";
+  confirmDiv.querySelector("#btnNo").onclick = ()=>{
+    clearInterval(timer);
+    confirmDiv.remove();
+  };
 
-  const subject = document.getElementById("subjectSelect").value;
-  let score = 0;
-  soal[subject].forEach((q,i)=>{
-    let sel = document.querySelector(`input[name="q${i}"]:checked`);
-    if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
-  });
+  confirmDiv.querySelector("#btnYes").onclick = async ()=>{
+    clearInterval(timer);
+    confirmDiv.remove();
 
-  document.getElementById("result").classList.remove("d-none");
-  document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
-
-  try{
-    let res = await fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action:"submit",
-        nama: currentName,
-        mapel: subject,
-        skor: score,
-        tanggal: new Date().toLocaleString()
-      }),
-      headers: {"Content-Type":"application/json"}
+    // hitung skor
+    let score = 0;
+    soal[subject].forEach((q,i)=>{
+      let sel = document.querySelector(`input[name="q${i}"]:checked`);
+      if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
     });
-    let out = await res.json();
-    if(out.status==="error"){
-      alert(out.message);
-    } else {
-      console.log("Data berhasil dikirim ke Google Sheets");
+
+    document.getElementById("result").classList.remove("d-none");
+    document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
+
+    // Kirim ke Google Sheets
+    try{
+      let res = await fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action:"submit",
+          nama: currentName,
+          mapel: subject,
+          skor: score,
+          tanggal: new Date().toLocaleString()
+        }),
+        headers: {"Content-Type":"application/json"}
+      });
+      let out = await res.json();
+      if(out.status==="error"){
+        alert(out.message);
+      } else {
+        console.log("Data berhasil dikirim ke Google Sheets");
+      }
+    } catch(err){
+      console.error("Gagal kirim data:", err);
     }
-  } catch(err){
-    console.error("Gagal kirim data:", err);
-  }
+  };
 }
 </script>
 </body>
