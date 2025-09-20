@@ -161,7 +161,6 @@ async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
 
-  // cek ke server pakai POST
   try{
     let cek = await fetch(WEB_APP_URL, {
       method:"POST",
@@ -171,7 +170,7 @@ async function loadQuestions(){
     let res = await cek.json();
     if(res.status==="success" && res.data.sudah){
       alert("⚠️ "+currentName+" sudah mengerjakan "+subject+".");
-      return; // stop, tidak tampilkan soal
+      return;
     }
   }catch(e){ console.error("Cek gagal:", e); }
 
@@ -219,8 +218,7 @@ async function submitAnswers(){
   let oldConfirm = document.getElementById("confirmBoxSubmit");
   if(oldConfirm) oldConfirm.remove();
 
-  btn.disabled = true;
-
+  // buat popup konfirmasi
   let confirmDiv = document.createElement("div");
   confirmDiv.id = "confirmBoxSubmit";
   confirmDiv.className = "alert alert-warning mt-3";
@@ -238,8 +236,6 @@ async function submitAnswers(){
     if(timeLeft <= 0){
       clearInterval(timer);
       confirmDiv.remove();
-      btn.disabled = false; 
-      alert("❌ Waktu konfirmasi habis, tekan Kumpulkan lagi jika ingin mengakhiri.");
     }
   },1000);
 
@@ -247,13 +243,14 @@ async function submitAnswers(){
   confirmDiv.querySelector("#btnNo").onclick = ()=>{
     clearInterval(timer);
     confirmDiv.remove();
-    btn.disabled = false; // aktifkan lagi tombol
+    // tombol tetap aktif agar bisa submit lagi
   };
 
   // ✅ Konfirmasi submit
   confirmDiv.querySelector("#btnYes").onclick = async ()=>{
     clearInterval(timer);
     confirmDiv.remove();
+    btn.disabled = true; // baru disable di sini (final)
 
     // hitung skor
     let score = 0;
@@ -286,7 +283,5 @@ async function submitAnswers(){
   };
 }
 </script>
-
-
 </body>
 </html>
