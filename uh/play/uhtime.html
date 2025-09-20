@@ -220,21 +220,31 @@ document.getElementById("btnSubmit").addEventListener("click", async function(){
   const subject = document.getElementById("subjectSelect").value;
   let unanswered = [];
 
+  // cek soal yang belum dijawab
   soal[subject].forEach((q,i)=>{
     if(!document.querySelector(`input[name="q${i}"]:checked`)) unanswered.push(i);
   });
 
   if(unanswered.length>0){
-    document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth", block:"center"});
+    const firstUnanswered = document.getElementById("qbox"+unanswered[0]);
+    firstUnanswered.scrollIntoView({behavior:"smooth", block:"center"});
+
+    // highlight semua soal yang belum dijawab
+    unanswered.forEach(idx=>{
+      const box = document.getElementById("qbox"+idx);
+      box.style.border = "2px solid red";
+      setTimeout(()=>{ box.style.border = "1px solid #ddd"; }, 2000); // reset border setelah 2 detik
+    });
+
     alert("⚠️ Masih ada soal yang belum dijawab!");
     return;
   }
 
-  // Hapus popup lama
+  // hapus popup lama jika ada
   let oldConfirm = document.getElementById("confirmBoxSubmit");
   if(oldConfirm) oldConfirm.remove();
 
-  // Buat popup baru
+  // buat popup konfirmasi
   let confirmDiv = document.createElement("div");
   confirmDiv.id = "confirmBoxSubmit";
   confirmDiv.className = "alert alert-warning mt-3";
@@ -245,11 +255,13 @@ document.getElementById("btnSubmit").addEventListener("click", async function(){
   `;
   document.getElementById("quizForm").appendChild(confirmDiv);
 
-  btn.disabled = true;
   let timeLeft = 30;
+  btn.disabled = true; // disable tombol saat popup muncul
+
   let timer = setInterval(()=>{
     timeLeft--;
-    document.getElementById("confirmTimer").innerText = timeLeft;
+    const timerEl = document.getElementById("confirmTimer");
+    if(timerEl) timerEl.innerText = timeLeft;
     if(timeLeft<=0){
       clearInterval(timer);
       confirmDiv.remove();
@@ -257,12 +269,14 @@ document.getElementById("btnSubmit").addEventListener("click", async function(){
     }
   },1000);
 
+  // tombol "Tidak"
   confirmDiv.querySelector("#btnNo").addEventListener("click", ()=>{
     clearInterval(timer);
     confirmDiv.remove();
     btn.disabled = false;
   });
 
+  // tombol "Ya"
   confirmDiv.querySelector("#btnYes").addEventListener("click", async ()=>{
     clearInterval(timer);
     confirmDiv.remove();
@@ -297,6 +311,7 @@ document.getElementById("btnSubmit").addEventListener("click", async function(){
     clearInterval(timerInterval);
   });
 });
+
 
 // Hubungkan tombol start
 document.getElementById("btnStart").addEventListener("click", loadQuestions);
