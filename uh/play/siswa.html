@@ -29,14 +29,13 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
   <p>Tahun Pelajaran 2025</p>
 </div>
 
-<!-- Informasi cara pengerjaan soal -->
+<!-- Petunjuk pengerjaan -->
 <div class="alert alert-warning">
   <h5>📌 Petunjuk Pengerjaan:</h5>
   <ul>
     <li>Pilih nama lengkap sebelum memulai.</li>
     <li>Pilih mata pelajaran yang aktif untuk dikerjakan.</li>
     <li>Mapel nonaktif akan berwarna redup dan tidak bisa dipilih.</li>
-    <li>Baca dan pahami soal dengan cermat.</li>
     <li>Kerjakan dengan jujur tanpa bantuan orang lain.</li>
     <li>Setiap mapel hanya bisa dikerjakan <b>1 kali</b>.</li>
   </ul>
@@ -79,9 +78,9 @@ const soalURL = "https://oneon360.github.io/web/uh/soal.json";
 const siswaURL = "https://oneon360.github.io/web/uh/play/nama.json";
 
 // Ganti dengan URL Web App Anda
-const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
 
-// Daftar semua mapel
+// Daftar mapel
 const ALL_MAPEL = ["Pendidikan Pancasila","Bahasa Indonesia","Matematika","IPAS","Seni Rupa"];
 let aktifMapel = [];
 
@@ -101,7 +100,7 @@ async function fetchSiswa(){
 }
 fetchSiswa();
 
-// Ambil daftar mapel aktif dari Apps Script
+// Ambil daftar mapel aktif
 async function fetchMapel(){
   try {
     const res = await fetch(WEB_APP_URL+"?action=mapel");
@@ -118,7 +117,7 @@ async function fetchMapel(){
 }
 fetchMapel();
 
-// Render opsi mapel sesuai aktif/nonaktif
+// Render mapel aktif & nonaktif
 function renderMapelOptions(){
   const sel = document.getElementById("subjectSelect");
   sel.innerHTML = "<option value=''>-- Pilih Pelajaran --</option>";
@@ -135,7 +134,7 @@ function renderMapelOptions(){
   });
 }
 
-// Saat pilih nama
+// Konfirmasi nama
 document.getElementById("studentName").addEventListener("change", ()=>{
   const val = document.getElementById("studentName").value;
   if(val){
@@ -167,11 +166,12 @@ async function fetchSoal(){
   }
 }
 
+// Load soal
 async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
 
-  // cek ke Google Sheets apakah nama+mapel sudah digunakan
+  // cek apakah sudah pernah mengerjakan
   try{
     let cek = await fetch(WEB_APP_URL+"?action=cek&nama="+encodeURIComponent(currentName)+"&mapel="+encodeURIComponent(subject));
     let res = await cek.json();
@@ -203,7 +203,7 @@ async function loadQuestions(){
   document.getElementById("quizForm").classList.remove("d-none");
 }
 
-// === CEK & SUBMIT ===
+// Submit jawaban
 async function submitAnswers(){
   const subject = document.getElementById("subjectSelect").value;
   let unanswered = [];
@@ -218,6 +218,8 @@ async function submitAnswers(){
     alert("⚠️ Masih ada soal yang belum dijawab!");
     return;
   }
+
+  if(!confirm("Yakin ingin mengakhiri ulangan?")) return;
 
   // hitung skor
   let score = 0;
