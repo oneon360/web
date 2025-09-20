@@ -60,11 +60,11 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
       <option value="">-- Pilih Pelajaran --</option>
     </select>
   </div>
-  <button class="btn btn-primary mb-3" onclick="loadQuestions()">Mulai</button>
+  <button class="btn btn-primary mb-3" id="btnStart" onclick="loadQuestions()">Mulai</button>
 
   <form id="quizForm" class="d-none">
     <div id="questionContainer"></div>
-    <button type="button" class="btn btn-success mt-3" onclick="submitAnswers()">Kumpulkan Jawaban</button>
+    <button type="button" class="btn btn-success mt-3" id="btnSubmit" onclick="submitAnswers()">Kumpulkan Jawaban</button>
   </form>
 
   <div id="result" class="alert alert-info mt-3 d-none"></div>
@@ -76,11 +76,8 @@ let soal = {};
 let currentName = "";
 const soalURL = "https://oneon360.github.io/web/uh/soal.json";
 const siswaURL = "https://oneon360.github.io/web/uh/play/nama.json";
-
-// Ganti dengan URL Web App Anda
 const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
 
-// Daftar mapel
 const ALL_MAPEL = ["Pendidikan Pancasila","Bahasa Indonesia","Matematika","IPAS","Seni Rupa"];
 let aktifMapel = [];
 
@@ -108,15 +105,12 @@ async function fetchMapel(){
     if(json.status==="success"){
       aktifMapel = Array.isArray(json.data) ? json.data : [];
       renderMapelOptions();
-    } else {
-      alert("Gagal ambil mapel: " + json.message);
     }
   } catch(err){
     console.error("Fetch mapel error:", err);
   }
 }
 fetchMapel();
-// auto refresh mapel tiap 30 detik
 setInterval(fetchMapel, 30000);
 
 // Render mapel aktif & nonaktif
@@ -146,26 +140,13 @@ document.getElementById("studentName").addEventListener("change", ()=>{
     document.getElementById("confirmBox").classList.add("d-none");
   }
 });
-
-function confirmYes(){
-  currentName = document.getElementById("studentName").value;
-  document.getElementById("confirmBox").classList.add("d-none");
-}
-function confirmNo(){
-  document.getElementById("studentName").value="";
-  currentName="";
-  document.getElementById("confirmBox").classList.add("d-none");
-}
+function confirmYes(){ currentName = document.getElementById("studentName").value; document.getElementById("confirmBox").classList.add("d-none"); }
+function confirmNo(){ document.getElementById("studentName").value=""; currentName=""; document.getElementById("confirmBox").classList.add("d-none"); }
 
 // Ambil soal
 async function fetchSoal(){
-  try{
-    const res = await fetch(soalURL);
-    if(!res.ok) throw new Error("Gagal mengambil soal");
-    soal = await res.json();
-  } catch(err){
-    alert("Tidak bisa memuat soal: "+err.message);
-  }
+  const res = await fetch(soalURL);
+  soal = await res.json();
 }
 
 // Load soal
@@ -173,13 +154,13 @@ async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
 
-  // cek apakah sudah pernah mengerjakan
+  // cek sudah ikut ulangan atau belum
   try{
     let cek = await fetch(WEB_APP_URL+"?action=cek&nama="+encodeURIComponent(currentName)+"&mapel="+encodeURIComponent(subject));
     let res = await cek.json();
     if(res.status==="success" && res.data.sudah){
-      alert("⚠️ Nama "+currentName+" sudah mengerjakan "+subject+". Hubungi guru untuk reset.");
-      return;
+      alert("⚠️ "+currentName+" sudah mengerjakan "+subject+".");
+      return; // stop, tidak tampilkan soal
     }
   }catch(e){ console.error(e); }
 
@@ -215,14 +196,16 @@ async function submitAnswers(){
     if(!sel) unanswered.push(i);
   });
 
-  // === Validasi soal kosong ===
   if(unanswered.length > 0){
     document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth", block:"center"});
-    alert("⚠️ Masih ada soal yang belum dijawab! Silakan lengkapi terlebih dahulu.");
+    alert("⚠️ Masih ada soal yang belum dijawab!");
     return;
   }
 
-  // === Konfirmasi dengan hitung mundur 30 detik ===
+  // disable tombol sementara
+  const btn = document.getElementById("btnSubmit");
+  btn.disabled = true;
+
   let confirmDiv = document.createElement("div");
   confirmDiv.className = "alert alert-warning mt-3";
   let timeLeft = 30;
@@ -239,13 +222,15 @@ async function submitAnswers(){
     if(timeLeft <= 0){
       clearInterval(timer);
       confirmDiv.remove();
-      alert("❌ Waktu konfirmasi habis, silakan tekan Kumpulkan lagi jika ingin mengakhiri.");
+      btn.disabled = false; // tombol bisa digunakan lagi
+      alert("❌ Waktu konfirmasi habis, tekan Kumpulkan lagi jika ingin mengakhiri.");
     }
   },1000);
 
   confirmDiv.querySelector("#btnNo").onclick = ()=>{
     clearInterval(timer);
     confirmDiv.remove();
+    btn.disabled = false; // tombol aktif lagi
   };
 
   confirmDiv.querySelector("#btnYes").onclick = async ()=>{
@@ -262,7 +247,6 @@ async function submitAnswers(){
     document.getElementById("result").classList.remove("d-none");
     document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
 
-    // Kirim ke Google Sheets
     try{
       let res = await fetch(WEB_APP_URL, {
         method: "POST",
@@ -276,14 +260,8 @@ async function submitAnswers(){
         headers: {"Content-Type":"application/json"}
       });
       let out = await res.json();
-      if(out.status==="error"){
-        alert(out.message);
-      } else {
-        console.log("Data berhasil dikirim ke Google Sheets");
-      }
-    } catch(err){
-      console.error("Gagal kirim data:", err);
-    }
+      if(out.status==="error"){ alert(out.message); }
+    } catch(err){ console.error("Gagal kirim data:", err); }
   };
 }
 </script>
