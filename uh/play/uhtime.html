@@ -214,33 +214,64 @@ function startTimer(duration){
   },1000);
 }
 
-// === Perbaikan tombol submit + popup konfirmasi ===
-document.getElementById("btnSubmit").addEventListener("click", async function(){
+// Fungsi submit jawaban
+async function submitAnswers(){
+  const btn = document.getElementById("btnSubmit");
+  const subject = document.getElementById("subjectSelect").value;
+  btn.disabled = true;
+
+  let score = 0;
+  soal[subject].forEach((q,i)=>{
+    let sel = document.querySelector(`input[name="q${i}"]:checked`);
+    if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
+  });
+
+  document.getElementById("result").classList.remove("d-none");
+  document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
+
+  try {
+    let res = await fetch(WEB_APP_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        action:"submit",
+        nama: currentName,
+        mapel: subject,
+        skor: score,
+        tanggal: new Date().toLocaleString()
+      })
+    });
+    let out = await res.json();
+    if(out.status==="error") alert(out.message || "Gagal simpan skor!");
+  } catch(err){ console.error(err); }
+
+  document.getElementById("quizForm").innerHTML = "<div class='alert alert-success'>✅ Ulangan selesai. Terima kasih!</div>";
+  clearInterval(timerInterval);
+}
+
+// Tombol submit
+document.getElementById("btnSubmit").addEventListener("click", function handleSubmit(){
   const btn = this;
   const subject = document.getElementById("subjectSelect").value;
-  let unanswered = [];
+  if(!subject){ alert("Pilih mapel terlebih dahulu!"); return; }
 
-  // cek soal yang belum dijawab
+  let unanswered = [];
   soal[subject].forEach((q,i)=>{
     if(!document.querySelector(`input[name="q${i}"]:checked`)) unanswered.push(i);
   });
 
   if(unanswered.length>0){
-    const firstUnanswered = document.getElementById("qbox"+unanswered[0]);
-    firstUnanswered.scrollIntoView({behavior:"smooth", block:"center"});
-
-    // highlight semua soal yang belum dijawab
     unanswered.forEach(idx=>{
       const box = document.getElementById("qbox"+idx);
       box.style.border = "2px solid red";
-      setTimeout(()=>{ box.style.border = "1px solid #ddd"; }, 2000); // reset border setelah 2 detik
+      setTimeout(()=>{ box.style.border = "1px solid #ddd"; }, 2000);
     });
-
+    document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth", block:"center"});
     alert("⚠️ Masih ada soal yang belum dijawab!");
     return;
   }
 
-  // hapus popup lama jika ada
+  // hapus popup lama
   let oldConfirm = document.getElementById("confirmBoxSubmit");
   if(oldConfirm) oldConfirm.remove();
 
@@ -256,7 +287,7 @@ document.getElementById("btnSubmit").addEventListener("click", async function(){
   document.getElementById("quizForm").appendChild(confirmDiv);
 
   let timeLeft = 30;
-  btn.disabled = true; // disable tombol saat popup muncul
+  btn.disabled = true;
 
   let timer = setInterval(()=>{
     timeLeft--;
@@ -269,53 +300,21 @@ document.getElementById("btnSubmit").addEventListener("click", async function(){
     }
   },1000);
 
-  // tombol "Tidak"
   confirmDiv.querySelector("#btnNo").addEventListener("click", ()=>{
     clearInterval(timer);
     confirmDiv.remove();
     btn.disabled = false;
   });
 
-  // tombol "Ya"
   confirmDiv.querySelector("#btnYes").addEventListener("click", async ()=>{
     clearInterval(timer);
     confirmDiv.remove();
-    btn.disabled = true;
-
-    let score = 0;
-    soal[subject].forEach((q,i)=>{
-      let sel = document.querySelector(`input[name="q${i}"]:checked`);
-      if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
-    });
-
-    document.getElementById("result").classList.remove("d-none");
-    document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
-
-    try {
-      let res = await fetch(WEB_APP_URL, {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          action:"submit",
-          nama: currentName,
-          mapel: subject,
-          skor: score,
-          tanggal: new Date().toLocaleString()
-        })
-      });
-      let out = await res.json();
-      if(out.status==="error") alert(out.message || "Gagal simpan skor!");
-    } catch(err){ console.error(err); }
-
-    document.getElementById("quizForm").innerHTML = "<div class='alert alert-success'>✅ Ulangan selesai. Terima kasih!</div>";
-    clearInterval(timerInterval);
+    submitAnswers();
   });
 });
 
-
 // Hubungkan tombol start
 document.getElementById("btnStart").addEventListener("click", loadQuestions);
-
 </script>
 </body>
 </html>
