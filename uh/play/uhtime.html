@@ -77,6 +77,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
 <script>
 let soal = {};
 let currentName = "";
+let currentSubject = ""; // simpan mapel yang sedang dikerjakan
 const soalURL = "https://oneon360.github.io/web/uh/soal.json";
 const siswaURL = "https://oneon360.github.io/web/uh/play/nama.json";
 const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
@@ -156,6 +157,8 @@ async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
 
+  currentSubject = subject; // simpan mapel yang sedang dikerjakan
+
   try{
     let cek = await fetch(WEB_APP_URL, {
       method:"POST",
@@ -217,11 +220,10 @@ function startTimer(duration){
 // Fungsi submit jawaban
 async function submitAnswers(){
   const btn = document.getElementById("btnSubmit");
-  const subject = document.getElementById("subjectSelect").value;
-  btn.disabled = true;
+  btn.disabled = true; // nonaktifkan total
 
   let score = 0;
-  soal[subject].forEach((q,i)=>{
+  soal[currentSubject].forEach((q,i)=>{
     let sel = document.querySelector(`input[name="q${i}"]:checked`);
     if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
   });
@@ -236,7 +238,7 @@ async function submitAnswers(){
       body: JSON.stringify({
         action:"submit",
         nama: currentName,
-        mapel: subject,
+        mapel: currentSubject,
         skor: score,
         tanggal: new Date().toLocaleString()
       })
@@ -250,13 +252,12 @@ async function submitAnswers(){
 }
 
 // Tombol submit
-document.getElementById("btnSubmit").addEventListener("click", function handleSubmit(){
+document.getElementById("btnSubmit").addEventListener("click", function(){
   const btn = this;
-  const subject = document.getElementById("subjectSelect").value;
-  if(!subject){ alert("Pilih mapel terlebih dahulu!"); return; }
+  if(!currentSubject){ alert("Mapel belum dipilih!"); return; }
 
   let unanswered = [];
-  soal[subject].forEach((q,i)=>{
+  soal[currentSubject].forEach((q,i)=>{
     if(!document.querySelector(`input[name="q${i}"]:checked`)) unanswered.push(i);
   });
 
@@ -296,24 +297,24 @@ document.getElementById("btnSubmit").addEventListener("click", function handleSu
     if(timeLeft<=0){
       clearInterval(timer);
       confirmDiv.remove();
-      btn.disabled = false;
+      btn.disabled = false; // kembali aktif
     }
   },1000);
 
   confirmDiv.querySelector("#btnNo").addEventListener("click", ()=>{
     clearInterval(timer);
     confirmDiv.remove();
-    btn.disabled = false;
+    btn.disabled = false; // aktifkan kembali
   });
 
   confirmDiv.querySelector("#btnYes").addEventListener("click", async ()=>{
     clearInterval(timer);
     confirmDiv.remove();
-    submitAnswers();
+    await submitAnswers(); // submit jawaban dan tombol submit nonaktif total
   });
 });
 
-// Hubungkan tombol start
+// Tombol start
 document.getElementById("btnStart").addEventListener("click", loadQuestions);
 </script>
 </body>
