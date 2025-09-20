@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>SDN 1 KANDANGAN KOTA - Ulangan Harian Kelas 6</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+.kop { text-align:center; margin-bottom:25px; border-bottom:3px double #000; padding-bottom:10px;}
+.kop img{width:80px;height:80px;margin-bottom:10px;}
+.kop h2,h4,p{margin:0;line-height:1.4;}
+.question-box{padding:15px;border:1px solid #ddd;border-radius:8px;margin-bottom:15px;background:#fff;}
+img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;object-fit:contain;}
+</style>
+</head>
+<body class="bg-light">
+<div class="container py-4">
+
+<div class="kop">
+  <img src="https://oneon360.github.io/web/uh/logo-sdn1kk-wartatrans.png" alt="Logo Sekolah">
+  <h2>SDN 1 KANDANGAN KOTA</h2>
+  <p>Jl. Jendral Achmad Yani, Kecamatan Kandangan</p>
+  <p>NISN: 30301968</p>
+
+</div>
+  <h4>ULANGAN HARIAN KELAS 6</h4>
+  <p>Tahun Pelajaran 2025</p>
+<!-- Informasi cara pengerjaan soal -->
+<div class="alert alert-warning">
+  <h5>📌 Petunjuk Pengerjaan:</h5>
+  <ul>
+    <li>Isi nama lengkap sebelum memulai.</li>
+    <li>Pilih mata pelajaran yang akan dikerjakan.</li>
+    <li>Baca dan pahami soal dengan cermat dan teliti.</li>
+    <li>Pilihlah jawaban dengan menekan opsi check box.</li>
+    <li>Silahkan bertanya kepada guru, jika soal kurang jelas.</li>
+    <li>Kerjakan dengan jujur tanpa bantuan orang lain.</li>
+    <li>Setiap mata pelajaran hanya bisa dikerjakan <b>1 kali</b>.</li>
+    <li>Jika sudah selesai, hasil langsung tersimpan otomatis.</li>
+  </ul>
+</div>
+
+<div class="card p-4 shadow">
+  <h5>📝 Ulangan Siswa</h5>
+  <div class="mb-3">
+    <label>Nama Siswa</label>
+    <input type="text" id="studentName" class="form-control">
+  </div>
+  <div class="mb-3">
+    <label>Mata Pelajaran</label>
+    <select id="subjectSelect" class="form-select">
+      <option value="">-- Pilih --</option>
+      <option>Pendidikan Pancasila</option>
+      <option>Bahasa Indonesia</option>
+      <option>Matematika</option>
+      <option>IPAS</option>
+      <option>Seni Rupa</option>
+    </select>
+  </div>
+  <button class="btn btn-primary mb-3" onclick="loadQuestions()">Mulai</button>
+
+  <form id="quizForm" class="d-none">
+    <div id="questionContainer"></div>
+    <button type="button" class="btn btn-success mt-3" onclick="submitAnswers()">Kumpulkan Jawaban</button>
+  </form>
+
+  <div id="result" class="alert alert-info mt-3 d-none"></div>
+</div>
+</div>
+
+<script>
+let soal = {};
+const soalURL = "https://oneon360.github.io/web/uh/bi-ipas.json";
+
+// Ganti dengan URL Web App Anda
+const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycbwuERqx4rx2qqRO0xipSENzwqSfMbPbbaBfa6nLBoAAk80VVlvvvmRvjZqo9lDwcJ06eg/exec";
+
+// Ambil soal
+async function fetchSoal(){
+  try{
+    const res = await fetch(soalURL);
+    if(!res.ok) throw new Error("Gagal mengambil soal");
+    soal = await res.json();
+  } catch(err){
+    alert("Tidak bisa memuat soal: "+err.message);
+  }
+}
+
+async function loadQuestions(){
+  const subject = document.getElementById("subjectSelect").value;
+  const name = document.getElementById("studentName").value.trim();
+  if(!subject || !name){ alert("Isi nama & pilih mapel!"); return; }
+
+  // cek localStorage apakah sudah pernah dikerjakan
+  let key = name + "_" + subject;
+  if(localStorage.getItem(key)){
+    alert("⚠️ Kamu sudah mengerjakan ulangan untuk mata pelajaran ini. Hubungi guru jika perlu mengulang.");
+    return;
+  }
+
+  if(Object.keys(soal).length===0) await fetchSoal();
+  if(!soal[subject]){ alert("Soal untuk mapel ini belum tersedia!"); return; }
+
+  const container = document.getElementById("questionContainer");
+  container.innerHTML = "";
+  soal[subject].forEach((q,i)=>{
+    let html = `<div class="question-box"><p><b>${i+1}. ${q.text}</b></p>`;
+    if(q.image) html += `<img src="${q.image}" alt="Soal Gambar">`;
+    if(q.table) html += q.table;
+    html += q.options.map((opt,j)=>
+      `<div class="form-check">
+        <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
+        <label class="form-check-label">${opt}</label>
+      </div>`
+    ).join("");
+    html += `</div>`;
+    container.innerHTML += html;
+  });
+
+  document.getElementById("quizForm").classList.remove("d-none");
+}
+
+async function submitAnswers(){
+  const subject = document.getElementById("subjectSelect").value;
+  const name = document.getElementById("studentName").value.trim();
+  let score = 0;
+
+  soal[subject].forEach((q,i)=>{
+    let sel = document.querySelector(`input[name="q${i}"]:checked`);
+    if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
+  });
+
+  document.getElementById("result").classList.remove("d-none");
+  document.getElementById("result").innerText = `${name} mendapat skor ${score}`;
+
+  // Simpan status sudah mengerjakan di localStorage
+  let key = name + "_" + subject;
+  localStorage.setItem(key, "done");
+
+  // Kirim ke Google Sheets via Web App
+  try{
+    await fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        nama: name,
+        mapel: subject,
+        skor: score,
+        tanggal: new Date().toLocaleString()
+      }),
+      headers: {"Content-Type":"application/json"}
+    });
+    console.log("Data berhasil dikirim ke Google Sheets");
+  } catch(err){
+    console.error("Gagal kirim data:", err);
+  }
+}
+</script>
+</body>
+</html>
