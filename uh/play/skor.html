@@ -44,7 +44,7 @@
 
 <script>
 const ADMIN_PASSWORD = "12345"; // ganti sesuai kebutuhan
-const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec"; // ganti dengan URL WebApp Anda
+const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec"; // ganti URL WebApp Anda
 
 let hasil = [];
 let mapelAktif = [];
@@ -83,30 +83,18 @@ function normalizeRow(row){
   return {nama:"", mapel:"", skor:0, tanggal:""};
 }
 
-function toArraySafe(data){
-  if (Array.isArray(data)) return data;
-  if (!data) return [];
-  if (typeof data === "object"){
-    const keys = Object.keys(data);
-    const allNumeric = keys.length>0 && keys.every(k=>/^\d+$/.test(k));
-    if(allNumeric) return keys.map(k=>data[k]);
-    return [data];
-  }
-  return [];
-}
-
 /* ---------------- Fetch Rekap ---------------- */
 async function fetchData(){
   try {
-    const res = await fetch(WEB_APP_URL);
+    const res = await fetch(WEB_APP_URL+"?action=rekap");
     const data = await res.json();
 
-    if(data.status==="error"){
+    if(data.status!=="success"){
       setDebug("Error dari server: "+data.message);
       return;
     }
 
-    hasil = toArraySafe(data).map(r => normalizeRow(r));
+    hasil = (Array.isArray(data.data) ? data.data : []).map(r => normalizeRow(r));
     renderTable();
     setDebug(`Data berhasil dimuat (${hasil.length} baris).`);
   } catch(err){
@@ -220,7 +208,7 @@ async function fetchMapel(){
     const res = await fetch(WEB_APP_URL+"?action=mapel");
     const json = await res.json();
     if(json.status==="success"){
-      mapelAktif = Array.isArray(json.aktif) ? json.aktif : [];
+      mapelAktif = Array.isArray(json.data) ? json.data : [];
       renderMapel();
     }
   }catch(e){ console.error(e); }
