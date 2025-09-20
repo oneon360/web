@@ -156,7 +156,7 @@ async function fetchSoal(){
   soal = await res.json();
 }
 
-// === Load soal (cek dulu apakah sudah pernah isi) ===
+// === Load soal ===
 async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
@@ -243,14 +243,14 @@ async function submitAnswers(){
   confirmDiv.querySelector("#btnNo").onclick = ()=>{
     clearInterval(timer);
     confirmDiv.remove();
-    // tombol tetap aktif agar bisa submit lagi
+    btn.disabled = false; // pastikan tombol bisa dipakai lagi
   };
 
   // ✅ Konfirmasi submit
   confirmDiv.querySelector("#btnYes").onclick = async ()=>{
     clearInterval(timer);
     confirmDiv.remove();
-    btn.disabled = true; // baru disable di sini (final)
+    btn.disabled = true; // disable hanya setelah final submit
 
     // hitung skor
     let score = 0;
