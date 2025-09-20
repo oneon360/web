@@ -2,28 +2,28 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Admin - Rekap Nilai & Pengaturan Mapel</title>
+  <title>Rekap Nilai Siswa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <style>
     body { background:#f8f9fa; }
+    .small-muted { font-size:0.85rem; color:#666; }
+    td .btn-sm { padding:2px 6px; font-size:0.75rem; }
     .mapel-badge { cursor:pointer; }
   </style>
 </head>
 <body class="bg-light">
-<div class="container py-4">
+<div class="container py-5">
   <div class="card p-4 shadow">
-    <h4>📊 Rekap Nilai Ulangan Harian</h4>
+    <h4>📊 Rekap Nilai Ulangan</h4>
 
-    <!-- Login Admin -->
     <div id="loginBox" class="mb-3">
       <input type="password" id="adminPass" class="form-control mb-2" placeholder="Password Admin">
       <button class="btn btn-primary" onclick="loginAdmin()">Login</button>
-      <div class="small text-muted mt-2">Pastikan Web App GAS sudah di-deploy <i>Anyone, even anonymous</i>.</div>
+      <div class="small-muted mt-2">Catatan: pastikan Web App Google Apps Script Anda sudah di-deploy sebagai "Anyone, even anonymous".</div>
     </div>
 
-    <!-- Panel Rekap & Mapel -->
     <div id="rekapPanel" class="d-none">
       <div class="mb-3">
         <button class="btn btn-success" onclick="fetchData()">🔄 Refresh Data</button>
@@ -35,19 +35,19 @@
       <h5 class="mt-4">⚙️ Pengaturan Mapel Aktif</h5>
       <div id="mapelContent" class="mb-3"></div>
 
-      <div id="debugLog" class="small text-muted"></div>
+      <div id="debugLog" class="mt-3 small text-muted"></div>
     </div>
   </div>
 </div>
 
 <script>
-const ADMIN_PASSWORD = "12345";
-const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
+const ADMIN_PASSWORD = "12345"; // ganti sesuai kebutuhan
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxxxxxx/exec"; // ganti dengan URL WebApp Anda
 
 let hasil = [];
 let mapelAktif = [];
 
-// Login admin
+/* ---------------- Login ---------------- */
 function loginAdmin(){
   if(document.getElementById("adminPass").value === ADMIN_PASSWORD){
     document.getElementById("loginBox").classList.add("d-none");
@@ -61,31 +61,45 @@ function loginAdmin(){
 
 function setDebug(msg){
   document.getElementById("debugLog").textContent = msg;
-  console.log(msg);
+  console.debug(msg);
 }
 
-// Normalisasi baris data
+/* ---------------- Helper ---------------- */
 function normalizeRow(row){
   if(Array.isArray(row)){
     return {nama: row[0]||"", mapel: row[1]||"", skor:Number(row[2])||0, tanggal:row[3]||""};
   }
   if(row && typeof row === "object"){
+    const map={}; for(const k of Object.keys(row)){ map[k.toLowerCase().trim()] = row[k]; }
     return {
-      nama: row.nama || "",
-      mapel: row.mapel || "",
-      skor: Number(row.skor||0) || 0,
-      tanggal: row.tanggal || ""
+      nama: map.nama || "",
+      mapel: map.mapel || "",
+      skor: Number(map.skor||0) || 0,
+      tanggal: map.tanggal || ""
     };
   }
   return {nama:"", mapel:"", skor:0, tanggal:""};
 }
 
-// Ambil rekap nilai
+function toArraySafe(data){
+  if (Array.isArray(data)) return data;
+  if (!data) return [];
+  if (typeof data === "object"){
+    const keys = Object.keys(data);
+    const allNumeric = keys.length>0 && keys.every(k=>/^\d+$/.test(k));
+    if(allNumeric) return keys.map(k=>data[k]);
+    return [data];
+  }
+  return [];
+}
+
+/* ---------------- Fetch Rekap ---------------- */
 async function fetchData(){
   try {
     const res = await fetch(WEB_APP_URL);
-    const data = await res.json();
-    hasil = data.map(r => normalizeRow(r));
+    const text = await res.text();
+    let data = JSON.parse(text);
+    hasil = toArraySafe(data).map(r => normalizeRow(r));
     renderTable();
     setDebug(`Data berhasil dimuat (${hasil.length} baris).`);
   } catch(err){
@@ -94,7 +108,6 @@ async function fetchData(){
   }
 }
 
-// Render tabel nilai
 function renderTable(){
   const container = document.getElementById("rekapContent");
   container.innerHTML = "";
@@ -109,12 +122,13 @@ function renderTable(){
   for(const nama in grouped){
     const rows = grouped[nama];
     let total=0;
+    let count=rows.length;
 
-    let html = `
+    let table = `
       <div class="border rounded p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center">
-          <h5>${nama}</h5>
-          <button class="btn btn-sm btn-danger" onclick="resetSiswa('${nama}')">🗑 Reset Semua</button>
+          <h5 class="mt-1 mb-2">${nama}</h5>
+          <button class="btn btn-sm btn-danger" onclick="resetSiswa('${nama.replace(/'/g,"\\'")}')">🗑 Reset Semua</button>
         </div>
         <table class="table table-sm table-bordered">
           <thead class="table-light">
@@ -125,26 +139,31 @@ function renderTable(){
 
     rows.forEach(r => {
       total += r.skor;
-      html += `<tr>
-        <td>${r.mapel}</td>
+      table += `<tr>
+        <td>${escapeHtml(r.mapel)}</td>
         <td>${r.skor}</td>
-        <td>${r.tanggal}</td>
-        <td><button class="btn btn-sm btn-warning" onclick="resetMapel('${nama}','${r.mapel}')">Reset Mapel</button></td>
+        <td>${escapeHtml(r.tanggal)}</td>
+        <td><button class="btn btn-sm btn-warning" onclick="resetMapel('${nama.replace(/'/g,"\\'")}','${escapeHtml(r.mapel)}')">Reset Mapel</button></td>
       </tr>`;
     });
 
-    const rata = (rows.length===0) ? "0.00" : (total/rows.length).toFixed(2);
-    html += `
+    const rata = (count===0) ? "0.00" : (total/count).toFixed(2);
+    table += `
           </tbody>
         </table>
         <p><strong>Total Skor:</strong> ${total} | <strong>Rata-rata:</strong> ${rata}</p>
       </div>
     `;
-    container.innerHTML += html;
+    container.innerHTML += table;
   }
 }
 
-// Unduh Excel
+function escapeHtml(s){
+  if(!s) return "";
+  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;")
+    .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
+}
+
 function downloadExcel(){
   if(hasil.length===0){ alert("Belum ada data."); return; }
   const ws = XLSX.utils.json_to_sheet(hasil);
@@ -153,7 +172,7 @@ function downloadExcel(){
   XLSX.writeFile(wb, "rekap_ulangan.xlsx");
 }
 
-// Reset semua data siswa
+/* ---------------- Reset Data ---------------- */
 async function resetSiswa(nama){
   if(!confirm(`Yakin reset semua data ${nama}?`)) return;
   try {
@@ -171,7 +190,6 @@ async function resetSiswa(nama){
   } catch(err){ alert(err.message); }
 }
 
-// Reset data mapel per siswa
 async function resetMapel(nama,mapel){
   if(!confirm(`Yakin reset mapel ${mapel} untuk ${nama}?`)) return;
   try {
@@ -189,13 +207,13 @@ async function resetMapel(nama,mapel){
   } catch(err){ alert(err.message); }
 }
 
-/* -------- Pengaturan Mapel Aktif -------- */
+/* ---------------- Pengaturan Mapel Aktif ---------------- */
 async function fetchMapel(){
   try{
     const res = await fetch(WEB_APP_URL+"?action=mapel");
     const json = await res.json();
     if(json.status==="success"){
-      mapelAktif = json.aktif;
+      mapelAktif = Array.isArray(json.aktif) ? json.aktif : [];
       renderMapel();
     }
   }catch(e){ console.error(e); }
@@ -204,6 +222,7 @@ async function fetchMapel(){
 function renderMapel(){
   const container = document.getElementById("mapelContent");
   container.innerHTML = "";
+  // daftar mapel fix (sinkron dengan siswa.html)
   const semuaMapel = ["Pendidikan Pancasila","Bahasa Indonesia","Matematika","IPAS","Seni Rupa"];
 
   semuaMapel.forEach(m=>{
@@ -216,23 +235,23 @@ function renderMapel(){
 }
 
 async function toggleMapel(mapel){
-  const aktif = !mapelAktif.includes(mapel);
+  const aktif = mapelAktif.includes(mapel) ? false : true;
   try{
     const res = await fetch(WEB_APP_URL, {
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({action:"updateMapel", mapel:mapel, aktif:aktif})
+      body: JSON.stringify({action:"setMapel", mapel:mapel, aktif:aktif})
     });
     const result = await res.json();
     if(result.status==="success"){
       if(aktif){
         if(!mapelAktif.includes(mapel)) mapelAktif.push(mapel);
-      } else {
+      }else{
         mapelAktif = mapelAktif.filter(m=>m!==mapel);
       }
       renderMapel();
       setDebug(result.message);
-    } else alert("Gagal: "+result.message);
+    }else alert("Gagal: "+result.message);
   }catch(err){ alert(err.message); }
 }
 </script>
