@@ -140,8 +140,15 @@ document.getElementById("studentName").addEventListener("change", ()=>{
     document.getElementById("confirmBox").classList.add("d-none");
   }
 });
-function confirmYes(){ currentName = document.getElementById("studentName").value; document.getElementById("confirmBox").classList.add("d-none"); }
-function confirmNo(){ document.getElementById("studentName").value=""; currentName=""; document.getElementById("confirmBox").classList.add("d-none"); }
+function confirmYes(){
+  currentName = document.getElementById("studentName").value;
+  document.getElementById("confirmBox").classList.add("d-none");
+}
+function confirmNo(){
+  document.getElementById("studentName").value="";
+  currentName="";
+  document.getElementById("confirmBox").classList.add("d-none");
+}
 
 // === Ambil soal ===
 async function fetchSoal(){
@@ -194,7 +201,7 @@ async function loadQuestions(){
 async function submitAnswers(){
   const subject = document.getElementById("subjectSelect").value;
   let unanswered = [];
-  
+
   soal[subject].forEach((q,i)=>{
     let sel = document.querySelector(`input[name="q${i}"]:checked`);
     if(!sel) unanswered.push(i);
@@ -207,9 +214,15 @@ async function submitAnswers(){
   }
 
   const btn = document.getElementById("btnSubmit");
+
+  // 🔄 Hapus popup lama kalau ada
+  let oldConfirm = document.getElementById("confirmBoxSubmit");
+  if(oldConfirm) oldConfirm.remove();
+
   btn.disabled = true;
 
   let confirmDiv = document.createElement("div");
+  confirmDiv.id = "confirmBoxSubmit";
   confirmDiv.className = "alert alert-warning mt-3";
   let timeLeft = 30;
   confirmDiv.innerHTML = `
@@ -221,7 +234,7 @@ async function submitAnswers(){
 
   let timer = setInterval(()=>{
     timeLeft--;
-    confirmDiv.querySelector("b").innerText = timeLeft;
+    if(confirmDiv.querySelector("b")) confirmDiv.querySelector("b").innerText = timeLeft;
     if(timeLeft <= 0){
       clearInterval(timer);
       confirmDiv.remove();
@@ -230,12 +243,14 @@ async function submitAnswers(){
     }
   },1000);
 
+  // ❌ Batalkan submit
   confirmDiv.querySelector("#btnNo").onclick = ()=>{
     clearInterval(timer);
     confirmDiv.remove();
-    btn.disabled = false; 
+    btn.disabled = false; // aktifkan lagi tombol
   };
 
+  // ✅ Konfirmasi submit
   confirmDiv.querySelector("#btnYes").onclick = async ()=>{
     clearInterval(timer);
     confirmDiv.remove();
@@ -263,7 +278,7 @@ async function submitAnswers(){
         headers: {"Content-Type":"application/json"}
       });
       let out = await res.json();
-      if(out.status==="error"){ alert(out.data.message); }
+      if(out.status==="error"){ alert(out.message || "Gagal simpan skor!"); }
     } catch(err){ console.error("Gagal kirim data:", err); }
 
     // 🔒 Lock form setelah selesai
@@ -271,6 +286,7 @@ async function submitAnswers(){
   };
 }
 </script>
+
 
 </body>
 </html>
