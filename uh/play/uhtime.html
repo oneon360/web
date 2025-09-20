@@ -85,7 +85,7 @@ const ALL_MAPEL = ["Pendidikan Pancasila","Bahasa Indonesia","Matematika","IPAS"
 let aktifMapel = [];
 let timerInterval;
 
-// === Ambil daftar siswa ===
+// Ambil daftar siswa
 async function fetchSiswa(){
   try{
     const res = await fetch(siswaURL);
@@ -101,7 +101,7 @@ async function fetchSiswa(){
 }
 fetchSiswa();
 
-// === Ambil mapel aktif ===
+// Ambil mapel aktif
 async function fetchMapel(){
   try {
     const res = await fetch(WEB_APP_URL+"?action=mapel");
@@ -110,14 +110,12 @@ async function fetchMapel(){
       aktifMapel = Array.isArray(json.data) ? json.data : [];
       renderMapelOptions();
     }
-  } catch(err){
-    console.error("Fetch mapel error:", err);
-  }
+  } catch(err){ console.error("Fetch mapel error:", err); }
 }
 fetchMapel();
 setInterval(fetchMapel, 30000);
 
-// === Render mapel aktif & nonaktif ===
+// Render mapel
 function renderMapelOptions(){
   const sel = document.getElementById("subjectSelect");
   sel.innerHTML = "<option value=''>-- Pilih Pelajaran --</option>";
@@ -134,33 +132,26 @@ function renderMapelOptions(){
   });
 }
 
-// === Konfirmasi nama ===
+// Konfirmasi nama
 document.getElementById("studentName").addEventListener("change", ()=>{
   const val = document.getElementById("studentName").value;
   if(val){
     document.getElementById("confirmName").innerText = val;
     document.getElementById("confirmBox").classList.remove("d-none");
-  }else{
+  } else {
     document.getElementById("confirmBox").classList.add("d-none");
   }
 });
-function confirmYes(){
-  currentName = document.getElementById("studentName").value;
-  document.getElementById("confirmBox").classList.add("d-none");
-}
-function confirmNo(){
-  document.getElementById("studentName").value="";
-  currentName="";
-  document.getElementById("confirmBox").classList.add("d-none");
-}
+function confirmYes(){ currentName = document.getElementById("studentName").value; document.getElementById("confirmBox").classList.add("d-none"); }
+function confirmNo(){ document.getElementById("studentName").value=""; currentName=""; document.getElementById("confirmBox").classList.add("d-none"); }
 
-// === Ambil soal ===
+// Ambil soal
 async function fetchSoal(){
   const res = await fetch(soalURL);
   soal = await res.json();
 }
 
-// === Load soal ===
+// Load soal
 async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
@@ -172,16 +163,13 @@ async function loadQuestions(){
       body: JSON.stringify({action:"cek", nama:currentName, mapel:subject})
     });
     let res = await cek.json();
-    if(res.status==="success" && res.data.sudah){
-      alert("⚠️ "+currentName+" sudah mengerjakan "+subject+".");
-      return;
-    }
+    if(res.status==="success" && res.data.sudah){ alert("⚠️ "+currentName+" sudah mengerjakan "+subject+"."); return; }
   }catch(e){ console.error("Cek gagal:", e); }
 
   if(Object.keys(soal).length===0) await fetchSoal();
   if(!soal[subject]){ alert("Soal untuk mapel ini belum tersedia!"); return; }
 
-  // === tampilkan header info ulangan ===
+  // Tampilkan header info
   const infoBox = document.getElementById("quizInfo");
   infoBox.classList.remove("d-none");
   infoBox.innerHTML = `
@@ -189,7 +177,6 @@ async function loadQuestions(){
     <p>Jumlah Soal: <b>${soal[subject].length}</b></p>
     <p>Sisa Waktu: <b id="timer">30:00</b></p>
   `;
-
   startTimer(30*60); // 30 menit
 
   const container = document.getElementById("questionContainer");
@@ -198,12 +185,11 @@ async function loadQuestions(){
     let html = `<div class="question-box" id="qbox${i}"><p><b>${i+1}. ${q.text}</b></p>`;
     if(q.image) html += `<img src="${q.image}" alt="Soal Gambar">`;
     if(q.table) html += q.table;
-    html += q.options.map((opt,j)=>
-      `<div class="form-check">
+    html += q.options.map((opt,j)=>`
+      <div class="form-check">
         <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
         <label class="form-check-label">${opt}</label>
-      </div>`
-    ).join("");
+      </div>`).join("");
     html += `</div>`;
     container.innerHTML += html;
   });
@@ -211,15 +197,14 @@ async function loadQuestions(){
   document.getElementById("quizForm").classList.remove("d-none");
 }
 
-// === Timer 30 menit ===
+// Timer 30 menit
 function startTimer(duration){
   clearInterval(timerInterval);
   let time = duration;
   timerInterval = setInterval(()=>{
     let minutes = Math.floor(time/60);
     let seconds = time%60;
-    document.getElementById("timer").textContent = 
-      `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+    document.getElementById("timer").textContent = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
     if(time<=0){
       clearInterval(timerInterval);
       alert("⏰ Waktu habis! Jawaban akan dikumpulkan otomatis.");
@@ -229,8 +214,9 @@ function startTimer(duration){
   },1000);
 }
 
-// === Submit jawaban + konfirmasi popup ===
-async function submitAnswers(){
+// === Perbaikan tombol submit + popup konfirmasi ===
+document.getElementById("btnSubmit").addEventListener("click", async function(){
+  const btn = this;
   const subject = document.getElementById("subjectSelect").value;
   let unanswered = [];
 
@@ -238,15 +224,13 @@ async function submitAnswers(){
     if(!document.querySelector(`input[name="q${i}"]:checked`)) unanswered.push(i);
   });
 
-  if(unanswered.length > 0){
+  if(unanswered.length>0){
     document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth", block:"center"});
     alert("⚠️ Masih ada soal yang belum dijawab!");
     return;
   }
 
-  const btn = document.getElementById("btnSubmit");
-
-  // Hapus popup konfirmasi lama
+  // Hapus popup lama
   let oldConfirm = document.getElementById("confirmBoxSubmit");
   if(oldConfirm) oldConfirm.remove();
 
@@ -254,36 +238,32 @@ async function submitAnswers(){
   let confirmDiv = document.createElement("div");
   confirmDiv.id = "confirmBoxSubmit";
   confirmDiv.className = "alert alert-warning mt-3";
-  confirmDiv.dataset.yesClicked = "false";
-  let timeLeft = 30;
   confirmDiv.innerHTML = `
-    <p>⏳ Apakah kamu yakin ingin mengakhiri ulangan? <b>${timeLeft}</b> detik untuk konfirmasi.</p>
+    <p>⏳ Apakah kamu yakin ingin mengakhiri ulangan? <b id="confirmTimer">30</b> detik untuk konfirmasi.</p>
     <button type="button" id="btnYes" class="btn btn-danger btn-sm me-2">Ya, saya yakin</button>
     <button type="button" id="btnNo" class="btn btn-secondary btn-sm">Tidak, periksa lagi</button>
   `;
   document.getElementById("quizForm").appendChild(confirmDiv);
 
-  // Timer countdown
+  btn.disabled = true;
+  let timeLeft = 30;
   let timer = setInterval(()=>{
     timeLeft--;
-    confirmDiv.querySelector("b").innerText = timeLeft;
-    if(timeLeft <= 0){
+    document.getElementById("confirmTimer").innerText = timeLeft;
+    if(timeLeft<=0){
       clearInterval(timer);
       confirmDiv.remove();
+      btn.disabled = false;
     }
   },1000);
 
-  // Tombol Tidak
-  confirmDiv.querySelector("#btnNo").onclick = () => {
+  confirmDiv.querySelector("#btnNo").addEventListener("click", ()=>{
     clearInterval(timer);
     confirmDiv.remove();
     btn.disabled = false;
-  };
+  });
 
-  // Tombol Ya
-  confirmDiv.querySelector("#btnYes").onclick = async () => {
-    if(confirmDiv.dataset.yesClicked === "true") return;
-    confirmDiv.dataset.yesClicked = "true";
+  confirmDiv.querySelector("#btnYes").addEventListener("click", async ()=>{
     clearInterval(timer);
     confirmDiv.remove();
     btn.disabled = true;
@@ -311,16 +291,16 @@ async function submitAnswers(){
       });
       let out = await res.json();
       if(out.status==="error") alert(out.message || "Gagal simpan skor!");
-    } catch(err) { console.error(err); }
+    } catch(err){ console.error(err); }
 
     document.getElementById("quizForm").innerHTML = "<div class='alert alert-success'>✅ Ulangan selesai. Terima kasih!</div>";
     clearInterval(timerInterval);
-  };
-}
+  });
+});
 
-// Hubungkan tombol start dan submit
+// Hubungkan tombol start
 document.getElementById("btnStart").addEventListener("click", loadQuestions);
-document.getElementById("btnSubmit").addEventListener("click", submitAnswers);
+
 </script>
 </body>
 </html>
