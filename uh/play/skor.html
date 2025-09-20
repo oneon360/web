@@ -9,6 +9,7 @@
   <style>
     body { background:#f8f9fa; }
     .small-muted { font-size:0.85rem; color:#666; }
+    td .btn-sm { padding:2px 6px; font-size:0.75rem; }
   </style>
 </head>
 <body class="bg-light">
@@ -38,7 +39,7 @@
 const ADMIN_PASSWORD = "12345";
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwuERqx4rx2qqRO0xipSENzwqSfMbPbbaBfa6nLBoAAk80VVlvvvmRvjZqo9lDwcJ06eg/exec"; 
 
-let hasil = []; // array data siswa
+let hasil = [];
 
 function loginAdmin(){
   if(document.getElementById("adminPass").value === ADMIN_PASSWORD){
@@ -51,8 +52,7 @@ function loginAdmin(){
 }
 
 function setDebug(msg){
-  const el = document.getElementById("debugLog");
-  el.textContent = msg;
+  document.getElementById("debugLog").textContent = msg;
   console.debug(msg);
 }
 
@@ -63,10 +63,10 @@ function normalizeRow(row){
   if(row && typeof row === "object"){
     const map={}; for(const k of Object.keys(row)){ map[k.toLowerCase().trim()] = row[k]; }
     return {
-      nama: map.nama || map.name || map['nama siswa'] || "",
-      mapel: map.mapel || map.subject || map.mata_pelajaran || "",
-      skor: Number(map.skor || map.score || map.nilai || 0) || 0,
-      tanggal: map.tanggal || map.date || map.waktu || ""
+      nama: map.nama || "",
+      mapel: map.mapel || "",
+      skor: Number(map.skor||0) || 0,
+      tanggal: map.tanggal || ""
     };
   }
   return {nama:"", mapel:"", skor:0, tanggal:""};
@@ -77,30 +77,24 @@ function toArraySafe(data){
   if (!data) return [];
   if (typeof data === "object"){
     const keys = Object.keys(data);
-    const allNumeric = keys.length > 0 && keys.every(k => /^\d+$/.test(k));
-    if(allNumeric){ return keys.map(k => data[k]); }
+    const allNumeric = keys.length>0 && keys.every(k=>/^\d+$/.test(k));
+    if(allNumeric) return keys.map(k=>data[k]);
     return [data];
   }
   return [];
 }
 
 async function fetchData(){
-  setDebug("Mengambil data dari server...");
   try {
     const res = await fetch(WEB_APP_URL);
     const text = await res.text();
     let data = JSON.parse(text);
-    const arr = toArraySafe(data);
-    hasil = arr.map(r => normalizeRow(r));
-    if(hasil.length === 0){
-      document.getElementById("rekapContent").innerHTML = "<p>Belum ada data siswa.</p>";
-      return;
-    }
+    hasil = toArraySafe(data).map(r => normalizeRow(r));
     renderTable();
     setDebug(`Data berhasil dimuat (${hasil.length} baris).`);
   } catch(err){
-    console.error(err);
-    alert("Gagal mengambil data: " + err.message);
+    alert("Gagal ambil data: " + err.message);
+    setDebug(err.message);
   }
 }
 
@@ -110,33 +104,39 @@ function renderTable(){
 
   const grouped = {};
   hasil.forEach(h => {
-    const key = (h.nama || "(Tanpa nama)").toString();
+    const key = h.nama || "(Tanpa nama)";
     if(!grouped[key]) grouped[key] = [];
     grouped[key].push(h);
   });
 
   for(const nama in grouped){
     const rows = grouped[nama];
-    let total = 0;
-    let count = rows.length;
+    let total=0;
+    let count=rows.length;
 
     let table = `
       <div class="border rounded p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center">
           <h5 class="mt-1 mb-2">${nama}</h5>
-          <button class="btn btn-sm btn-danger" onclick="resetSiswa('${nama.replace(/'/g,"\\'")}')">🗑 Reset ${nama}</button>
+          <button class="btn btn-sm btn-danger" onclick="resetSiswa('${nama.replace(/'/g,"\\'")}')">🗑 Reset Semua</button>
         </div>
         <table class="table table-sm table-bordered">
           <thead class="table-light">
-            <tr><th>Mapel</th><th>Skor</th><th>Waktu</th></tr>
+            <tr><th>Mapel</th><th>Skor</th><th>Waktu</th><th>Aksi</th></tr>
           </thead>
           <tbody>
     `;
+
     rows.forEach(r => {
-      const skor = Number(r.skor) || 0;
-      total += skor;
-      table += `<tr><td>${escapeHtml(r.mapel)}</td><td>${escapeHtml(skor)}</td><td>${escapeHtml(r.tanggal)}</td></tr>`;
+      total += r.skor;
+      table += `<tr>
+        <td>${escapeHtml(r.mapel)}</td>
+        <td>${r.skor}</td>
+        <td>${escapeHtml(r.tanggal)}</td>
+        <td><button class="btn btn-sm btn-warning" onclick="resetMapel('${nama.replace(/'/g,"\\'")}','${escapeHtml(r.mapel)}')">Reset Mapel</button></td>
+      </tr>`;
     });
+
     const rata = (count===0) ? "0.00" : (total/count).toFixed(2);
     table += `
           </tbody>
@@ -149,39 +149,51 @@ function renderTable(){
 }
 
 function escapeHtml(s){
-  if(s===null||s===undefined) return "";
-  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-                  .replaceAll('"',"&quot;").replaceAll("'","&#39;");
+  if(!s) return "";
+  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;")
+    .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#39;");
 }
 
 function downloadExcel(){
-  if(hasil.length === 0){ alert("Belum ada data untuk diekspor."); return; }
+  if(hasil.length===0){ alert("Belum ada data."); return; }
   const ws = XLSX.utils.json_to_sheet(hasil);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Rekap");
   XLSX.writeFile(wb, "rekap_ulangan.xlsx");
 }
 
-/** Reset data siswa di array + database Google Sheet */
 async function resetSiswa(nama){
-  if(!confirm(`Apakah Anda yakin ingin mereset data untuk ${nama}?`)) return;
+  if(!confirm(`Yakin reset semua data ${nama}?`)) return;
   try {
     const res = await fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({ action:"reset", nama:nama }),
-      headers: { "Content-Type":"application/json" }
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({action:"resetSiswa", nama:nama})
     });
     const result = await res.json();
-    if(result.status === "success"){
-      hasil = hasil.filter(h => h.nama !== nama);
+    if(result.status==="success"){
+      hasil = hasil.filter(h => h.nama!==nama);
       renderTable();
-      setDebug(`Data siswa "${nama}" telah dihapus dari database.`);
-    } else {
-      alert("Gagal reset siswa: " + result.message);
-    }
-  } catch(err){
-    alert("Error reset siswa: " + err.message);
-  }
+      setDebug(result.message);
+    } else alert("Gagal: "+result.message);
+  } catch(err){ alert(err.message); }
+}
+
+async function resetMapel(nama,mapel){
+  if(!confirm(`Yakin reset mapel ${mapel} untuk ${nama}?`)) return;
+  try {
+    const res = await fetch(WEB_APP_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({action:"resetMapel", nama:nama, mapel:mapel})
+    });
+    const result = await res.json();
+    if(result.status==="success"){
+      hasil = hasil.filter(h => !(h.nama===nama && h.mapel===mapel));
+      renderTable();
+      setDebug(result.message);
+    } else alert("Gagal: "+result.message);
+  } catch(err){ alert(err.message); }
 }
 </script>
 </body>
