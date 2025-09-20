@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
@@ -17,61 +17,61 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
 <body class="bg-light">
 <div class="container py-4">
 
-<div class="kop">
-  <img src="https://oneon360.github.io/web/uh/logo-sdn1kk-wartatrans.png" alt="Logo Sekolah">
-  <h2>SDN 1 KANDANGAN KOTA</h2>
-  <p>Jl. Jendral Achmad Yani, Kecamatan Kandangan</p>
-  <p>NISN: 30301968</p>
-</div>
-
-<div class="text-center">
-  <h4>ULANGAN HARIAN KELAS 6</h4>
-  <p>Tahun Pelajaran 2025</p>
-</div>
-
-<!-- Petunjuk pengerjaan -->
-<div class="alert alert-warning">
-  <h5>📌 Petunjuk Pengerjaan:</h5>
-  <ul>
-    <li>Pilih nama lengkap sebelum memulai.</li>
-    <li>Pilih mata pelajaran yang aktif untuk dikerjakan.</li>
-    <li>Mapel nonaktif akan berwarna redup dan tidak bisa dipilih.</li>
-    <li>Kerjakan dengan jujur tanpa bantuan orang lain.</li>
-    <li>Setiap mapel hanya bisa dikerjakan <b>1 kali</b>.</li>
-  </ul>
-</div>
-
-<div class="card p-4 shadow">
-  <h5>📝 Ulangan Siswa</h5>
-  <div class="mb-3">
-    <label>Nama Siswa/siswi</label>
-    <select id="studentName" class="form-select">
-      <option value="">-- Pilih Nama --</option>
-    </select>
+  <div class="kop">
+    <img src="https://oneon360.github.io/web/uh/logo-sdn1kk-wartatrans.png" alt="Logo Sekolah">
+    <h2>SDN 1 KANDANGAN KOTA</h2>
+    <p>Jl. Jendral Achmad Yani, Kecamatan Kandangan</p>
+    <p>NISN: 30301968</p>
   </div>
-  <div id="confirmBox" class="alert alert-info d-none">
-    Apakah benar nama kamu <b><span id="confirmName"></span></b>? 
-    <button class="btn btn-success btn-sm" onclick="confirmYes()">Ya</button>
-    <button class="btn btn-danger btn-sm" onclick="confirmNo()">Tidak</button>
+
+  <div class="text-center">
+    <h4>ULANGAN HARIAN KELAS 6</h4>
+    <p>Tahun Pelajaran 2025</p>
   </div>
-  <div class="mb-3">
-    <label>Mata Pelajaran</label>
-    <select id="subjectSelect" class="form-select">
-      <option value="">-- Pilih Pelajaran --</option>
-    </select>
+
+  <!-- Petunjuk pengerjaan -->
+  <div class="alert alert-warning">
+    <h5>📌 Petunjuk Pengerjaan:</h5>
+    <ul>
+      <li>Pilih nama lengkap sebelum memulai.</li>
+      <li>Pilih mata pelajaran yang aktif untuk dikerjakan.</li>
+      <li>Mapel nonaktif akan berwarna redup dan tidak bisa dipilih.</li>
+      <li>Kerjakan dengan jujur tanpa bantuan orang lain.</li>
+      <li>Setiap mapel hanya bisa dikerjakan <b>1 kali</b>.</li>
+    </ul>
   </div>
-  <button class="btn btn-primary mb-3" id="btnStart" onclick="loadQuestions()">Mulai</button>
 
-  <!-- info header soal -->
-  <div id="quizInfo" class="alert alert-info d-none"></div>
+  <div class="card p-4 shadow">
+    <h5>📝 Ulangan Siswa</h5>
+    <div class="mb-3">
+      <label>Nama Siswa/siswi</label>
+      <select id="studentName" class="form-select">
+        <option value="">-- Pilih Nama --</option>
+      </select>
+    </div>
+    <div id="confirmBox" class="alert alert-info d-none">
+      Apakah benar nama kamu <b><span id="confirmName"></span></b>? 
+      <button class="btn btn-success btn-sm" onclick="confirmYes()">Ya</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmNo()">Tidak</button>
+    </div>
+    <div class="mb-3">
+      <label>Mata Pelajaran</label>
+      <select id="subjectSelect" class="form-select">
+        <option value="">-- Pilih Pelajaran --</option>
+      </select>
+    </div>
+    <button class="btn btn-primary mb-3" id="btnStart">Mulai</button>
 
-  <form id="quizForm" class="d-none">
-    <div id="questionContainer"></div>
-    <button type="button" class="btn btn-success mt-3" id="btnSubmit" onclick="submitAnswers()">Kumpulkan Jawaban</button>
-  </form>
+    <!-- info header soal -->
+    <div id="quizInfo" class="alert alert-info d-none"></div>
 
-  <div id="result" class="alert alert-info mt-3 d-none"></div>
-</div>
+    <form id="quizForm" class="d-none">
+      <div id="questionContainer"></div>
+      <button type="button" class="btn btn-success mt-3" id="btnSubmit">Kumpulkan Jawaban</button>
+    </form>
+
+    <div id="result" class="alert alert-info mt-3 d-none"></div>
+  </div>
 </div>
 
 <script>
@@ -229,14 +229,13 @@ function startTimer(duration){
   },1000);
 }
 
-// === Submit jawaban ===
+// === Submit jawaban + konfirmasi popup ===
 async function submitAnswers(){
   const subject = document.getElementById("subjectSelect").value;
   let unanswered = [];
 
   soal[subject].forEach((q,i)=>{
-    let sel = document.querySelector(`input[name="q${i}"]:checked`);
-    if(!sel) unanswered.push(i);
+    if(!document.querySelector(`input[name="q${i}"]:checked`)) unanswered.push(i);
   });
 
   if(unanswered.length > 0){
@@ -247,44 +246,44 @@ async function submitAnswers(){
 
   const btn = document.getElementById("btnSubmit");
 
-  // Hapus popup konfirmasi lama jika ada
+  // Hapus popup konfirmasi lama
   let oldConfirm = document.getElementById("confirmBoxSubmit");
   if(oldConfirm) oldConfirm.remove();
 
-  // === Buat popup konfirmasi baru ===
+  // Buat popup baru
   let confirmDiv = document.createElement("div");
   confirmDiv.id = "confirmBoxSubmit";
   confirmDiv.className = "alert alert-warning mt-3";
-  confirmDiv.dataset.yesClicked = "false"; // flag "Ya"
+  confirmDiv.dataset.yesClicked = "false";
   let timeLeft = 30;
   confirmDiv.innerHTML = `
     <p>⏳ Apakah kamu yakin ingin mengakhiri ulangan? <b>${timeLeft}</b> detik untuk konfirmasi.</p>
-    <button id="btnYes" class="btn btn-danger btn-sm me-2">Ya, saya yakin</button>
-    <button id="btnNo" class="btn btn-secondary btn-sm">Tidak, periksa lagi</button>
+    <button type="button" id="btnYes" class="btn btn-danger btn-sm me-2">Ya, saya yakin</button>
+    <button type="button" id="btnNo" class="btn btn-secondary btn-sm">Tidak, periksa lagi</button>
   `;
   document.getElementById("quizForm").appendChild(confirmDiv);
 
+  // Timer countdown
   let timer = setInterval(()=>{
     timeLeft--;
-    if(confirmDiv.querySelector("b")) confirmDiv.querySelector("b").innerText = timeLeft;
+    confirmDiv.querySelector("b").innerText = timeLeft;
     if(timeLeft <= 0){
       clearInterval(timer);
       confirmDiv.remove();
     }
   },1000);
 
-  // Tombol "Tidak" bisa diklik berkali-kali
-  confirmDiv.querySelector("#btnNo").onclick = ()=>{
+  // Tombol Tidak
+  confirmDiv.querySelector("#btnNo").onclick = () => {
     clearInterval(timer);
     confirmDiv.remove();
     btn.disabled = false;
   };
 
-  // Tombol "Ya" hanya diproses sekali
-  confirmDiv.querySelector("#btnYes").onclick = async ()=>{
+  // Tombol Ya
+  confirmDiv.querySelector("#btnYes").onclick = async () => {
     if(confirmDiv.dataset.yesClicked === "true") return;
     confirmDiv.dataset.yesClicked = "true";
-
     clearInterval(timer);
     confirmDiv.remove();
     btn.disabled = true;
@@ -298,30 +297,30 @@ async function submitAnswers(){
     document.getElementById("result").classList.remove("d-none");
     document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
 
-    try{
+    try {
       let res = await fetch(WEB_APP_URL, {
-        method: "POST",
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           action:"submit",
           nama: currentName,
           mapel: subject,
           skor: score,
           tanggal: new Date().toLocaleString()
-        }),
-        headers: {"Content-Type":"application/json"}
+        })
       });
       let out = await res.json();
-      if(out.status==="error"){ alert(out.message || "Gagal simpan skor!"); }
-    } catch(err){ console.error("Gagal kirim data:", err); }
+      if(out.status==="error") alert(out.message || "Gagal simpan skor!");
+    } catch(err) { console.error(err); }
 
     document.getElementById("quizForm").innerHTML = "<div class='alert alert-success'>✅ Ulangan selesai. Terima kasih!</div>";
-    clearInterval(timerInterval); // stop timer
+    clearInterval(timerInterval);
   };
 }
 
-// Tambahkan event listener tombol submit agar bisa klik ulang
+// Hubungkan tombol start dan submit
+document.getElementById("btnStart").addEventListener("click", loadQuestions);
 document.getElementById("btnSubmit").addEventListener("click", submitAnswers);
-
 </script>
 </body>
 </html>
