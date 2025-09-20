@@ -81,7 +81,7 @@ const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AK
 const ALL_MAPEL = ["Pendidikan Pancasila","Bahasa Indonesia","Matematika","IPAS","Seni Rupa"];
 let aktifMapel = [];
 
-// Ambil daftar siswa
+// === Ambil daftar siswa ===
 async function fetchSiswa(){
   try{
     const res = await fetch(siswaURL);
@@ -97,7 +97,7 @@ async function fetchSiswa(){
 }
 fetchSiswa();
 
-// Ambil daftar mapel aktif
+// === Ambil mapel aktif ===
 async function fetchMapel(){
   try {
     const res = await fetch(WEB_APP_URL+"?action=mapel");
@@ -113,7 +113,7 @@ async function fetchMapel(){
 fetchMapel();
 setInterval(fetchMapel, 30000);
 
-// Render mapel aktif & nonaktif
+// === Render mapel aktif & nonaktif ===
 function renderMapelOptions(){
   const sel = document.getElementById("subjectSelect");
   sel.innerHTML = "<option value=''>-- Pilih Pelajaran --</option>";
@@ -130,7 +130,7 @@ function renderMapelOptions(){
   });
 }
 
-// Konfirmasi nama
+// === Konfirmasi nama ===
 document.getElementById("studentName").addEventListener("change", ()=>{
   const val = document.getElementById("studentName").value;
   if(val){
@@ -143,26 +143,30 @@ document.getElementById("studentName").addEventListener("change", ()=>{
 function confirmYes(){ currentName = document.getElementById("studentName").value; document.getElementById("confirmBox").classList.add("d-none"); }
 function confirmNo(){ document.getElementById("studentName").value=""; currentName=""; document.getElementById("confirmBox").classList.add("d-none"); }
 
-// Ambil soal
+// === Ambil soal ===
 async function fetchSoal(){
   const res = await fetch(soalURL);
   soal = await res.json();
 }
 
-// Load soal
+// === Load soal (cek dulu apakah sudah pernah isi) ===
 async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
 
-  // cek sudah ikut ulangan atau belum
+  // cek ke server pakai POST
   try{
-    let cek = await fetch(WEB_APP_URL+"?action=cek&nama="+encodeURIComponent(currentName)+"&mapel="+encodeURIComponent(subject));
+    let cek = await fetch(WEB_APP_URL, {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({action:"cek", nama:currentName, mapel:subject})
+    });
     let res = await cek.json();
     if(res.status==="success" && res.data.sudah){
       alert("⚠️ "+currentName+" sudah mengerjakan "+subject+".");
       return; // stop, tidak tampilkan soal
     }
-  }catch(e){ console.error(e); }
+  }catch(e){ console.error("Cek gagal:", e); }
 
   if(Object.keys(soal).length===0) await fetchSoal();
   if(!soal[subject]){ alert("Soal untuk mapel ini belum tersedia!"); return; }
@@ -186,7 +190,7 @@ async function loadQuestions(){
   document.getElementById("quizForm").classList.remove("d-none");
 }
 
-// Submit jawaban
+// === Submit jawaban ===
 async function submitAnswers(){
   const subject = document.getElementById("subjectSelect").value;
   let unanswered = [];
@@ -202,7 +206,6 @@ async function submitAnswers(){
     return;
   }
 
-  // disable tombol sementara
   const btn = document.getElementById("btnSubmit");
   btn.disabled = true;
 
@@ -222,7 +225,7 @@ async function submitAnswers(){
     if(timeLeft <= 0){
       clearInterval(timer);
       confirmDiv.remove();
-      btn.disabled = false; // tombol bisa digunakan lagi
+      btn.disabled = false; 
       alert("❌ Waktu konfirmasi habis, tekan Kumpulkan lagi jika ingin mengakhiri.");
     }
   },1000);
@@ -230,7 +233,7 @@ async function submitAnswers(){
   confirmDiv.querySelector("#btnNo").onclick = ()=>{
     clearInterval(timer);
     confirmDiv.remove();
-    btn.disabled = false; // tombol aktif lagi
+    btn.disabled = false; 
   };
 
   confirmDiv.querySelector("#btnYes").onclick = async ()=>{
@@ -260,10 +263,14 @@ async function submitAnswers(){
         headers: {"Content-Type":"application/json"}
       });
       let out = await res.json();
-      if(out.status==="error"){ alert(out.message); }
+      if(out.status==="error"){ alert(out.data.message); }
     } catch(err){ console.error("Gagal kirim data:", err); }
+
+    // 🔒 Lock form setelah selesai
+    document.getElementById("quizForm").innerHTML = "<div class='alert alert-success'>✅ Ulangan selesai. Terima kasih!</div>";
   };
 }
 </script>
+
 </body>
 </html>
