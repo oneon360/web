@@ -21,15 +21,18 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
   <h2>SDN 1 KANDANGAN KOTA</h2>
   <p>Jl. Jendral Achmad Yani, Kecamatan Kandangan</p>
   <p>NISN: 30301968</p>
-
 </div>
+
+<div class="text-center">
   <h4>ULANGAN HARIAN KELAS 6</h4>
   <p>Tahun Pelajaran 2025</p>
+</div>
+
 <!-- Informasi cara pengerjaan soal -->
 <div class="alert alert-warning">
   <h5>📌 Petunjuk Pengerjaan:</h5>
   <ul>
-    <li>Isi nama lengkap sebelum memulai.</li>
+    <li>Pilih nama lengkap sebelum memulai.</li>
     <li>Pilih mata pelajaran yang akan dikerjakan.</li>
     <li>Baca dan pahami soal dengan cermat dan teliti.</li>
     <li>Pilihlah jawaban dengan menekan opsi check box.</li>
@@ -43,13 +46,20 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
 <div class="card p-4 shadow">
   <h5>📝 Ulangan Siswa</h5>
   <div class="mb-3">
-    <label>Nama Siswa</label>
-    <input type="text" id="studentName" class="form-control">
+    <label>Nama Siswa/siswi</label>
+    <select id="studentName" class="form-select">
+      <option value="">-- Pilih Nama --</option>
+    </select>
+  </div>
+  <div id="confirmBox" class="alert alert-info d-none">
+    Apakah benar nama kamu <b><span id="confirmName"></span></b>? 
+    <button class="btn btn-success btn-sm" onclick="confirmYes()">Ya</button>
+    <button class="btn btn-danger btn-sm" onclick="confirmNo()">Tidak</button>
   </div>
   <div class="mb-3">
     <label>Mata Pelajaran</label>
     <select id="subjectSelect" class="form-select">
-      <option value="">-- Pilih --</option>
+      <option value="">-- Pilih Pelajaran --</option>
       <option>Pendidikan Pancasila</option>
       <option>Bahasa Indonesia</option>
       <option>Matematika</option>
@@ -70,10 +80,48 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
 
 <script>
 let soal = {};
+let currentName = "";
 const soalURL = "https://oneon360.github.io/web/uh/bi-ipas.json";
-
+const siswaURL = "https://oneon360.github.io/web/uh/play/nama.json";
 // Ganti dengan URL Web App Anda
-const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycbwuERqx4rx2qqRO0xipSENzwqSfMbPbbaBfa6nLBoAAk80VVlvvvmRvjZqo9lDwcJ06eg/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwuERqx4rx2qqRO0xipSENzwqSfMbPbbaBfa6nLBoAAk80VVlvvvmRvjZqo9lDwcJ06eg/exec";
+
+// Ambil daftar siswa
+async function fetchSiswa(){
+  try{
+    const res = await fetch(siswaURL);
+    const data = await res.json();
+    let sel = document.getElementById("studentName");
+    data.forEach(s=>{
+      let opt = document.createElement("option");
+      opt.value = s.nama;
+      opt.textContent = s.nama;
+      sel.appendChild(opt);
+    });
+  }catch(e){ console.error(e); }
+}
+fetchSiswa();
+
+// Saat pilih nama
+document.getElementById("studentName").addEventListener("change", ()=>{
+  const val = document.getElementById("studentName").value;
+  if(val){
+    document.getElementById("confirmName").innerText = val;
+    document.getElementById("confirmBox").classList.remove("d-none");
+  }else{
+    document.getElementById("confirmBox").classList.add("d-none");
+  }
+});
+
+function confirmYes(){
+  currentName = document.getElementById("studentName").value;
+  document.getElementById("confirmBox").classList.add("d-none");
+}
+function confirmNo(){
+  document.getElementById("studentName").value="";
+  currentName="";
+  document.getElementById("confirmBox").classList.add("d-none");
+}
 
 // Ambil soal
 async function fetchSoal(){
@@ -88,15 +136,17 @@ async function fetchSoal(){
 
 async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
-  const name = document.getElementById("studentName").value.trim();
-  if(!subject || !name){ alert("Isi nama & pilih mapel!"); return; }
+  if(!subject || !currentName){ alert("Isi nama & pilih mapel!"); return; }
 
-  // cek localStorage apakah sudah pernah dikerjakan
-  let key = name + "_" + subject;
-  if(localStorage.getItem(key)){
-    alert("⚠️ Kamu sudah mengerjakan ulangan untuk mata pelajaran ini. Hubungi guru jika perlu mengulang.");
-    return;
-  }
+  // cek ke Google Sheets apakah nama+mapel sudah digunakan
+  try{
+    let cek = await fetch(WEB_APP_URL+"?action=cek&nama="+encodeURIComponent(currentName)+"&mapel="+encodeURIComponent(subject));
+    let res = await cek.json();
+    if(res.status==="used"){
+      alert("⚠️ Nama "+currentName+" sudah mengerjakan "+subject+". Hubungi guru untuk reset.");
+      return;
+    }
+  }catch(e){ console.error(e); }
 
   if(Object.keys(soal).length===0) await fetchSoal();
   if(!soal[subject]){ alert("Soal untuk mapel ini belum tersedia!"); return; }
@@ -122,34 +172,34 @@ async function loadQuestions(){
 
 async function submitAnswers(){
   const subject = document.getElementById("subjectSelect").value;
-  const name = document.getElementById("studentName").value.trim();
   let score = 0;
-
   soal[subject].forEach((q,i)=>{
     let sel = document.querySelector(`input[name="q${i}"]:checked`);
     if(sel && sel.value.toLowerCase() === q.answer.toLowerCase()) score += 10;
   });
 
   document.getElementById("result").classList.remove("d-none");
-  document.getElementById("result").innerText = `${name} mendapat skor ${score}`;
-
-  // Simpan status sudah mengerjakan di localStorage
-  let key = name + "_" + subject;
-  localStorage.setItem(key, "done");
+  document.getElementById("result").innerText = `${currentName} mendapat skor ${score}`;
 
   // Kirim ke Google Sheets via Web App
   try{
-    await fetch(WEB_APP_URL, {
+    let res = await fetch(WEB_APP_URL, {
       method: "POST",
       body: JSON.stringify({
-        nama: name,
+        action:"submit",
+        nama: currentName,
         mapel: subject,
         skor: score,
         tanggal: new Date().toLocaleString()
       }),
       headers: {"Content-Type":"application/json"}
     });
-    console.log("Data berhasil dikirim ke Google Sheets");
+    let out = await res.json();
+    if(out.status==="error"){
+      alert(out.message);
+    } else {
+      console.log("Data berhasil dikirim ke Google Sheets");
+    }
   } catch(err){
     console.error("Gagal kirim data:", err);
   }
