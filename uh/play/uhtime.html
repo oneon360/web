@@ -246,12 +246,16 @@ async function submitAnswers(){
   }
 
   const btn = document.getElementById("btnSubmit");
+
+  // Hapus popup konfirmasi lama jika ada
   let oldConfirm = document.getElementById("confirmBoxSubmit");
   if(oldConfirm) oldConfirm.remove();
 
+  // === Buat popup konfirmasi baru ===
   let confirmDiv = document.createElement("div");
   confirmDiv.id = "confirmBoxSubmit";
   confirmDiv.className = "alert alert-warning mt-3";
+  confirmDiv.dataset.yesClicked = "false"; // flag "Ya"
   let timeLeft = 30;
   confirmDiv.innerHTML = `
     <p>⏳ Apakah kamu yakin ingin mengakhiri ulangan? <b>${timeLeft}</b> detik untuk konfirmasi.</p>
@@ -269,13 +273,18 @@ async function submitAnswers(){
     }
   },1000);
 
+  // Tombol "Tidak" bisa diklik berkali-kali
   confirmDiv.querySelector("#btnNo").onclick = ()=>{
     clearInterval(timer);
     confirmDiv.remove();
     btn.disabled = false;
   };
 
+  // Tombol "Ya" hanya diproses sekali
   confirmDiv.querySelector("#btnYes").onclick = async ()=>{
+    if(confirmDiv.dataset.yesClicked === "true") return;
+    confirmDiv.dataset.yesClicked = "true";
+
     clearInterval(timer);
     confirmDiv.remove();
     btn.disabled = true;
@@ -309,6 +318,10 @@ async function submitAnswers(){
     clearInterval(timerInterval); // stop timer
   };
 }
+
+// Tambahkan event listener tombol submit agar bisa klik ulang
+document.getElementById("btnSubmit").addEventListener("click", submitAnswers);
+
 </script>
 </body>
 </html>
