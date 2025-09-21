@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Soal → JSON Editor</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body{background:#f8f9fa}
+  .question-card{margin-bottom:12px}
+  pre.json-preview{max-height:400px; overflow:auto; background:#0d1117; color:#c9f1d9; padding:12px; border-radius:6px;}
+  .small-muted{font-size:0.85rem;color:#666}
+</style>
+</head>
+<body class="p-4">
+  <div class="container">
+    <h3>Editor Soal → JSON</h3>
+    <p class="small-muted">Buat soal di sini lalu ekspor menjadi format JSON yang siap dipakai di aplikasi.</p>
+
+    <div class="card mb-3 p-3">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-6">
+          <label class="form-label">Nama Mapel (subject key)</label>
+          <input id="subjectName" class="form-control" placeholder="Contoh: Pendidikan Pancasila">
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <button id="btnAddQ" class="btn btn-primary me-2">+ Tambah Soal Baru</button>
+          <select id="qType" class="form-select w-auto me-2">
+            <option value="text">Text (pilihan ganda)</option>
+            <option value="paragraph">Paragraph (pilihan ganda)</option>
+            <option value="image">Image (pilihan ganda)</option>
+            <option value="table">Table (pilihan ganda)</option>
+          </select>
+          <button id="btnExport" class="btn btn-success">Ekspor JSON / Unduh</button>
+        </div>
+      </div>
+      <div class="form-text mt-2">Nota: semua soal dibuat sebagai objek dengan field sesuai contoh: <code>type,text,options,answer</code>. Untuk tipe <code>image</code> sertakan URL di field image. Untuk <code>table</code> Anda dapat memasukkan HTML tabel pada field "Table HTML".</div>
+    </div>
+
+    <div id="questionsList"></div>
+
+    <div class="card mt-3 p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0">Preview JSON</h6>
+        <div>
+          <button id="btnCopy" class="btn btn-outline-secondary btn-sm me-2">Salin ke Clipboard</button>
+          <button id="btnClear" class="btn btn-outline-danger btn-sm">Kosongkan Semua</button>
+        </div>
+      </div>
+      <pre id="jsonPreview" class="json-preview">{} </pre>
+    </div>
+
+    <div class="mt-3 small text-muted">
+      Template JSON yang dihasilkan: <code>{ "Nama Mapel": [ { "type":"text", "text":"...", "options":["a...","b..."], "answer":"b" }, ... ] }</code>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const questions = []; // array soal untuk subject aktif
+  const subjectInput = document.getElementById('subjectName');
+  const questionsList = document.getElementById('questionsList');
+  const jsonPreview = document.getElementById('jsonPreview');
+  const qTypeSel = document.getElementById('qType');
+
+  // helpers
+  function renderQuestions(){
+    questionsList.innerHTML = '';
+    questions.forEach((q, idx) => {
+      const card = document.createElement('div');
+      card.className = 'card question-card p-3';
+      card.innerHTML = `
+        <div class="d-flex justify-content-between">
+          <div><strong>${idx+1}. [${q.type}]</strong> ${escapeHtml(flatText(q.text || ''))}</div>
+          <div>
+            <button class="btn btn-sm btn-outline-primary me-1" data-action="edit" data-idx="${idx}">Edit</button>
+            <button class="btn btn-sm btn-outline-danger" data-action="delete" data-idx="${idx}">Hapus</button>
+          </div>
+        </div>
+        <div class="mt-2">
+          ${q.image ? `<div><em>Image:</em> <a href="${escapeHtml(q.image)}" target="_blank">${escapeHtml(q.image)}</a></div>` : ''}
+          ${q.table ? `<div><em>Table HTML preview:</em><div class="border p-2 mt-1">${q.table}</div></div>` : ''}
+          ${q.options ? `<div class="mt-2"><em>Options:</em><ol type="a">${q.options.map(opt => `<li>${escapeHtml(opt)}</li>`).join('')}</ol></div>` : ''}
+          ${q.answer ? `<div class="mt-1"><strong>Answer:</strong> ${escapeHtml(q.answer)}</div>` : ''}
+        </div>
+      `;
+      questionsList.appendChild(card);
+    });
+    updatePreview();
+  }
+
+  function flatText(s){ return (s||'').replace(/<[^>]*>/g,'').slice(0,140); }
+  function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+
+  function updatePreview(){
+    const subject = (subjectInput.value || '').trim();
+    const obj = {};
+    obj[ subject || 'subject' ] = questions.map(q => {
+      // create clean object, omit undefined fields
+      const o = { type: q.type, text: q.text || '' };
+      if(q.image) o.image = q.image;
+      if(q.table) o.table = q.table;
+      if(q.options) o.options = q.options;
+      if(q.answer) o.answer = q.answer;
+      return o;
+    });
+    jsonPreview.textContent = JSON.stringify(obj, null, 2);
+  }
+
+  // create editor modal-like inline form
+  function openEditor(opts = {}) {
+    // opts: {index} for edit
+    const isEdit = typeof opts.index === 'number';
+    const q = isEdit ? Object.assign({}, questions[opts.index]) : { type: qTypeSel.value, text:'', options: ["a. ","b. ","c. ","d. "], answer: '' };
+    // build form
+    const wrapper = document.createElement('div');
+    wrapper.className = 'card p-3 mb-3';
+    wrapper.innerHTML = `
+      <div class="mb-2 d-flex justify-content-between">
+        <strong>${isEdit ? 'Edit Soal' : 'Soal Baru'}</strong>
+        <div><button class="btn btn-sm btn-secondary" id="cancelEdit">Batal</button></div>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Tipe Soal</label>
+        <select id="editType" class="form-select">
+          <option value="text">text</option>
+          <option value="paragraph">paragraph</option>
+          <option value="image">image</option>
+          <option value="table">table</option>
+        </select>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Teks Soal (HTML diperbolehkan untuk paragraph/table)</label>
+        <textarea id="editText" class="form-control" rows="3"></textarea>
+      </div>
+      <div id="imageField" class="mb-2 d-none">
+        <label class="form-label">URL Gambar</label>
+        <input id="editImage" class="form-control" placeholder="https://...">
+      </div>
+      <div id="tableField" class="mb-2 d-none">
+        <label class="form-label">Table HTML</label>
+        <textarea id="editTable" class="form-control" rows="4" placeholder="<table>...</table>"></textarea>
+      </div>
+      <div id="optionsBlock" class="mb-2">
+        <label class="form-label">Opsi (untuk pilihan ganda)</label>
+        <div id="optsContainer"></div>
+        <button class="btn btn-sm btn-outline-secondary mt-2" id="addOption">Tambah Opsi</button>
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Jawaban Benar (huruf, contoh: a / b / c / d)</label>
+        <input id="editAnswer" class="form-control" placeholder="misal: b">
+      </div>
+      <div class="text-end">
+        <button class="btn btn-primary" id="saveQ">Simpan</button>
+      </div>
+    `;
+    // prepend to questionsList
+    questionsList.prepend(wrapper);
+
+    // fill values
+    const editType = wrapper.querySelector('#editType');
+    const editText = wrapper.querySelector('#editText');
+    const editImage = wrapper.querySelector('#editImage');
+    const editTable = wrapper.querySelector('#editTable');
+    const optsContainer = wrapper.querySelector('#optsContainer');
+    const optionsBlock = wrapper.querySelector('#optionsBlock');
+    const imageField = wrapper.querySelector('#imageField');
+    const tableField = wrapper.querySelector('#tableField');
+    const editAnswer = wrapper.querySelector('#editAnswer');
+
+    editType.value = q.type || qTypeSel.value;
+    editText.value = q.text || '';
+    editImage.value = q.image || '';
+    editTable.value = q.table || '';
+    editAnswer.value = q.answer || '';
+
+    function renderOptions(){
+      optsContainer.innerHTML = '';
+      const opts = q.options && q.options.length ? q.options : ["a. ","b. ","c. ","d. "];
+      opts.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'input-group mb-1';
+        div.innerHTML = `
+          <span class="input-group-text">${String.fromCharCode(97+i)}</span>
+          <input class="form-control opt-input" data-idx="${i}" value="${opt}">
+          <button class="btn btn-outline-danger btn-sm remove-opt" data-idx="${i}">&times;</button>
+        `;
+        optsContainer.appendChild(div);
+      });
+    }
+
+    renderOptions();
+    function showFieldsByType(t){
+      editType.value = t;
+      if(t === 'image'){ imageField.classList.remove('d-none'); tableField.classList.add('d-none'); optionsBlock.classList.remove('d-none'); }
+      else if(t === 'table'){ tableField.classList.remove('d-none'); imageField.classList.add('d-none'); optionsBlock.classList.remove('d-none'); }
+      else { imageField.classList.add('d-none'); tableField.classList.add('d-none'); optionsBlock.classList.remove('d-none'); }
+    }
+    showFieldsByType(editType.value);
+
+    // listeners
+    editType.addEventListener('change', ()=> showFieldsByType(editType.value));
+
+    optsContainer.addEventListener('click', (ev) => {
+      if(ev.target.classList.contains('remove-opt')){
+        const idx = Number(ev.target.dataset.idx);
+        q.options.splice(idx,1);
+        renderOptions();
+      }
+    });
+
+    optsContainer.addEventListener('input', (ev)=>{
+      if(ev.target.classList.contains('opt-input')){
+        const idx = Number(ev.target.dataset.idx);
+        q.options[idx] = ev.target.value;
+      }
+    });
+
+    wrapper.querySelector('#addOption').addEventListener('click', ()=>{
+      q.options = q.options || [];
+      q.options.push('');
+      renderOptions();
+    });
+
+    wrapper.querySelector('#cancelEdit').addEventListener('click', ()=>{
+      wrapper.remove();
+    });
+
+    wrapper.querySelector('#saveQ').addEventListener('click', ()=>{
+      // collect
+      q.type = editType.value;
+      q.text = editText.value.trim();
+      q.image = editImage.value.trim() || undefined;
+      q.table = editTable.value.trim() || undefined;
+      q.answer = (editAnswer.value || '').trim().toLowerCase() || undefined;
+      // normalize options from DOM
+      const optEls = optsContainer.querySelectorAll('.opt-input');
+      const newOpts = [];
+      optEls.forEach(el => {
+        if(el.value.trim() !== '') newOpts.push(el.value.trim());
+      });
+      q.options = newOpts.length ? newOpts : undefined;
+
+      // validation
+      if(!q.text){ alert('Teks soal harus diisi'); return; }
+      if((q.type === 'image') && !q.image){ if(!confirm('Soal bertipe image namun URL gambar kosong. Lanjutkan?')) return; }
+      if(q.options && !q.answer){ if(!confirm('Anda belum memilih jawaban benar. Lanjutkan tanpa jawaban?')) {} }
+      // save or update
+      if(isEdit){
+        questions[opts.index] = q;
+      } else {
+        questions.push(q);
+      }
+      wrapper.remove();
+      renderQuestions();
+    });
+  }
+
+  // add new question
+  document.getElementById('btnAddQ').addEventListener('click', ()=>{
+    openEditor();
+  });
+
+  // clear all
+  document.getElementById('btnClear').addEventListener('click', ()=>{
+    if(!confirm('Kosongkan semua soal?')) return;
+    questions.length = 0;
+    subjectInput.value = '';
+    renderQuestions();
+  });
+
+  // copy JSON
+  document.getElementById('btnCopy').addEventListener('click', async ()=>{
+    try{
+      await navigator.clipboard.writeText(jsonPreview.textContent);
+      alert('JSON disalin ke clipboard');
+    }catch(e){ alert('Gagal salin: '+e.message); }
+  });
+
+  // export/download JSON
+  document.getElementById('btnExport').addEventListener('click', ()=>{
+    const subject = (subjectInput.value || 'subject').trim();
+    if(!subject){ if(!confirm('Subject kosong. Gunakan key "subject"?')) return; }
+    const out = {};
+    out[ subject || 'subject' ] = questions.map(q => {
+      const o = { type: q.type, text: q.text || '' };
+      if(q.image) o.image = q.image;
+      if(q.table) o.table = q.table;
+      if(q.options) o.options = q.options;
+      if(q.answer) o.answer = q.answer;
+      return o;
+    });
+    const dataStr = JSON.stringify(out, null, 2);
+    // download file
+    const blob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'soal.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // delegation for edit/delete of listed questions
+  questionsList.addEventListener('click', (ev)=>{
+    const btn = ev.target.closest('button');
+    if(!btn) return;
+    const action = btn.dataset.action;
+    const idx = Number(btn.dataset.idx);
+    if(action === 'delete'){
+      if(!confirm('Hapus soal ini?')) return;
+      questions.splice(idx,1);
+      renderQuestions();
+    } else if(action === 'edit'){
+      openEditor({ index: idx });
+    }
+  });
+
+  // initial render
+  renderQuestions();
+
+  // update preview continuously when subject changes
+  subjectInput.addEventListener('input', updatePreview);
+})();
+</script>
+</body>
+</html>
