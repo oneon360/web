@@ -78,10 +78,11 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
   </div>
 </div>
 
+<!-- Hanya bagian <script> yang diupdate -->
 <script>
 let soal = {};
 let currentName = "";
-let currentSubject = ""; // simpan mapel yang sedang dikerjakan
+let currentSubject = "";
 const soalURL = "https://oneon360.github.io/web/uh/soal.json";
 const siswaURL = "https://oneon360.github.io/web/uh/play/nama.json";
 const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
@@ -120,7 +121,6 @@ async function fetchMapel(){
 fetchMapel();
 setInterval(fetchMapel, 30000);
 
-// Render mapel
 function renderMapelOptions(){
   const sel = document.getElementById("subjectSelect");
   sel.innerHTML = "<option value=''>-- Pilih Pelajaran --</option>";
@@ -160,7 +160,6 @@ async function fetchSoal(){
 async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   if(!subject || !currentName){ alert("Isi nama peserta & pilih mata pelajaran!"); return; }
-
   currentSubject = subject;
 
   try{
@@ -176,7 +175,6 @@ async function loadQuestions(){
   if(Object.keys(soal).length===0) await fetchSoal();
   if(!soal[subject]){ alert("Soal untuk mapel ini belum tersedia!"); return; }
 
-  // Tampilkan header info
   const infoBox = document.getElementById("quizInfo");
   infoBox.classList.remove("d-none");
   infoBox.innerHTML = `
@@ -184,7 +182,7 @@ async function loadQuestions(){
     <p>Jumlah Soal: <b>${soal[subject].length}</b></p>
     <p>Sisa Waktu: <b id="timer">30:00</b></p>
   `;
-  startTimer(30*60); // 30 menit
+  startTimer(30*60);
 
   const container = document.getElementById("questionContainer");
   container.innerHTML = "";
@@ -204,7 +202,7 @@ async function loadQuestions(){
   document.getElementById("quizForm").classList.remove("d-none");
 }
 
-// Timer 30 menit
+// Timer
 function startTimer(duration){
   clearInterval(timerInterval);
   let time = duration;
@@ -221,25 +219,27 @@ function startTimer(duration){
   },1000);
 }
 
-// Fungsi submit jawaban dengan analisis jawaban
+// Submit jawaban dengan correctAnswers
 async function submitAnswers(){
   const btn = document.getElementById("btnSubmit");
   btn.disabled = true;
 
   let jawabanSiswa = [];
+  let correctAnswers = [];
   let skorBenar = 0;
 
   soal[currentSubject].forEach((q,i)=>{
     let sel = document.querySelector(`input[name="q${i}"]:checked`);
     let jawaban = sel ? sel.value : "";
     jawabanSiswa.push(jawaban);
+    correctAnswers.push(q.answer);
     if(jawaban.toLowerCase() === q.answer.toLowerCase()) skorBenar++;
   });
 
   let skorSalah = soal[currentSubject].length - skorBenar;
   const timestamp = new Date().toLocaleString();
 
-  // Kirim data skor normal
+  // Kirim skor biasa
   try {
     let res = await fetch(WEB_APP_URL, {
       method:"POST",
@@ -256,7 +256,7 @@ async function submitAnswers(){
     if(out.status==="error") alert(out.message || "Gagal simpan skor!");
   } catch(err){ console.error(err); }
 
-  // Kirim data untuk AnalisisJawaban
+  // Kirim jawaban + correctAnswers
   try{
     let resJawaban = await fetch(WEB_APP_URL, {
       method: "POST",
@@ -266,6 +266,7 @@ async function submitAnswers(){
         nama: currentName,
         mapel: currentSubject,
         jawaban: jawabanSiswa,
+        correctAnswers: correctAnswers,
         skorBenar: skorBenar,
         skorSalah: skorSalah,
         timestamp: timestamp
@@ -277,7 +278,6 @@ async function submitAnswers(){
 
   document.getElementById("result").classList.remove("d-none");
   document.getElementById("result").innerText = `${currentName} mendapat skor ${skorBenar*10}`;
-
   document.getElementById("quizForm").innerHTML = "<div class='alert alert-success'>✅ Ulangan selesai dikerjakan. Jawaban dan skor berhasil disimpan.</div>";
   clearInterval(timerInterval);
 }
