@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Konversi Soal ke JSON</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  textarea { width: 100%; height: 250px; margin-bottom: 10px; }
+  pre { background: #f4f4f4; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; }
+  button { padding: 10px 15px; }
+</style>
+</head>
+<body>
+<h2>Konversi Soal Pilihan Ganda ke JSON</h2>
+<p>Tempelkan soal dalam format teks (seperti di buku/word), lalu klik "Konversi".</p>
+
+<textarea id="inputSoal" placeholder="Tempelkan soal di sini..."></textarea>
+<br>
+<button onclick="konversi()">Konversi</button>
+
+<h3>Hasil JSON:</h3>
+<pre id="outputJson"></pre>
+
+<script>
+function konversi() {
+  const teks = document.getElementById("inputSoal").value.trim();
+  const baris = teks.split("\n").map(l => l.trim()).filter(l => l);
+
+  const hasil = [];
+  let soal = null;
+
+  baris.forEach(line => {
+    const soalMatch = line.match(/^\d+\.\s*(.*)/); // deteksi soal "10. ..."
+    const opsiMatch = line.match(/^[A-Da-d]\.\s*(.*)/); // deteksi opsi "A. ..."
+
+    if (soalMatch) {
+      // simpan soal lama dulu
+      if (soal) hasil.push(soal);
+
+      soal = {
+        type: "text",
+        text: soalMatch[1].trim(),
+        options: [],
+        answer: "" // bisa diisi manual nanti
+      };
+    } else if (opsiMatch && soal) {
+      const huruf = line.charAt(0).toLowerCase();
+      soal.options.push(`${huruf}. ${opsiMatch[1].trim()}`);
+    }
+  });
+
+  if (soal) hasil.push(soal);
+
+  document.getElementById("outputJson").textContent = JSON.stringify(hasil, null, 2);
+}
+</script>
+</body>
+</html>
