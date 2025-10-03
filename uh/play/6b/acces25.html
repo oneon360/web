@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>SDN 1 KANDANGAN KOTA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+.kop { text-align:center; margin-bottom:25px; border-bottom:3px double #000; padding-bottom:10px;}
+.kop img{width:80px;height:80px;margin-bottom:10px;}
+.kop h2,p{margin:0;line-height:1.4;}
+.text-center{margin-bottom: 4px;}
+.text-center h4{margin-bottom: 0px;}
+.text-center p{margin-bottom: 6px;}
+.question-box{padding:15px;border:1px solid #ddd;border-radius:8px;margin-bottom:15px;background:#fff;}
+img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;object-fit:contain;}
+.mapel-disabled { color:#999; font-style:italic; }
+</style>
+</head>
+<body class="bg-light">
+<div class="container py-4">
+
+  <div class="kop">
+    <img src="https://oneon360.github.io/web/uh/logo-sdn1kk-wartatrans.png" alt="Logo Sekolah">
+    <h2>SDN 1 KANDANGAN KOTA</h2>
+    <p>Jl. Jendral Achmad Yani, Kecamatan Kandangan</p>
+    <p>NISN: 30301968</p>
+  </div>
+
+  <div class="text-center">
+    <h4>ULANGAN HARIAN KELAS 6</h4>
+    <p>Tahun Pelajaran 2025</p>
+  </div>
+
+  <!-- Petunjuk pengerjaan -->
+  <div class="alert alert-warning">
+    <h5>📌 Petunjuk Pengerjaan:</h5>
+    <ul>
+      <li>Pilih nama lengkap sebelum mulai.</li>
+      <li>Pilih mata pelajaran yang aktif untuk dikerjakan.</li>
+      <li>Kerjakan soal ulangan sesuai waktu yang ditentukan.</li>
+      <li>Pilih dan beri tanda jawaban yang benar dengan menekan check box dibawah setiap soal.</li>
+      <li>Kerjakan ulangan dengan jujur.</li>
+      <li>Ulangan hanya bisa dikerjakan <b>1 kali</b>.</li>
+    </ul>
+  </div>
+
+  <div class="card p-4 shadow">
+    <h5>📝 Data Peserta Ulangan</h5>
+    <div class="mb-3">
+      <label>Nama Peserta</label>
+      <select id="studentName" class="form-select">
+        <option value="">-- Pilih Nama --</option>
+      </select>
+    </div>
+    <div id="confirmBox" class="alert alert-info d-none">
+      Apakah benar nama kamu <b><span id="confirmName"></span></b>? 
+      <button class="btn btn-success btn-sm" onclick="confirmYes()">Ya</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmNo()">Tidak</button>
+    </div>
+    <div class="mb-3">
+      <label>Mata Pelajaran</label>
+      <select id="subjectSelect" class="form-select">
+        <option value="">-- Pilih Pelajaran --</option>
+      </select>
+    </div>
+    <button class="btn btn-primary mb-3" id="btnStart">Mulai</button>
+
+    <!-- info header soal -->
+    <div id="quizInfo" class="alert alert-info d-none"></div>
+
+    <form id="quizForm" class="d-none">
+      <div id="questionContainer"></div>
+      <button type="button" class="btn btn-success mt-3" id="btnSubmit">Kumpulkan Jawaban</button>
+    </form>
+
+    <div id="result" class="alert alert-info mt-3 d-none"></div>
+  </div>
+</div>
+
+<!-- Hanya bagian <script> yang diupdate -->
+<script>
+let soal = {};
+let currentName = "";
+let currentSubject = "";
+const soalURL = "https://oneon360.github.io/web/uh/soal.json";
+const siswaURL = "https://oneon360.github.io/web/uh/play/nama.json";
+const WEB_APP_URL = "https://cors.ssss.fun/https://script.google.com/macros/s/AKfycby52Cz1GFVAlQOH0PsTGaK09eCrv1dS8kkxdWaQD9F2kdDwTUNuLfrePEeybXp55gef/exec";
+
+const ALL_MAPEL = ["Pendidikan Pancasila","Bahasa Indonesia","Matematika","IPAS","Seni Rupa"];
+let aktifMapel = [];
+let timerInterval;
+
+// Ambil daftar siswa
+async function fetchSiswa(){
+  try{
+    const res = await fetch(siswaURL);
+    const data = await res.json();
+    let sel = document.getElementById("studentName");
+    data.forEach(s=>{
+      let opt = document.createElement("option");
+      opt.value = s.nama;
+      opt.textContent = s.nama;
+      sel.appendChild(opt);
+    });
+  }catch(e){ console.error(e); }
+}
+fetchSiswa();
+
+// Ambil mapel aktif
+async function fetchMapel(){
+  try {
+    const res = await fetch(WEB_APP_URL+"?action=mapel");
+    const json = await res.json();
+    if(json.status==="success"){
+      aktifMapel = Array.isArray(json.data) ? json.data : [];
+      renderMapelOptions();
+    }
+  } catch(err){ console.error("Fetch mapel error:", err); }
+}
+fetchMapel();
+setInterval(fetchMapel, 30000);
+
+function renderMapelOptions(){
+  const sel = document.getElementById("subjectSelect");
+  sel.innerHTML = "<option value=''>-- Pilih Pelajaran --</option>";
+  ALL_MAPEL.forEach(m=>{
+    let opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    if(!aktifMapel.includes(m)){
+      opt.disabled = true;
+      opt.classList.add("mapel-disabled");
+      opt.textContent = m + " (tidak tersedia)";
+    }
+    sel.appendChild(opt);
+  });
+}
+
+// Konfirmasi nama
+document.getElementById("studentName").addEventListener("change", ()=>{
+  const val = document.getElementById("studentName").value;
+  if(val){
+    document.getElementById("confirmName").innerText = val;
+    document.getElementById("confirmBox").classList.remove("d-none");
+  } else {
+    document.getElementById("confirmBox").classList.add("d-none");
+  }
+});
+function confirmYes(){ currentName = document.getElementById("studentName").value; document.getElementById("confirmBox").classList.add("d-none"); }
+function confirmNo(){ document.getElementById("studentName").value=""; currentName=""; document.getElementById("confirmBox").classList.add("d-none"); }
+
+// Ambil soal
+async function fetchSoal(){
+  const res = await fetch(soalURL);
+  soal = await res.json();
+}
+
+// Load soal
+async function loadQuestions(){
+  const subject = document.getElementById("subjectSelect").value;
+  if(!subject || !currentName){ alert("Isi nama peserta & pilih mata pelajaran!"); return; }
+  currentSubject = subject;
+
+  try{
+    let cek = await fetch(WEB_APP_URL, {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({action:"cek", nama:currentName, mapel:subject})
+    });
+    let res = await cek.json();
+    if(res.status==="success" && res.data.sudah){ alert("⚠️ "+currentName+" sudah mengerjakan "+subject+"."); return; }
+  }catch(e){ console.error("Cek gagal:", e); }
+
+  if(Object.keys(soal).length===0) await fetchSoal();
+  if(!soal[subject]){ alert("Soal untuk mapel ini belum tersedia!"); return; }
+
+  const infoBox = document.getElementById("quizInfo");
+  infoBox.classList.remove("d-none");
+  infoBox.innerHTML = `
+    <h5>📚 Mata Pelajaran: <b>${subject}</b></h5>
+    <p>Jumlah Soal: <b>${soal[subject].length}</b></p>
+    <p>Sisa Waktu: <b id="timer">30:00</b></p>
+  `;
+  startTimer(30*60);
+
+  const container = document.getElementById("questionContainer");
+  container.innerHTML = "";
+  soal[subject].forEach((q,i)=>{
+    let html = `<div class="question-box" id="qbox${i}"><p><b>${i+1}. ${q.text}</b></p>`;
+    if(q.image) html += `<img src="${q.image}" alt="Soal Gambar">`;
+    if(q.table) html += q.table;
+    html += q.options.map((opt,j)=>`
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="q${i}" value="${["a","b","c","d"][j]}">
+        <label class="form-check-label">${opt}</label>
+      </div>`).join("");
+    html += `</div>`;
+    container.innerHTML += html;
+  });
+
+  document.getElementById("quizForm").classList.remove("d-none");
+}
+
+// Timer
+function startTimer(duration){
+  clearInterval(timerInterval);
+  let time = duration;
+  timerInterval = setInterval(()=>{
+    let minutes = Math.floor(time/60);
+    let seconds = time%60;
+    document.getElementById("timer").textContent = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+    if(time<=0){
+      clearInterval(timerInterval);
+      alert("⏰ Waktu habis! Jawaban akan dikumpulkan otomatis.");
+      submitAnswers();
+    }
+    time--;
+  },1000);
+}
+
+// Submit jawaban dengan correctAnswers
+async function submitAnswers(){
+  const btn = document.getElementById("btnSubmit");
+  btn.disabled = true;
+
+  let jawabanSiswa = [];
+  let correctAnswers = [];
+  let skorBenar = 0;
+
+soal[currentSubject].forEach((q,i)=>{
+  let sel = document.querySelector(`input[name="q${i}"]:checked`);
+  let jawaban = sel ? sel.value : "";
+  jawabanSiswa.push(jawaban);
+  correctAnswers.push(q.answer);
+  if(jawaban.toLowerCase() === q.answer.toLowerCase()) skorBenar++;
+});
+
+let skorSalah = soal[currentSubject].length - skorBenar;
+const timestamp = new Date().toLocaleString();
+
+// Hitung skor dengan 4 poin per soal
+let skorTotal = skorBenar * 4;
+
+try {
+  let res = await fetch(WEB_APP_URL, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      action:"submit",
+      nama: currentName,
+      mapel: currentSubject,
+      skor: skorTotal,    // <-- gunakan skorTotal
+      tanggal: timestamp
+    })
+  });
+    let out = await res.json();
+    if(out.status==="error") alert(out.message || "Gagal simpan skor!");
+  } catch(err){ console.error(err); }
+
+  // Kirim jawaban + correctAnswers
+  try{
+    let resJawaban = await fetch(WEB_APP_URL, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        action: "submitJawaban",
+        nama: currentName,
+        mapel: currentSubject,
+        jawaban: jawabanSiswa,
+        correctAnswers: correctAnswers,
+        skorBenar: skorBenar,
+        skorSalah: skorSalah,
+        timestamp: timestamp
+      })
+    });
+    let out = await resJawaban.json();
+    if(out.status==="error") alert(out.message || "Gagal simpan jawaban analisis!");
+  } catch(err){ console.error(err); }
+
+  document.getElementById("result").classList.remove("d-none");
+  document.getElementById("result").innerText = `${currentName} mendapat skor ${skorTotal}`;
+  document.getElementById("quizForm").innerHTML = "<div class='alert alert-success'>✅ Ulangan selesai dikerjakan. Jawaban dan skor berhasil disimpan.</div>";
+  clearInterval(timerInterval);
+}
+
+// Tombol submit
+document.getElementById("btnSubmit").addEventListener("click", function(){
+  const btn = this;
+  if(!currentSubject){ alert("Mapel belum dipilih!"); return; }
+
+  let unanswered = [];
+  soal[currentSubject].forEach((q,i)=>{
+    if(!document.querySelector(`input[name="q${i}"]:checked`)) unanswered.push(i);
+  });
+
+  if(unanswered.length>0){
+    unanswered.forEach(idx=>{
+      const box = document.getElementById("qbox"+idx);
+      box.style.border = "2px solid red";
+      setTimeout(()=>{ box.style.border = "1px solid #ddd"; }, 2000);
+    });
+    document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth", block:"center"});
+    alert("⚠️ Masih ada soal yang belum dijawab!");
+    return;
+  }
+
+  let oldConfirm = document.getElementById("confirmBoxSubmit");
+  if(oldConfirm) oldConfirm.remove();
+
+  let confirmDiv = document.createElement("div");
+  confirmDiv.id = "confirmBoxSubmit";
+  confirmDiv.className = "alert alert-warning mt-3";
+  confirmDiv.innerHTML = `
+    <p>⏳ Apakah kamu yakin ingin mengakhiri ulangan? <b id="confirmTimer">30</b> detik untuk konfirmasi.</p>
+    <button type="button" id="btnYes" class="btn btn-danger btn-sm me-2">Ya, saya yakin</button>
+    <button type="button" id="btnNo" class="btn btn-secondary btn-sm">Tidak, periksa lagi</button>
+  `;
+  document.getElementById("quizForm").appendChild(confirmDiv);
+
+  let timeLeft = 30;
+  btn.disabled = true;
+
+  let timer = setInterval(()=>{
+    timeLeft--;
+    const timerEl = document.getElementById("confirmTimer");
+    if(timerEl) timerEl.innerText = timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timer);
+      confirmDiv.remove();
+      btn.disabled = false;
+    }
+  },1000);
+
+  confirmDiv.querySelector("#btnNo").addEventListener("click", ()=>{
+    clearInterval(timer);
+    confirmDiv.remove();
+    btn.disabled = false;
+  });
+
+  confirmDiv.querySelector("#btnYes").addEventListener("click", async ()=>{
+    clearInterval(timer);
+    confirmDiv.remove();
+    await submitAnswers();
+  });
+});
+
+// Tombol start
+document.getElementById("btnStart").addEventListener("click", loadQuestions);
+</script>
+</body>
+</html>
