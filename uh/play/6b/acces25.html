@@ -70,6 +70,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
     <div id="quizInfo" class="alert alert-info d-none"></div>
 
     <form id="quizForm" class="d-none">
+    <div id="passageContainer" class="alert alert-secondary d-none"></div>
       <div id="questionContainer"></div>
       <button type="button" class="btn btn-success mt-3" id="btnSubmit">Kumpulkan Jawaban</button>
     </form>
@@ -185,6 +186,16 @@ async function loadQuestions(){
   startTimer(30*60);
 
   const container = document.getElementById("questionContainer");
+  // Tambahan: tampilkan passage bila ada
+const passageDiv = document.getElementById("passageContainer");
+if (soal[subject][0].passage) {
+  passageDiv.classList.remove("d-none");
+  passageDiv.innerHTML = `<h5>Bacalah teks berikut ini!</h5><p>${soal[subject][0].passage}</p>`;
+} else {
+  passageDiv.classList.add("d-none");
+  passageDiv.innerHTML = "";
+}
+
   container.innerHTML = "";
   soal[subject].forEach((q,i)=>{
     let html = `<div class="question-box" id="qbox${i}"><p><b>${i+1}. ${q.text}</b></p>`;
