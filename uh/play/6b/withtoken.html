@@ -67,10 +67,12 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
     </div>
 
     <!-- Tambahan input token -->
-    <div class="mb-3">
-      <label>Token Ujian (diberikan guru)</label>
-      <input type="password" id="tokenInput" class="form-control" placeholder="Masukkan token ujian">
-    </div>
+<div class="input-group mb-3">
+  <input type="password" id="tokenInput" class="form-control" placeholder="Masukkan token ulangan">
+  <button class="btn btn-outline-secondary" type="button" id="toggleToken">
+    👁
+  </button>
+</div>
 
     <button class="btn btn-primary mb-3" id="btnStart">Mulai</button>
 
@@ -166,15 +168,15 @@ async function fetchSoal(){
 
 // Cek token ke server
 async function cekToken(token){
-  try{
-    let res = await fetch(WEB_APP_URL+"?action=cekToken&token="+encodeURIComponent(token));
-    let data = await res.json();
-    return data.status==="valid"; 
-  }catch(e){
-    console.error("Cek token gagal", e);
-    return false;
-  }
+  const res = await fetch(WEB_APP_URL, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({action:"cekToken", token:token})
+  });
+  const data = await res.json();
+  return data.status === "valid";
 }
+
 
 // Load soal
 async function loadQuestions(){
@@ -210,9 +212,9 @@ async function loadQuestions(){
   infoBox.innerHTML = `
     <h5>📚 Mata Pelajaran: <b>${subject}</b></h5>
     <p>Jumlah Soal: <b>${soal[subject].length}</b></p>
-    <p>Sisa Waktu: <b id="timer">30:00</b></p>
+    <p>Sisa Waktu: <b id="timer">45:00</b></p>
   `;
-  startTimer(30*60);
+  startTimer(45*60);
 
   const container = document.getElementById("questionContainer");
   const passageDiv = document.getElementById("passageContainer");
@@ -227,7 +229,7 @@ async function loadQuestions(){
   container.innerHTML = "";
 soal[subject].forEach((q,i)=>{
   let html = `<div class="question-box" id="qbox${i}">`;
-  html += `<p><b>${i+1}.</b></p>`;
+  //html += `<p><b>${i+1}.</b></p>`;
   if(q.image) html += `<div class="mb-2"><img src="${q.image}" alt="Soal Gambar" class="img-fluid"></div>`;
   if(q.table) html += `<div class="mb-2">${q.table}</div>`;
   if(q.narasi) html += `<div class="mb-2">${q.narasi}</div>`;
@@ -385,6 +387,21 @@ document.getElementById("btnSubmit").addEventListener("click", function(){
     await submitAnswers();
   });
 });
+
+// tombol show/hide token
+const tokenInputEl = document.getElementById("tokenInput");
+const toggleTokenBtn = document.getElementById("toggleToken");
+
+toggleTokenBtn.addEventListener("click", () => {
+  if (tokenInputEl.type === "password") {
+    tokenInputEl.type = "text";
+    toggleTokenBtn.textContent = "🙈"; // ubah ikon saat terlihat
+  } else {
+    tokenInputEl.type = "password";
+    toggleTokenBtn.textContent = "👁"; // ubah ikon saat hidden
+  }
+});
+
 
 // Tombol start
 document.getElementById("btnStart").addEventListener("click", loadQuestions);
