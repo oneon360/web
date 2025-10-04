@@ -1,7 +1,7 @@
 {
   "Bahasa Indonesia": [
     {
-      "passage": "Bacalah cerpen berikut untuk menjawab soal nomor 1 dan 2!\n\nSahabat Sejati\n\nDi sebuah desa kecil, hiduplah seorang anak bernama Dika. Ia rajin dan suka menolong, namun sering merasa kesepian karena tidak memiliki banyak teman. Teman-temannya di sekolah sering mengolok-oloknya karena Dika tidak pandai bermain sepak bola, membuatnya rendah diri.\n\nSuatu hari, datanglah murid baru bernama Satria yang pendiam dan suka menyendiri. Saat istirahat, Dika memberanikan diri menyapa. Sejak saat itu, mereka menjadi sahabat dan sering berbagi cerita.\n\nSatria pandai menggambar, dan ketika ada lomba menggambar, Dika memberi semangat padanya. Berkat dukungan itu, Satria menang dan berterima kasih. Mereka pun menyadari makna sahabat sejati adalah saling mendukung dan menghargai kelebihan masing-masing.",
+      "passage": "\n\nSahabat Sejati\n\nDi sebuah desa kecil, hiduplah seorang anak bernama Dika. Ia rajin dan suka menolong, namun sering merasa kesepian karena tidak memiliki banyak teman. Teman-temannya di sekolah sering mengolok-oloknya karena Dika tidak pandai bermain sepak bola, membuatnya rendah diri.\n\nSuatu hari, datanglah murid baru bernama Satria yang pendiam dan suka menyendiri. Saat istirahat, Dika memberanikan diri menyapa. Sejak saat itu, mereka menjadi sahabat dan sering berbagi cerita.\n\nSatria pandai menggambar, dan ketika ada lomba menggambar, Dika memberi semangat padanya. Berkat dukungan itu, Satria menang dan berterima kasih. Mereka pun menyadari makna sahabat sejati adalah saling mendukung dan menghargai kelebihan masing-masing.",
       "text": "1. Latar tempat pada cerita di atas adalah ...",
       "options": [
         "sebuah desa",
@@ -12,7 +12,9 @@
       "answer": "a"
     },
     {
+	  "type": "image",
       "text": "2. Pesan moral dari cerita pendek tersebut adalah ...",
+	  "image": "https://oneon360.github.io/web/uh/play/6b/img/teks1BI.png",
       "options": [
         "persahabatan membuat kita aman dari bullying",
         "kita harus saling bersaing dalam prestasi",
