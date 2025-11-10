@@ -1,0 +1,34 @@
+{
+  "Bahasa Indonesia": [
+    {
+    "text": "1. Bagian-bagian yang harus ada dalam surat resmi adalah ...",
+    "options": [
+      "a. Kepala surat, nomor surat, lampiran, alamat tujuan, isi, penutup, tanda tangan",
+      "b. Sampul, penulis, tahun terbit",
+      "c. Tema, tokoh, latar",
+      "d. Judul, isi, daftar pustaka"
+    ],
+    "answer": "a"
+  },
+  {
+    "text": "2. Pernyataan berikut yang merupakan gagasan pokok paragraf tentang hobi adalah ...",
+    "options": [
+      "a. Hobi adalah kegiatan yang disukai seseorang dan bermanfaat",
+      "b. Hobi adalah kegiatan yang harus selalu dilakukan",
+      "c. Hobi adalah sesuatu yang dipaksakan",
+      "d. Hobi adalah pekerjaan utama setiap orang"
+    ],
+    "answer": "a"
+  },
+  {
+    "text": "3. Pertanyaan yang sesuai untuk mewawancarai seorang pedagang adalah ...",
+    "options": [
+      "a. Apa nama Anda? Apa jenis dagangan Anda? Sejak kapan berdagang? Bagaimana harga ditentukan? Apa kendala dalam berdagang?",
+      "b. Siapa penulis buku favorit Anda? Apa warna kesukaan Anda? Siapa guru favorit Anda? Apakah Anda suka menulis? Apa film favorit Anda?",
+      "c. Siapa nama teman Anda? Apakah Anda suka olahraga? Kapan Anda berlibur?",
+      "d. Mengapa langit berwarna biru? Bagaimana proses fotosintesis?"
+    ],
+    "answer": "a"
+	  }
+  ]
+}
