@@ -378,21 +378,66 @@ async function submitAnswers(){
 }
 
 // === VALIDASI SUBMIT ===
-document.getElementById("btnSubmit").addEventListener("click", ()=>{
+document.getElementById("btnSubmit").addEventListener("click", function(){
+  const btn = this;
   if(!currentSubject){ alert("Mapel belum dipilih!"); return; }
-  let unanswered=[];
-  soal[currentSubject].forEach((q,i)=>{ if(!document.querySelector(`input[name='q${i}']:checked`)) unanswered.push(i); });
+
+  let unanswered = [];
+  soal[currentSubject].forEach((q,i)=>{
+    if(!document.querySelector(`input[name="q${i}"]:checked`)) unanswered.push(i);
+  });
+
   if(unanswered.length>0){
     unanswered.forEach(idx=>{
-      const box=document.getElementById("qbox"+idx);
-      box.style.border="2px solid red"; setTimeout(()=>box.style.border="1px solid #ddd",2000);
+      const box = document.getElementById("qbox"+idx);
+      box.style.border = "2px solid red";
+      setTimeout(()=>{ box.style.border = "1px solid #ddd"; }, 2000);
     });
-    document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth"});
+    document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth", block:"center"});
     alert("⚠️ Masih ada soal yang belum dijawab!");
     return;
   }
-  if(confirm("Apakah kamu yakin ingin mengumpulkan jawaban?")) submitAnswers();
+
+  let oldConfirm = document.getElementById("confirmBoxSubmit");
+  if(oldConfirm) oldConfirm.remove();
+
+  let confirmDiv = document.createElement("div");
+  confirmDiv.id = "confirmBoxSubmit";
+  confirmDiv.className = "alert alert-warning mt-3";
+  confirmDiv.innerHTML = `
+    <p>⏳ Apakah kamu yakin ingin mengakhiri ulangan? <b id="confirmTimer">30</b> detik untuk konfirmasi.</p>
+    <button type="button" id="btnYes" class="btn btn-danger btn-sm me-2">Ya, saya yakin</button>
+    <button type="button" id="btnNo" class="btn btn-secondary btn-sm">Tidak, periksa lagi</button>
+  `;
+  document.getElementById("quizForm").appendChild(confirmDiv);
+
+  let timeLeft = 30;
+  btn.disabled = true;
+
+  let timer = setInterval(()=>{
+    timeLeft--;
+    const timerEl = document.getElementById("confirmTimer");
+    if(timerEl) timerEl.innerText = timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timer);
+      confirmDiv.remove();
+      btn.disabled = false;
+    }
+  },1000);
+
+  confirmDiv.querySelector("#btnNo").addEventListener("click", ()=>{
+    clearInterval(timer);
+    confirmDiv.remove();
+    btn.disabled = false;
+  });
+
+  confirmDiv.querySelector("#btnYes").addEventListener("click", async ()=>{
+    clearInterval(timer);
+    confirmDiv.remove();
+    await submitAnswers();
+  });
 });
+
 
 // === TOGGLE TOKEN ===
 document.getElementById("toggleToken").addEventListener("click",()=>{
