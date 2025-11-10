@@ -128,7 +128,12 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-center shadow-lg border-0">
       <div class="modal-header bg-success text-white">
-        <h5 class="modal-title w-100" id="resultModalLabel">🎉 Selamat!</h5>
+        <h5 class="modal-title w-100 fw-bold text-uppercase" 
+    id="resultModalLabel" 
+    style="font-size: 2.3rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">
+  🎉 Selamat!
+</h5>
+
       </div>
       <div class="modal-body">
         <h4 id="modalNama" class="fw-bold mb-2"></h4>
@@ -143,7 +148,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
           ❌ Salah: <span id="modalSalah">0</span>
         </div>
 
-        <p class="mt-3 text-muted">Terus semangat belajar dan tingkatkan prestasimu!</p>
+        <p class="mt-3 text-muted">Semangat belajar dan tingkatkan prestasi</p>
       </div>
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Kembali ke Halaman Awal</button>
@@ -159,6 +164,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;max-height:300px;o
  pointer-events:none; /* agar tidak menghalangi klik */
  z-index:0; /* di belakang soal */
 "></canvas>
+
 <script>
 let soal = {};
 let currentName = "";
@@ -171,7 +177,7 @@ const ALL_MAPEL = ["Pendidikan Pancasila","Bahasa Indonesia","Matematika","IPAS"
 let aktifMapel = [];
 let timerInterval;
 
-// Ambil daftar siswa
+// === FETCH SISWA DAN MAPEL ===
 async function fetchSiswa(){
   try{
     const res = await fetch(siswaURL);
@@ -188,7 +194,6 @@ async function fetchSiswa(){
 }
 fetchSiswa();
 
-// Ambil mapel aktif dari server
 async function fetchMapel(){
   try {
     const res = await fetch(WEB_APP_URL+"?action=mapel");
@@ -217,7 +222,7 @@ function renderMapelOptions(){
   });
 }
 
-// Konfirmasi nama siswa
+// === KONFIRMASI NAMA ===
 document.getElementById("studentName").addEventListener("change", ()=>{
   const val = document.getElementById("studentName").value;
   const box = document.getElementById("confirmBox");
@@ -226,51 +231,37 @@ document.getElementById("studentName").addEventListener("change", ()=>{
     box.classList.remove("d-none");
   } else box.classList.add("d-none");
 });
-function confirmYes(){ 
-  currentName = document.getElementById("studentName").value; 
-  document.getElementById("confirmBox").classList.add("d-none"); 
-}
-function confirmNo(){ 
-  document.getElementById("studentName").value=""; 
-  currentName=""; 
-  document.getElementById("confirmBox").classList.add("d-none"); 
-}
+function confirmYes(){ currentName = document.getElementById("studentName").value; document.getElementById("confirmBox").classList.add("d-none"); }
+function confirmNo(){ document.getElementById("studentName").value=""; currentName=""; document.getElementById("confirmBox").classList.add("d-none"); }
 
-// Ambil soal dari file JSON
-async function fetchSoal(){
-  const res = await fetch(soalURL);
-  soal = await res.json();
-}
+// === AMBIL SOAL ===
+async function fetchSoal(){ const res = await fetch(soalURL); soal = await res.json(); }
 
-// Validasi token ke server
+// === CEK TOKEN ===
 async function cekToken(token){
-  const res = await fetch(WEB_APP_URL, {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
+  const res = await fetch(WEB_APP_URL,{
+    method:"POST",headers:{"Content-Type":"application/json"},
     body: JSON.stringify({action:"cekToken", token})
   });
   const data = await res.json();
   return data.status === "valid";
 }
 
-// Mulai ulangan
+// === MULAI ULANGAN ===
 async function loadQuestions(){
   const subject = document.getElementById("subjectSelect").value;
   const token = document.getElementById("tokenInput").value.trim();
   if(!subject || !currentName){ alert("Isi nama peserta & pilih mata pelajaran!"); return; }
   if(!token){ alert("Masukkan token ujian terlebih dahulu!"); return; }
 
-  // Validasi token
   const valid = await cekToken(token);
   if(!valid){ alert("Token ujian tidak valid. Hubungi guru."); return; }
 
   currentSubject = subject;
 
-  // Cek apakah sudah pernah mengerjakan
   try{
-    const cek = await fetch(WEB_APP_URL, {
-      method:"POST",
-      headers: {"Content-Type":"application/json"},
+    const cek = await fetch(WEB_APP_URL,{
+      method:"POST",headers:{"Content-Type":"application/json"},
       body: JSON.stringify({action:"cek", nama:currentName, mapel:subject})
     });
     const res = await cek.json();
@@ -280,35 +271,41 @@ async function loadQuestions(){
     }
   }catch(e){ console.error("Cek gagal:", e); }
 
-  // Ambil soal jika belum ada
   if(Object.keys(soal).length===0) await fetchSoal();
-  if(!soal[subject]){ alert("Soal untuk mapel ini belum tersedia!"); return; }
+  if(!soal[subject]){ alert("Soal belum tersedia!"); return; }
 
-  // Tampilkan info ulangan
-  const infoBox = document.getElementById("quizInfo");
-  infoBox.classList.remove("d-none");
-  infoBox.innerHTML = `
-    <h5>📚 Mata Pelajaran: <b>${subject}</b></h5>
-    <p>Jumlah Soal: <b>${soal[subject].length}</b></p>
-    <p>Sisa Waktu: <b id="timer">45:00</b></p>
-  `;
-  startTimer(45*60);
+// Tampilkan info ulangan
+const infoBox = document.getElementById("quizInfo");
+const totalSoal = soal[subject].length;
+
+// Hitung total waktu (2 menit 25 detik per soal)
+const waktuPerSoal = 2 * 60 + 25; // 145 detik
+const totalWaktu = totalSoal * waktuPerSoal; // detik total
+
+const menit = Math.floor(totalWaktu / 60);
+const detik = totalWaktu % 60;
+
+infoBox.classList.remove("d-none");
+infoBox.innerHTML = `
+  <h5>📚 Mata Pelajaran: <b>${subject}</b></h5>
+  <p>Jumlah Soal: <b>${totalSoal}</b></p>
+  <p>Sisa Waktu: <b id="timer">${String(menit).padStart(2,"0")}:${String(detik).padStart(2,"0")}</b></p>
+`;
+
+startTimer(totalWaktu); // Jalankan timer otomatis sesuai jumlah soal
+
 
   const container = document.getElementById("questionContainer");
   const passageDiv = document.getElementById("passageContainer");
-
   if (soal[subject][0].passage) {
     passageDiv.classList.remove("d-none");
     passageDiv.innerHTML = `<h5>Bacalah teks berikut ini!</h5><p>${soal[subject][0].passage}</p>`;
-  } else {
-    passageDiv.classList.add("d-none");
-    passageDiv.innerHTML = "";
-  }
+  } else { passageDiv.classList.add("d-none"); passageDiv.innerHTML = ""; }
 
   container.innerHTML = "";
   soal[subject].forEach((q,i)=>{
     let html = `<div class="question-box" id="qbox${i}">`;
-    if(q.image) html += `<div><img src="${q.image}" alt="Soal Gambar"></div>`;
+    if(q.image) html += `<img src="${q.image}" alt="Soal">`;
     if(q.table) html += `<div>${q.table}</div>`;
     if(q.narasi) html += `<div>${q.narasi}</div>`;
     html += `<p><b>${q.text}</b></p>`;
@@ -324,171 +321,169 @@ async function loadQuestions(){
   document.getElementById("quizForm").classList.remove("d-none");
 }
 
-// Timer berjalan
+// === TIMER ===
 function startTimer(duration){
   clearInterval(timerInterval);
   let time = duration;
   timerInterval = setInterval(()=>{
-    const minutes = Math.floor(time/60);
-    const seconds = time%60;
-    document.getElementById("timer").textContent = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
-    if(time<=0){
-      clearInterval(timerInterval);
-      alert("⏰ Waktu habis! Jawaban akan dikumpulkan otomatis.");
-      submitAnswers();
-    }
+    const m = Math.floor(time/60), s = time%60;
+    document.getElementById("timer").textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+    if(time<=0){ clearInterval(timerInterval); alert("⏰ Waktu habis!"); submitAnswers(); }
     time--;
   },1000);
 }
 
-// Fungsi submit jawaban (dipanggil setelah konfirmasi)
+// === SUBMIT JAWABAN ===
 async function submitAnswers(){
   const btn = document.getElementById("btnSubmit");
   btn.disabled = true;
 
-  let jawabanSiswa = [];
-  let correctAnswers = [];
-  let skorBenar = 0;
-
+  let jawabanSiswa=[], correctAnswers=[], skorBenar=0;
   soal[currentSubject].forEach((q,i)=>{
     const sel = document.querySelector(`input[name="q${i}"]:checked`);
     const jawaban = sel ? sel.value : "";
     jawabanSiswa.push(jawaban);
     correctAnswers.push(q.answer);
-    if(jawaban.toLowerCase() === q.answer.toLowerCase()) skorBenar++;
+    if(jawaban.toLowerCase()===q.answer.toLowerCase()) skorBenar++;
   });
 
-  const skorSalah = soal[currentSubject].length - skorBenar;
   const totalSoal = soal[currentSubject].length;
-  const skorTotal = Math.round((skorBenar / totalSoal) * 100);
+  const skorSalah = totalSoal - skorBenar;
+  const skorTotal = Math.round((skorBenar/totalSoal)*100);
   const timestamp = new Date().toLocaleString();
 
-  // Simpan ke Google Sheets
-  try {
-    await fetch(WEB_APP_URL, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        action:"submit",
-        nama: currentName,
-        mapel: currentSubject,
-        skor: skorTotal,
-        tanggal: timestamp
-      })
-    });
-  } catch(err){ console.error(err); }
-
-  // Simpan jawaban detail
+  // Simpan data
   try{
-    await fetch(WEB_APP_URL, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({
-        action: "submitJawaban",
-        nama: currentName,
-        mapel: currentSubject,
-        jawaban: jawabanSiswa,
-        correctAnswers: correctAnswers,
-        skorBenar,
-        skorSalah,
-        timestamp
-      })
-    });
-  } catch(err){ console.error(err); }
+    await fetch(WEB_APP_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"submit",nama:currentName,mapel:currentSubject,skor:skorTotal,tanggal:timestamp})});
+    await fetch(WEB_APP_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"submitJawaban",nama:currentName,mapel:currentSubject,jawaban:jawabanSiswa,correctAnswers,skorBenar,skorSalah,timestamp})});
+  }catch(e){console.error(e);}
 
   clearInterval(timerInterval);
 
-  // Tampilkan hasil dalam modal
+  // === TAMPILKAN MODAL HASIL ===
   document.getElementById("modalNama").textContent = currentName;
   document.getElementById("modalMapel").textContent = currentSubject;
+  document.getElementById("modalSkor").textContent = skorTotal;
   document.getElementById("modalBenar").textContent = skorBenar;
   document.getElementById("modalSalah").textContent = skorSalah;
 
-  // Animasi skor
-  let count = 0;
-  const elSkor = document.getElementById("modalSkor");
-  const animate = setInterval(()=>{
-    if(count >= skorTotal){ clearInterval(animate); }
-    else { count++; elSkor.textContent = count; }
-  },20);
+  const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+  modal.show();
+  startConfetti();
 
-  const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
-  resultModal.show();
-
-  document.getElementById('resultModal').addEventListener('hidden.bs.modal', () => {
+  document.getElementById('resultModal').addEventListener('hidden.bs.modal', ()=>{
+    stopConfetti();
     window.location.reload();
   });
 }
 
-// Tombol submit dengan countdown konfirmasi
-document.getElementById("btnSubmit").addEventListener("click", function(){
-  const btn = this;
+// === VALIDASI SUBMIT ===
+document.getElementById("btnSubmit").addEventListener("click", ()=>{
   if(!currentSubject){ alert("Mapel belum dipilih!"); return; }
-
-  let unanswered = [];
-  soal[currentSubject].forEach((q,i)=>{
-    if(!document.querySelector(`input[name="q${i}"]:checked`)) unanswered.push(i);
-  });
-
+  let unanswered=[];
+  soal[currentSubject].forEach((q,i)=>{ if(!document.querySelector(`input[name='q${i}']:checked`)) unanswered.push(i); });
   if(unanswered.length>0){
     unanswered.forEach(idx=>{
-      const box = document.getElementById("qbox"+idx);
-      box.style.border = "2px solid red";
-      setTimeout(()=> box.style.border = "1px solid #ddd", 2000);
+      const box=document.getElementById("qbox"+idx);
+      box.style.border="2px solid red"; setTimeout(()=>box.style.border="1px solid #ddd",2000);
     });
     document.getElementById("qbox"+unanswered[0]).scrollIntoView({behavior:"smooth"});
     alert("⚠️ Masih ada soal yang belum dijawab!");
     return;
   }
+  if(confirm("Apakah kamu yakin ingin mengumpulkan jawaban?")) submitAnswers();
+});
 
-  // Konfirmasi countdown
-  let confirmDiv = document.createElement("div");
-  confirmDiv.className = "alert alert-warning mt-3";
-  confirmDiv.id = "confirmSubmitBox";
-  confirmDiv.innerHTML = `
-    <p>⏳ Apakah kamu yakin ingin mengumpulkan jawaban? <b id="count">30</b> detik untuk konfirmasi.</p>
-    <button id="yesSubmit" class="btn btn-danger btn-sm me-2">Ya, kumpulkan</button>
-    <button id="noSubmit" class="btn btn-secondary btn-sm">Tidak</button>
-  `;
-  document.getElementById("quizForm").appendChild(confirmDiv);
-  btn.disabled = true;
-  let sisa = 30;
-  const timer = setInterval(()=>{
-    sisa--;
-    if(document.getElementById("count")) document.getElementById("count").textContent = sisa;
-    if(sisa<=0){
-      clearInterval(timer);
-      confirmDiv.remove();
-      btn.disabled = false;
+// === TOGGLE TOKEN ===
+document.getElementById("toggleToken").addEventListener("click",()=>{
+  const el=document.getElementById("tokenInput");
+  if(el.type==="password"){ el.type="text"; toggleToken.textContent="🙈"; }
+  else { el.type="password"; toggleToken.textContent="👁"; }
+});
+
+// === MULAI ===
+document.getElementById("btnStart").addEventListener("click",loadQuestions);
+
+// === KONFETI BINTANG ===
+let confettiInterval;
+function startConfetti(){
+  const container=document.createElement("div");
+  container.id="confetti-container";
+  Object.assign(container.style,{
+    position:"fixed",top:0,left:0,width:"100%",height:"100%",pointerEvents:"none",overflow:"hidden",zIndex:1056
+  });
+  document.body.appendChild(container);
+  confettiInterval=setInterval(()=>{
+    const star=document.createElement("div");
+    star.textContent="⭐";
+    Object.assign(star.style,{
+      position:"absolute",
+      left:Math.random()*100+"%",
+      top:"-10px",
+      fontSize:(Math.random()*20+10)+"px",
+      color:["#FFD700","#FF69B4","#00BFFF","#32CD32","#FF4500"][Math.floor(Math.random()*5)],
+      transition:"transform 3s linear, opacity 3s"
+    });
+    container.appendChild(star);
+    setTimeout(()=>{star.style.transform=`translateY(${window.innerHeight+50}px) rotate(${Math.random()*720}deg)`;star.style.opacity=0;},50);
+    setTimeout(()=>star.remove(),3000);
+  },100);
+}
+function stopConfetti(){clearInterval(confettiInterval);const c=document.getElementById("confetti-container");if(c) c.remove();}
+
+// === EFEK SALJU (versi lambat & halus) ===
+const canvas = document.getElementById("snow");
+const ctx = canvas.getContext("2d");
+let snowflakes = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
+
+function createSnowflake() {
+  return {
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2 + 1,     // ukuran salju kecil agar lembut
+    d: Math.random() * 0.5 + 0.2  // densitas lebih rendah (lebih lambat)
+  };
+}
+
+for (let i = 0; i < 80; i++) snowflakes.push(createSnowflake());
+
+function drawSnow() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(180, 220, 255, 0.9)";
+  ctx.beginPath();
+  for (let flake of snowflakes) {
+    ctx.moveTo(flake.x, flake.y);
+    ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+  }
+  ctx.fill();
+  updateSnow();
+  requestAnimationFrame(drawSnow);
+}
+
+function updateSnow() {
+  for (let flake of snowflakes) {
+    flake.y += flake.d * 0.5;       // 🔹 lebih lambat dari sebelumnya
+    flake.x += Math.sin(flake.y * 0.01) * 0.3; // sedikit goyangan lembut
+
+    // reset posisi jika salju jatuh ke bawah layar
+    if (flake.y > canvas.height) {
+      flake.x = Math.random() * canvas.width;
+      flake.y = 0;
     }
-  },1000);
+  }
+}
 
-  confirmDiv.querySelector("#noSubmit").addEventListener("click",()=>{
-    clearInterval(timer);
-    confirmDiv.remove();
-    btn.disabled = false;
-  });
-
-  confirmDiv.querySelector("#yesSubmit").addEventListener("click",()=>{
-    clearInterval(timer);
-    confirmDiv.remove();
-    btn.disabled = false;
-    submitAnswers();
-  });
-});
-
-// Tombol tampilkan token
-document.getElementById("toggleToken").addEventListener("click", ()=>{
-  const el = document.getElementById("tokenInput");
-  if (el.type === "password") { el.type = "text"; toggleToken.textContent = "🙈"; }
-  else { el.type = "password"; toggleToken.textContent = "👁"; }
-});
-
-// Tombol mulai
-document.getElementById("btnStart").addEventListener("click", loadQuestions);
+drawSnow();
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 </html>
