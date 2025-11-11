@@ -1,4 +1,6 @@
-[
+{
+  "Pendidikan Pancasila": [
+    
   {
     "type": "text",
     "text": "Apa yang dimaksud dengan Pancasila sebagai dasar negara?",
@@ -164,4 +166,5 @@
     ],
     "answer": "c"
   }
-]
+ ]
+}
