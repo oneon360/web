@@ -634,5 +634,172 @@
             ],
             "answer": "b"
         }
-    ]
+    ],
+    "Seni Rupa": [
+    {
+        "type": "text",
+        "text": "1. Teknik menggambar yang menggunakan goresan garis-garis (lurus, lengkung, atau silang) untuk menunjukkan gelap-terang adalah teknik...",
+        "options": [
+            "a. Dussel",
+            "b. Blok",
+            "c. Arsir",
+            "d. Pointilis"
+        ],
+        "answer": "c"
+    },
+    {
+        "type": "text",
+        "text": "2. Alat yang paling umum digunakan untuk membuat gambar dengan teknik arsir adalah...",
+        "options": [
+            "a. Kuas dan cat air",
+            "b. Jari tangan",
+            "c. Kapas",
+            "d. Pensil atau pulpen"
+        ],
+        "answer": "d"
+    },
+    {
+        "type": "text",
+        "text": "3. Teknik menggambar dengan cara menggosok-gosokkan pensil sehingga gambar terlihat lebih halus disebut teknik...",
+        "options": [
+            "a. Dussel",
+            "b. Pointilis",
+            "c. Blok",
+            "d. Arsir"
+        ],
+        "answer": "a"
+    },
+    {
+        "type": "text",
+        "text": "4. Apa tujuan utama dari teknik dussel?",
+        "options": [
+            "a. Membuat gambar terlihat seperti kotak-kotak",
+            "b. Membuat gambar terlihat penuh titik",
+            "c. Membuat perpindahan (gradasi) warna dari gelap ke terang terlihat halus",
+            "d. Membuat gambar terlihat seperti bayangan hitam saja"
+        ],
+        "answer": "c"
+    },
+    {
+        "type": "text",
+        "text": "5. Selain pensil, alat bantu yang sering digunakan untuk pada teknik dussel adalah...",
+        "options": [
+            "a. Penggaris",
+            "b. Gunting",
+            "c. Kapas, tisu, atau jari tangan",
+            "d. Pulpen berwarna"
+        ],
+        "answer": "c"
+    },
+    {
+        "type": "text",
+        "text": "6. Teknik menggambar yang menutup seluruh bentuk objek dengan satu warna saja (biasanya warna hitam) disebut teknik...",
+        "options": [
+            "a. Arsir",
+            "b. Pointilis",
+            "c. Dussel",
+            "d. Blok"
+        ],
+        "answer": "d"
+    },
+    {
+        "type": "text",
+        "text": "7. Nama lain untuk teknik blok adalah...",
+        "options": [
+            "a. Teknik Siluet",
+            "b. Teknik Gradasi",
+            "c. Teknik Sketsa",
+            "d. Teknik Abstrak"
+        ],
+        "answer": "a"
+    },
+    {
+        "type": "text",
+        "text": "8. Teknik menggambar yang mengutamakan penggunaan garis sebagai pembentuk gambar disebut...",
+        "options": [
+            "a. Linear",
+            "b. Teknik Dussel",
+            "c. Teknik Blok",
+            "d. Teknik Pointilis"
+        ],
+        "answer": "a"
+    },
+    {
+        "type": "text",
+        "text": "9. Dalam teknik garis, gelap-terang atau tekstur benda biasanya ditunjukkan melalui...",
+        "options": [
+            "a. Gosokan kapas",
+            "b. Kerapatan atau ketebalan garis",
+            "c. Pemberian warna cat air",
+            "d. Titik-titik yang banyak"
+        ],
+        "answer": "b"
+    },
+    {
+        "type": "text",
+        "text": "10. Alat gambar yang paling cocok untuk teknik garis agar hasilnya tegas dan jelas adalah...",
+        "options": [
+            "a. Kapas",
+            "b. Jari tangan",
+            "c. Pen gambar atau spidol kecil",
+            "d. Cat minyak"
+        ],
+        "answer": "c"
+    },
+    {
+        "type": "text",
+        "text": "11. Bagaimana cara membuat bagian yang gelap pada gambar yang menggunakan teknik pointilis?",
+        "options": [
+            "a. Menggunakan garis yang tebal",
+            "b. Menggosoknya dengan kapas",
+            "c. Membuat titik-titik yang lebih besar dan lebih rapat",
+            "d. Mewarnainya dengan cat air"
+        ],
+        "answer": "c"
+    },
+    {
+        "type": "text",
+        "text": "12. Untuk membuat bagian yang terang pada teknik pointilis, maka titik-titiknya harus dibuat...",
+        "options": [
+            "a. Semakin rapat dan besar",
+            "b. Semakin jarang dan kecil",
+            "c. Disilang-silang",
+            "d. Digosok-gosok"
+        ],
+        "answer": "b"
+    },
+    {
+        "type": "text",
+        "text": "13. Teknik pointilis membutuhkan ... yang tinggi karena harus membuat banyak titik.",
+        "options": [
+            "a. Kecepatan",
+            "b. Kesabaran dan ketelitian",
+            "c. Cat yang banyak",
+            "d. Kertas yang besar"
+        ],
+        "answer": "b"
+    },
+    {
+        "type": "text",
+        "text": "14. Ciri utama dari goresan pada sketsa adalah...",
+        "options": [
+            "a. Tebal, hitam, dan tidak bisa dihapus",
+            "b. Tipis, ringan, dan mudah dihapus jika salah",
+            "c. Berwarna-warni seperti pelangi",
+            "d. Selalu berbentuk titik-titik"
+        ],
+        "answer": "b"
+    },
+    {
+        "type": "text",
+        "text": "15. Kapan seorang seniman biasanya membuat sketsa?",
+        "options": [
+            "a. Di tahap paling akhir setelah gambar jadi",
+            "b. Di tahap paling awal sebelum menggambar detail",
+            "c. Hanya jika disuruh guru",
+            "d. Setelah gambar diwarnai"
+        ],
+        "answer": "b"
+    }
+  ]
 }
