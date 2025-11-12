@@ -333,6 +333,141 @@
             "answer": "c"
         }
     ],
+    "Matematika": [
+        {
+            "text": "1. Hasil dari 1 1/2 × 2 1/3 × 3 adalah...",
+            "options": [
+                "a. 10 1/2",
+                "b. 8 1/4",
+                "c. 11 1/4",
+                "d. 9 1/2"
+            ],
+            "answer": "a"
+        },
+        {
+            "text": "2. Hasil dari 6 : 1 1/2 : 2 adalah...",
+            "options": [
+                "a. 3",
+                "b. 2",
+                "c. 1",
+                "d. 4"
+            ],
+            "answer": "b"
+        },
+        {
+            "text": "3. Urutkan pecahan berikut dari yang terkecil: 0,5 ; 4 1/4 ; 30% ; 1 1/5 ; 0,2",
+            "options": [
+                "a. 0,2 ; 30% ; 0,5 ; 1 1/5 ; 4 1/4",
+                "b. 0,2 ; 0,5 ; 30% ; 1 1/5 ; 4 1/4",
+                "c. 30% ; 0,2 ; 0,5 ; 1 1/5 ; 4 1/4",
+                "d. 0,2 ; 30% ; 4 1/4 ; 0,5 ; 1 1/5"
+            ],
+            "answer": "a"
+        },
+        {
+            "text": "4. Ibu membeli 4 3/4 kg gula dan menggunakan 0,5 bagian untuk membuat kue. Berapa kg gula yang digunakan Ibu?",
+            "options": [
+                "a. 4 1/4 kg",
+                "b. 2 3/8 kg",
+                "c. 8 3/4 kg",
+                "d. 1,25 kg"
+            ],
+            "answer": "b"
+        },
+        {
+            "text": "5. Kakak memiliki pita 3,5 meter dan dipotong masing-masing 1 3/4 meter. Berapa potongan yang didapat?",
+            "options": [
+                "a. 4 potong",
+                "b. 3 potong",
+                "c. 2 potong",
+                "d. 1 potong"
+            ],
+            "answer": "c"
+        },
+        {
+            "text": "6. Urutan suhu dari yang terpanas jika: Kota A 25 1/2°C, Kota B 25,8°C, Kota C 25 3/5°C, Kota D 25,2°C",
+            "options": [
+                "a. Kota B, Kota C, Kota A, Kota D",
+                "b. Kota D, Kota A, Kota C, Kota B",
+                "c. Kota B, Kota A, Kota C, Kota D",
+                "d. Kota D, Kota C, Kota A, Kota B"
+            ],
+            "answer": "a"
+        },
+        {
+            "text": "7. Memet memiliki 11 kelereng merah dan 8 kelereng biru. Tentukan Perbandingan kelereng biru terhadap kelereng merah?",
+            "options": [
+                "a. 11 : 8",
+                "b. 8 : 11",
+                "c. 8 : 18",
+                "d. 11 : 18"
+            ],
+            "answer": "b"
+        },
+        {
+            "text": "8. Umur Ayah 40 tahun dan Ibu 35 tahun. Perbandingan umur Ayah dan Ibu dalam bentuk paling sederhana adalah...",
+            "options": [
+                "a. 40 : 35",
+                "b. 7 : 8",
+                "c. 8 : 7",
+                "d. 4 : 3"
+            ],
+            "answer": "c"
+        },
+        {
+            "text": "9. Perbandingan kelereng Ali dan Budi adalah 2 : 3. Jika jumlahnya 25 butir, berapa kelereng Ali?",
+            "options": [
+                "a. 15 butir",
+                "b. 10 butir",
+                "c. 5 butir",
+                "d. 20 butir"
+            ],
+            "answer": "b"
+        },
+        {
+            "text": "10. Perbandingan uang Ani dan Ina adalah 3 : 5. Jika uang Ani Rp15.000, berapa uang Ina?",
+            "options": [
+                "a. Rp15.000",
+                "b. Rp5.000",
+                "c. Rp40.000",
+                "d. Rp25.000"
+            ],
+            "answer": "d"
+        },
+        {
+            "type": "text",
+            "text": "11. Perbandingan umur Ayah dan Kakak adalah 7 : 2. Jika umur Ayah sekarang adalah 35 tahun, berapakah umur Kakak?",
+            "options": [
+                "a. 5 tahun",
+                "b. 10 tahun",
+                "c. 14 tahun",
+                "d. 20 tahun"
+            ],
+            "answer": "b"
+        },
+        {
+            "type": "text",
+            "text": "12. Perbandingan jumlah kambing dan sapi di peternakan Pak Jaya adalah 8 : 3. Jika jumlah sapi ada 15 ekor, berapakah jumlah kambing di peternakan itu?",
+            "options": [
+                "a. 15 ekor",
+                "b. 24 ekor",
+                "c. 40 ekor",
+                "d. 55 ekor"
+            ],
+            "answer": "c"
+        },
+        {
+            "type": "text",
+            "text": "13. Perbandingan jumlah buku cerita dan buku pelajaran di rak adalah 2 : 7. Jumlah kedua jenis buku tersebut adalah 54 buah. Berapa banyak buku pelajaran yang ada di rak?",
+            "options": [
+                "a. 12 buah",
+                "b. 6 buah",
+                "c. 54 buah",
+                "d. 42 buah"
+            ],
+            "answer": "d"
+        }
+    ],
     "IPAS": [
         {
             "type": "text",
