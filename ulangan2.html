@@ -278,21 +278,35 @@ async function loadQuestions(){
 const infoBox = document.getElementById("quizInfo");
 const totalSoal = soal[subject].length;
 
-// Hitung total waktu (2 menit 30 detik per soal)
-const waktuPerSoal = 2 * 60 + 30; // 150 detik
+// Tentukan waktu per soal
+let waktuPerSoal;
+
+// Jika mata pelajaran Matematika, gunakan 5 menit per soal
+if (subject.toLowerCase() === "matematika") {
+  waktuPerSoal = 5 * 60; // 300 detik per soal
+} else {
+  // Selain Matematika, gunakan 2 menit 30 detik per soal
+  waktuPerSoal = 2 * 60 + 30; // 150 detik per soal
+}
+
+// Hitung total waktu
 const totalWaktu = totalSoal * waktuPerSoal; // detik total
 
+// Konversi ke menit dan detik
 const menit = Math.floor(totalWaktu / 60);
 const detik = totalWaktu % 60;
 
+// Tampilkan informasi
 infoBox.classList.remove("d-none");
 infoBox.innerHTML = `
   <h5>📚 Mata Pelajaran: <b>${subject}</b></h5>
   <p>Jumlah Soal: <b>${totalSoal}</b></p>
-  <p>Sisa Waktu: <b id="timer">${String(menit).padStart(2,"0")}:${String(detik).padStart(2,"0")}</b></p>
+  <p>Sisa Waktu: <b id="timer">${String(menit).padStart(2, "0")}:${String(detik).padStart(2, "0")}</b></p>
 `;
 
-startTimer(totalWaktu); // Jalankan timer otomatis sesuai jumlah soal
+// Jalankan timer otomatis sesuai jumlah soal
+startTimer(totalWaktu);
+
 
 
   const container = document.getElementById("questionContainer");
