@@ -332,5 +332,172 @@
             ],
             "answer": "c"
         }
+    ],
+    "IPAS": [
+        {
+            "type": "text",
+            "text": "1. Kedatangan bangsa Eropa ke Indonesia dipicu oleh keinginan untuk mencari rempah-rempah. Mengapa rempah-rempah dianggap sangat berharga saat itu?",
+            "options": [
+                "a. Karena bisa dijadikan perhiasan",
+                "b. Karena digunakan untuk membuat makanan awet dan obat",
+                "c. Karena menjadi bahan bangunan",
+                "d. Karena hanya tumbuh di Eropa"
+            ],
+            "answer": "b"
+        },
+        {
+            "type": "text",
+            "text": "2. Perlawanan terhadap Portugis terjadi di banyak tempat, seperti Ternate, Demak, dan Aceh. Mengapa perlawanan-perlawanan ini pada akhirnya gagal mengusir Portugis dari Nusantara saat itu?",
+            "options": [
+                "a. Karena perlawanan masih bersifat kedaerahan (regional) dan belum ada persatuan nasional antar kerajaan.",
+                "b. Karena tentara Portugis jumlahnya jutaan sehingga tidak terkalahkan.",
+                "c. Karena semua raja di Indonesia adalah teman baik Portugis.",
+                "d. Karena Portugis memiliki senjata yang jauh lebih modern, seperti tank dan pesawat tempur."
+            ],
+            "answer": "a"
+        },
+        {
+            "type": "text",
+            "text": "3. Setelah VOC bangkrut, pemerintah Belanda menerapkan Tanam Paksa (Cultuurstelsel). Apa dampak dari kebijakan ini bagi petani Indonesia?",
+            "options": [
+                "a. Petani menjadi sangat kaya raya karena hasil panennya dibeli mahal oleh Belanda.",
+                "b. Petani punya banyak waktu luang karena pekerjaannya sangat mudah.",
+                "c. Petani tidak bisa menanam padi untuk makan, sehingga terjadi kelaparan dan kemiskinan yang parah.",
+                "d. Petani menjadi lebih sehat karena bisa makan kopi, tebu, dan nila setiap hari."
+            ],
+            "answer": "c"
+        },
+        {
+            "type": "text",
+            "text": "4. Penyebab utama terjadinya Perang Jawa adalah …",
+            "options": [
+                "a. Perselisihan keluarga kerajaan",
+                "b. Penarikan pajak yang tinggi dan perampasan tanah leluhur",
+                "c. Perebutan tahta kerajaan",
+                "d. Perbedaan agama"
+            ],
+            "answer": "b"
+        },
+        {
+            "type": "text",
+            "text": "5. Perang Padri di Sumatera Barat awalnya adalah perang saudara antara Kaum Padri dan Kaum Adat. Bagaimana Belanda akhirnya bisa terlibat dan memenangkan perang ini?",
+            "options": [
+                "a. Belanda diminta menjadi penengah yang jujur oleh kedua belah pihak.",
+                "b. Belanda bersatu dengan Kaum Padri dan Kaum Adat untuk melawan penjajah lain.",
+                "c. Belanda tidak ikut campur sama sekali dalam Perang Padri.",
+                "d. Belanda memanfaatkan perpecahan itu; mereka membantu Kaum Adat yang terdesak, lalu setelah Kaum Padri kalah, Belanda berbalik menguasai Kaum Adat."
+            ],
+            "answer": "d"
+        },
+        {
+            "type": "text",
+            "text": "6. Lahirnya organisasi pergerakan nasional seperti Budi Utomo (1908) dan Sarekat Islam (1911) dipelopori oleh kaum terpelajar. Dari manakah kaum terpelajar ini muncul?",
+            "options": [
+                "a. Mereka adalah lulusan sekolah-sekolah yang didirikan Belanda sebagai bagian dari Politik Etis.",
+                "b. Mereka adalah para bangsawan yang belajar di luar negeri atas biaya sendiri.",
+                "c. Mereka adalah keturunan langsung tentara Belanda yang membelot.",
+                "d. Mereka adalah pedagang kaya raya yang belajar dari pedagang asing."
+            ],
+            "answer": "a"
+        },
+        {
+            "type": "text",
+            "text": "7. Sumpah Pemuda (1928) mengikrarkan 'Satu Nusa, Satu Bangsa, dan Satu Bahasa'. Mengapa kesepakatan untuk 'Satu Bahasa: Indonesia' menjadi sangat penting bagi perjuangan kemerdekaan?",
+            "options": [
+                "a. Agar orang Indonesia bisa melupakan bahasa daerahnya masing-masing.",
+                "b. Untuk menyatukan ratusan suku bangsa yang berbeda bahasa agar bisa berkomunikasi dan berjuang bersama sebagai satu 'Bangsa Indonesia'.",
+                "c. Karena Bahasa Indonesia adalah bahasa yang paling sulit dipelajari di dunia.",
+                "d. Agar Belanda bingung karena tidak mengerti apa yang dibicarakan para pemuda."
+            ],
+            "answer": "b"
+        },
+        {
+            "type": "text",
+            "text": "8. Bagaimana peristiwa bom atom di Hiroshima dan Nagasaki bisa mempercepat proklamasi kemerdekaan Indonesia?",
+            "options": [
+                "a. Bom itu membuat Jepang semakin kuat dan semakin ketat menjaga Indonesia.",
+                "b. Bom itu adalah hadiah dari Amerika agar Indonesia bisa merdeka.",
+                "c. Para pemimpin Indonesia takut akan dibom juga, sehingga segera memproklamasikan kemerdekaan.",
+                "d. Bom itu membuat Jepang menyerah tanpa syarat, sehingga terjadi 'kekosongan kekuasaan' yang dimanfaatkan Indonesia."
+            ],
+            "answer": "d"
+        },
+        {
+            "type": "text",
+            "text": "9. Pangeran Antasari adalah pahlawan dari Kalimantan Selatan yang memimpin Perang Banjar. Apa motivasi utama Pangeran Antasari dan rakyat Banjar melawan Belanda?",
+            "options": [
+                "a. Belanda ingin membeli semua intan di Martapura dengan harga sangat mahal.",
+                "b. Belanda ingin membangun ibu kota baru di Banjarmasin.",
+                "c. Belanda ikut campur dalam urusan internal istana (pengangkatan raja) dan memonopoli perdagangan hasil bumi (batu bara, lada).",
+                "d. Rakyat Banjar tidak suka dengan cara Belanda membangun jalan raya."
+            ],
+            "answer": "c"
+        },
+        {
+            "type": "text",
+            "text": "10. Setelah Jepang menyerah (14 Agustus 1945) Peristiwa penting apa yang pertama kali terjadi setelah kabar ini didengar oleh pemuda Indonesia?",
+            "options": [
+                "a. Peristiwa Rengasdengklok.",
+                "b. Pembacaan teks Proklamasi.",
+                "c. Para pemuda (seperti Sutan Syahrir) mendesak Golongan Tua (Sukarno-Hatta) untuk segera memproklamasikan kemerdekaan.",
+                "d. Pembentukan BPUPKI oleh Jepang."
+            ],
+            "answer": "c"
+        },
+        {
+            "type": "text",
+            "text": "11. Apa tujuan sebenarnya Golongan Muda membawa Sukarno dan Hatta ke Rengasdengklok pada 16 Agustus 1945?",
+            "options": [
+                "a. Untuk menjauhkan Sukarno-Hatta dari pengaruh Jepang di Jakarta dan meyakinkan mereka agar segera memproklamasikan kemerdekaan.",
+                "b. Untuk menculik dan menggantikan Sukarno dan Hatta dengan pemimpin baru.",
+                "c. Untuk mengajak Sukarno dan Hatta berlibur di pedesaan yang sejuk.",
+                "d. Untuk menghukum Sukarno dan Hatta karena dianggap terlalu lambat."
+            ],
+            "answer": "a"
+        },
+        {
+            "type": "text",
+            "text": "12. Bagaimana cara terbaik bagi seorang siswa kelas SD untuk 'mempertahankan kemerdekaan' pada masa sekarang?",
+            "options": [
+                "a. Ikut berperang melawan negara lain yang mencoba menjajah Indonesia.",
+                "b. Tidak perlu melakukan apa-apa, karena kemerdekaan sudah dijaga oleh TNI.",
+                "c. Membeli semua produk buatan luar negeri agar Indonesia dikenal dunia.",
+                "d. Belajar dengan rajin, menghargai perbedaan (toleransi), dan mencintai budaya serta produk dalam negeri."
+            ],
+            "answer": "d"
+        },
+        {
+            "type": "text",
+            "text": "13. Mengapa 'persatuan dan kesatuan' (seperti dalam Sumpah Pemuda) masih sangat penting untuk mempertahankan kemerdekaan Indonesia di masa sekarang?",
+            "options": [
+                "a. Agar Indonesia bisa menjajah negara lain seperti Belanda dulu.",
+                "b. Supaya Indonesia bisa memenangkan semua pertandingan olahraga internasional.",
+                "c. Karena ancaman terbesar saat ini bisa berupa perpecahan dari dalam (adu domba, hoaks, konflik SARA) yang melemahkan bangsa.",
+                "d. Agar semua orang di Indonesia memiliki agama dan suku yang sama."
+            ],
+            "answer": "c"
+        },
+        {
+            "type": "text",
+            "text": "14. Sukarno dan Hatta dikenal sebagai 'tokoh Proklamator'. Mengapa Hatta juga sangat penting dan disebut Proklamator, padahal Sukarno yang membacakan teks proklamasi?",
+            "options": [
+                "a. Karena Hatta yang memegang tiang bendera saat upacara.",
+                "b. Karena Hatta yang mengetik naskah proklamasi.",
+                "c. Karena Hatta ikut merumuskan dan menandatangani teks proklamasi 'Atas nama bangsa Indonesia' bersama Sukarno, sebagai simbol persatuan kepemimpinan.",
+                "d. Karena Hatta adalah wakil dari Golongan Muda yang mendesak proklamasi."
+            ],
+            "answer": "c"
+        },
+        {
+            "type": "text",
+            "text": "15. Achmad Soebardjo adalah salah satu tokoh penting pada masa kemerdekaan. Apa perannya dalam Peristiwa Rengasdengklok?",
+            "options": [
+                "a. Dia yang menculik Sukarno dan Hatta ke Rengasdengklok.",
+                "b. Dia yang menjadi penengah (mediator) antara Golongan Muda dan Golongan Tua, serta menjamin proklamasi akan dilaksanakan esok harinya.",
+                "c. Dia yang mengetik teks proklamasi di rumahnya.",
+                "d. Dia yang mengibarkan bendera Merah Putih saat proklamasi."
+            ],
+            "answer": "b"
+        }
     ]
 }
