@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Media</title>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15/dist/hls.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/artplayer/dist/artplayer.css">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://apiv.nyanx.de" crossorigin>
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    :root {
+      --yt-red: #ff0000;
+      --bg-dark: #000000;
+      --panel-bg: rgba(28, 28, 28, 0.95);
+      --border-light: rgba(255, 255, 255, 0.1);
+      --ease-click: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100dvh;
+      width: 100%;
+      background: var(--bg-dark);
+      color: #fff;
+      font-family: -apple-system, sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .search-container {
+      flex: 0 0 auto;
+      padding: calc(env(safe-area-inset-top, 0px) + 15px) 20px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 1000;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 6px 16px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid var(--border-light);
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      padding: 4px 0;
+      width: 100%;
+      outline: none;
+    }
+
+    .search-box svg {
+      fill: rgba(255, 255, 255, 0.5);
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    .search-results-overlay {
+      position: absolute;
+      top: 65px;
+      width: calc(100% - 40px);
+      max-width: 500px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      max-height: 350px;
+      overflow-y: auto;
+      display: none;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-item {
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--border-light);
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    .result-item:hover { background: rgba(255, 255, 255, 0.05); }
+    .result-item b { color: var(--yt-red); }
+
+    .main-player-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .player-stabilizer {
+      width: 100%;
+      max-width: 860px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #videoTitle {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-align: center;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-wrapper {
+      position: relative;
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      will-change: transform;
+      -webkit-backface-visibility: hidden;
+      -webkit-perspective: 1000;
+      backface-visibility: hidden;
+      perspective: 1000;
+    }
+
+    .controls-panel {
+      width: 100%;
+      background: var(--panel-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      padding: 16px;
+      margin-top: 15px;
+      border-radius: 20px;
+      border: 1px solid var(--border-light);
+    }
+
+    .progress-wrapper {
+      width: 100%;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      touch-action: none;
+      position: relative;
+      padding: 10px 0;
+      margin: -10px 0;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      position: relative;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-buffer {
+      position: absolute;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--yt-red);
+      width: 0%;
+      position: relative;
+    }
+
+    .seek-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      margin: 10px 0 15px;
+    }
+
+    .seek-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #bbb;
+      padding: 10px 0;
+      font-size: 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      transition: all 0.1s var(--ease-click);
+    }
+
+    .seek-btn:active {
+      transform: scale(0.92);
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 40px;
+    }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      transition: 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.85);
+      opacity: 0.7;
+    }
+
+    .btn svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    #volSlider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 70px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    #volSlider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    #volSlider::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      border: none;
+    }
+
+    #volSlider::-moz-range-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+      #volSlider { display: none !important; }
+      .btn-group { gap: 8px; }
+    }
+
+    #timeBox {
+      font-size: 12px;
+      color: #999;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #speedBtn {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      padding: 2px 8px;
+      font-size: 11px;
+    }
+
+    .state-overlay {
+      position: absolute;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .center-btn {
+      width: 66px;
+      height: 66px;
+      background: rgba(255, 0, 0, 0.9);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--yt-red);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .speed-menu {
+      position: absolute;
+      bottom: 60px;
+      right: 0;
+      background: #222;
+      border-radius: 14px;
+      display: none;
+      flex-direction: column;
+      border: 1px solid #333;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .speed-menu.show { display: flex; }
+
+    .speed-item {
+      padding: 12px 25px;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+
+    .speed-item.active {
+      color: var(--yt-red);
+      background: #2a2a2a;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="search-container">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" width="20" height="20">
+        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+      </svg>
+      <input type="text" id="searchInput" placeholder="输入关键词搜索..." autocomplete="off">
+    </div>
+    <div id="resultsList" class="search-results-overlay"></div>
+  </div>
+
+  <div class="main-player-area">
+    <div class="player-stabilizer" id="playerNode">
+      <div id="videoTitle">READY</div>
+      <div id="artplayer-container" class="video-wrapper" style="aspect-ratio: 16 / 9;"></div>
+      <div class="controls-panel">
+        <div class="progress-wrapper" id="progressWrap">
+          <div class="progress-container">
+            <div class="progress-buffer" id="bufferBar"></div>
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+        <div class="seek-row">
+          <button class="seek-btn" onclick="window.artPlayerSeek(-600)">-10m</button>
+          <button class="seek-btn" onclick="window.artPlayerSeek(-60)">-1m</button>
+          <button class="seek-btn" onclick="window.artPlayerSeek(-10)">-10s</button>
+          <button class="seek-btn" onclick="window.artPlayerSeek(10)">+10s</button>
+          <button class="seek-btn" onclick="window.artPlayerSeek(60)">+1m</button>
+          <button class="seek-btn" onclick="window.artPlayerSeek(600)">+10m</button>
+        </div>
+        <div class="bottom-row">
+          <div class="btn-group">
+            <button class="btn" id="playBtn">
+              <svg id="pIcon" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </button>
+            <button class="btn" id="nextBtn">
+              <svg viewBox="0 0 24 24">
+                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+              </svg>
+            </button>
+            <div class="btn-group">
+              <button class="btn" id="volBtn"><svg id="vIcon" viewBox="0 0 24 24"></svg></button>
+              <input type="range" id="volSlider" min="0" max="1" step="0.01" value="0.5">
+            </div>
+            <span id="timeBox">0:00 / 0:00</span>
+          </div>
+          <div class="btn-group" style="position: relative;">
+            <div class="speed-menu" id="speedMenu">
+              <div class="speed-item" data-val="0.5">0.5x</div>
+              <div class="speed-item active" data-val="1.0">1.0x</div>
+              <div class="speed-item" data-val="1.5">1.5x</div>
+              <div class="speed-item" data-val="2.0">2.0x</div>
+            </div>
+            <button class="btn" id="speedBtn">1.0x</button>
+            <button class="btn" id="pipBtn">
+              <svg viewBox="0 0 24 24">
+                <path d="M19 11h-8v6h8v-6zm4 8V4.98C23 3.88 22.1 3 21 3H3c-1.1 0-2 .88-2 1.98V19c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2zm-2 .02H3V4.97h18v14.05z" />
+              </svg>
+            </button>
+            <button class="btn" id="fullBtn">
+              <svg viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const bar = $('progressBar'), buf = $('bufferBar'), wrap = $('progressWrap');
+    const volSlider = $('volSlider'), volBtn = $('volBtn'), searchInput = $('searchInput'), resultsList = $('resultsList');
+    
+    // ArtPlayer实例
+    let art = null;
+    let isLoaded = false;
+    let usedCodes = [];
+    const API = "https://apiv.nyanx.de/";
+    let wakeLock = null;
+
+
+    function getNetworkQuality() {
+      if ('connection' in navigator) {
+        const connection = navigator.connection;
+        const effectiveType = connection.effectiveType || 'unknown';
+        const downlink = connection.downlink || 0;
+
+        if (effectiveType === 'slow-2g' || effectiveType === '2g') {
+          return 'poor';
+        } else if (effectiveType === '3g' || downlink < 1.5) {
+          return 'moderate';
+        } else if (effectiveType === '4g' || downlink >= 1.5) {
+          return 'good';
+        }
+      }
+      return 'unknown';
+    }
+
+    function getHlsConfigForNetwork(networkQuality) {
+      const baseConfig = {
+        backBufferLength: 90,
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        liveSyncDurationCount: 3,
+        maxLoadingDelay: 4,
+        maxStarvationDelay: 3,
+        abrEwmaFastLive: 1.0,
+        abrEwmaSlowLive: 3.0,
+        abrEwmaDefaultEstimate: 5e5,
+        abrBandWidthFactor: 0.95,
+        abrBandWidthUpFactor: 0.7,
+        enableWorker: true,
+        enableWebWorker: true,
+        lowLatencyMode: false,
+        progressive: true,
+        forceKeyFrameOnDiscontinuity: true,
+        maxBufferHole: 0.01,
+        highBufferWatchdogPeriod: 2,
+        nudgeMaxRetry: 3,
+        maxFragLookUpTolerance: 0.01,
+        startFragPrefetch: true,
+        testBandwidth: true,
+        nudgeOffset: 0.05,
+        xhrSetup: function (xhr, url) {
+          xhr.withCredentials = false;
+          xhr.timeout = 20000;
+          xhr.setRequestHeader('Accept', '*/*');
+          xhr.setRequestHeader('Accept-Encoding', 'identity');
+        },
+        fragLoadingTimeOut: 20000,
+        fragLoadingMaxRetry: 6,
+        fragLoadingMaxRetryTimeout: 60000,
+        levelLoadingTimeOut: 20000,
+        levelLoadingMaxRetry: 3,
+        levelLoadingMaxRetryTimeout: 60000,
+        maxBufferSize: 60 * 1000 * 1000,
+        appendErrorMaxRetry: 3,
+        enableSoftwareAES: true,
+        manifestLoadingTimeOut: 20000,
+        manifestLoadingMaxRetry: 3,
+        manifestLoadingMaxRetryTimeout: 60000,
+        capLevelOnFPSDrop: false,
+        capLevelToPlayerSize: false,
+        initialLiveManifestSize: 1,
+        enableCEA708Captions: false,
+        enableEMSG: false,
+        enableStats: false,
+        timelineLifter: true,
+        maxSeekHole: 1,
+        levelLoadingLoadPolicy: {
+          default: {
+            maxTimeToFirstByte: 10000,
+            maxLoadTime: 20000,
+            timeoutRetryDelay: 1000,
+            errorRetryDelay: 2000
+          }
+        },
+        fragLoadingLoadPolicy: {
+          default: {
+            maxTimeToFirstByte: 10000,
+            maxLoadTime: 20000,
+            timeoutRetryDelay: 1000,
+            errorRetryDelay: 2000
+          }
+        }
+      };
+
+      switch (networkQuality) {
+        case 'poor':
+          baseConfig.maxBufferLength = 30;
+          baseConfig.backBufferLength = 10;
+          baseConfig.abrBandWidthFactor = 0.5;
+          baseConfig.abrEwmaDefaultEstimate = 2e5;
+          baseConfig.startFragPrefetch = false;
+          baseConfig.maxSeekHole = 5;
+          baseConfig.fragLoadingMaxRetry = 15;
+          baseConfig.levelLoadingMaxRetry = 15;
+          break;
+        case 'moderate':
+          baseConfig.maxBufferLength = 60;
+          baseConfig.backBufferLength = 20;
+          baseConfig.abrBandWidthFactor = 0.7;
+          baseConfig.abrEwmaDefaultEstimate = 5e5;
+          baseConfig.startFragPrefetch = true;
+          baseConfig.maxSeekHole = 3;
+          baseConfig.fragLoadingMaxRetry = 10;
+          baseConfig.levelLoadingMaxRetry = 10;
+          break;
+        case 'good':
+          baseConfig.maxBufferLength = 90;
+          baseConfig.backBufferLength = 30;
+          baseConfig.abrBandWidthFactor = 0.95;
+          baseConfig.abrEwmaDefaultEstimate = 1.5e6;
+          baseConfig.startFragPrefetch = true;
+          baseConfig.maxSeekHole = 1;
+          baseConfig.fragLoadingMaxRetry = 5;
+          baseConfig.levelLoadingMaxRetry = 5;
+          break;
+      }
+
+      return baseConfig;
+    }
+
+    function handleHlsError(error) {
+      console.error('HLS Error:', error);
+      
+      if (error.details) {
+        console.error('Error Details:', error.details);
+      }
+      
+      if (!error.fatal) {
+        if (error.details === 'bufferStalledError' || error.details === 'bufferNudgeOnStall') {
+          console.warn('Handling buffer stall error...');
+          // 不要立即刷新页面，尝试恢复播放
+          if (hls) {
+            hls.recoverMediaError();
+          }
+        } else if (error.details === 'fragLoadError') {
+          console.warn('Fragment loading error, retrying...');
+        }
+        return;
+      }
+      
+      switch(error.type) {
+        case Hls.ErrorTypes.NETWORK_ERROR:
+          console.warn('Fatal network error, try to recover');
+          // 尝试重新加载，但保留当前位置
+          setTimeout(() => {
+            if (hls) {
+              const currentTime = video.currentTime;
+              hls.startLoad();
+              // 稍后跳转到之前的位置
+              setTimeout(() => {
+                video.currentTime = currentTime;
+              }, 1000);
+            }
+          }, 2000);
+          break;
+        case Hls.ErrorTypes.MEDIA_ERROR:
+          console.warn('Fatal media error, try to recover');
+          // 尝试恢复媒体错误而不是完全重启
+          setTimeout(() => {
+            if (hls) {
+              hls.recoverMediaError();
+            }
+          }, 1000);
+          break;
+        default:
+          console.error('Unrecoverable error, reload player');
+          // 尝试使用当前URL重新开始，但保持播放位置
+          const currentSrc = video.src || (hls && hls.url);
+          if (currentSrc) {
+            const currentTime = video.currentTime;
+            startVideo(currentSrc, $('videoTitle').innerText, !video.paused);
+            // 在视频加载完成后跳转到之前的位置
+            setTimeout(() => {
+              if (video.readyState >= 1) {
+                video.currentTime = currentTime;
+              }
+            }, 2000);
+          } else {
+            console.log('无法恢复播放器，可手动刷新页面...');
+          }
+          break;
+      }
+    }
+
+    async function requestWakeLock() {
+      if ('wakeLock' in navigator) {
+        try {
+          wakeLock = await navigator.wakeLock.request('screen');
+          wakeLock.addEventListener('release', () => {});
+        } catch (err) {}
+      }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) {
+        wakeLock.release();
+        wakeLock = null;
+      }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        releaseWakeLock();
+      } else if (!video.paused && isLoaded) {
+        requestWakeLock();
+      }
+    });
+
+    const fmt = s => {
+      if (!s || isNaN(s)) return "0:00";
+      const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = Math.floor(s % 60);
+      return h > 0 ? `${h}:${m < 10 ? '0' + m : m}:${r < 10 ? '0' + r : r}` : `${m}:${r < 10 ? '0' + r : r}`;
+    };
+
+    function updateVolUI() {
+      const v = art ? art.volume : parseFloat(volSlider.value) || 0.5;
+      const m = art ? art.muted : false;
+      const vIcon = $('vIcon');
+      if (m || v === 0) {
+        vIcon.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.39-.81.62-1.72.62-2.7 0-3.17-2.11-5.85-5-6.71v2.06c1.38.86 2.31 2.36 2.31 4.1s-.93 3.24-2.31 4.1v2.06c2.89-.86 5-3.54 5-6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.52.52-.89 1.15-1.14 1.83h2.06c.13-.27.33-.52.58-.77l.01-.01L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+      } else if (v > 0.5) {
+        vIcon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+      } else {
+        vIcon.innerHTML = '<path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>';
+      }
+      volSlider.value = m ? 0 : v;
+    }
+
+    async function playNext(keyword = "") {
+      const loader = $('loader');
+      loader.classList.remove('hidden');
+      try {
+        let url = "";
+        const isSearch = keyword && keyword.trim() !== "";
+        if (isSearch) {
+          url = `miss-search.php?title=${encodeURIComponent(keyword.trim())}`;
+        } else {
+          url = `${API}?exclude=${usedCodes.join(',')}`;
+        }
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+        const res = await fetch(url, {
+          signal: controller.signal,
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
+        const json = await res.json();
+        let listData = [];
+        if (isSearch) {
+          if (json.success && Array.isArray(json.data)) listData = json.data;
+          else if (Array.isArray(json)) listData = json;
+          else throw new Error('Invalid response format');
+        } else {
+          if (json.m3u8 || json.m3u8_url) listData = [json];
+        }
+
+        if (listData.length > 0) {
+          resultsList.innerHTML = '';
+          listData.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'result-item';
+            const title = item.title || item.name || "未知视频";
+            const m3u8 = item.m3u8_url || item.m3u8;
+            if (isSearch) {
+              const regex = new RegExp(`(${keyword})`, 'gi');
+              div.innerHTML = title.replace(regex, '<b>$1</b>');
+            } else {
+              div.innerText = title;
+            }
+            div.onclick = (e) => {
+              e.stopPropagation();
+              startVideo(m3u8, title);
+              resultsList.style.display = 'none';
+              searchInput.value = '';
+            };
+            resultsList.appendChild(div);
+          });
+          if (isSearch) resultsList.style.display = 'block';
+          else if (!isSearch && listData.length === 1) startVideo(listData[0].m3u8_url || listData[0].m3u8, listData[0].title || listData[0].name);
+        } else if (isSearch) {
+          resultsList.innerHTML = '<div class="result-item">未找到相关视频</div>';
+          resultsList.style.display = 'block';
+        }
+      } catch (e) {
+        let errorMessage = "加载失败";
+        if (e.name === 'AbortError') {
+          errorMessage = "请求超时，请检查网络连接";
+        } else if (e.message.includes('Failed to fetch')) {
+          errorMessage = "网络连接失败，请检查网络设置";
+        } else if (e.message.includes('CORS')) {
+          errorMessage = "跨域请求被阻止，请使用代理或检查服务器配置";
+        } else {
+          errorMessage = e.message;
+        }
+
+        if (!keyword) {
+          alert(errorMessage);
+        } else {
+          resultsList.innerHTML = `<div class="result-item">${errorMessage}</div>`;
+          resultsList.style.display = 'block';
+        }
+      } finally {
+        loader.classList.add('hidden');
+      }
+    }
+
+    function startVideo(m3u8, name, auto = true) {
+      if (!m3u8) return;
+      
+      // 销毁现有播放器实例
+      if (art) {
+        art.destroy(false); // 保留DOM元素
+      }
+      
+      isLoaded = true;
+      $('videoTitle').innerText = (name || "VIDEO").split('_')[0].toUpperCase();
+      let finalUrl = m3u8.replace("https://surrit.com/", "/s1/");
+
+      const videoId = generateVideoId(m3u8);
+
+      // 获取保存的播放位置
+      let currentPlayTime = 0;
+      const history = JSON.parse(localStorage.getItem('video_history') || '{}');
+      if (history[videoId]) {
+        const savedPosition = history[videoId];
+        if (art && art.duration && savedPosition > art.duration - 10) {
+          currentPlayTime = 0;
+        } else {
+          currentPlayTime = savedPosition;
+        }
+      }
+
+      // 创建ArtPlayer实例
+      art = new Artplayer({
+        container: '#artplayer-container',
+        url: finalUrl,
+        quality: [
+          {
+            default: true,
+            name: 'Auto',
+            url: finalUrl,
+          },
+        ],
+        poster: '',
+        fullscreen: true,
+        fullscreenWeb: true,
+        pip: true,
+        autoplay: auto,
+        muted: true,
+        autoSize: false,
+        autoMini: false,
+        lock: true,
+        rotate: true,
+        playbackRate: true,
+        aspectRatio: true,
+        hotkey: true,
+        theme: '#ff0000',
+        lang: navigator.language.toLowerCase().startsWith('zh') ? 'zh-cn' : 'en',
+        icons: {},
+        customType: {
+          m3u8: (video, url) => {
+            if (Hls.isSupported()) {
+              const hls = new Hls({
+                enableWorker: true,
+                lowLatencyMode: true,
+                backBufferLength: 90,
+                maxBufferLength: 30,
+              });
+              hls.loadSource(url);
+              hls.attachMedia(video);
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+              video.src = url;
+            }
+          },
+        },
+        settings: [
+          {
+            html: 'Speed',
+            width: 55,
+            tooltip: () => '1.0x',
+            selector: [
+              {
+                default: true,
+                html: '1.0x',
+                value: 1,
+              },
+              {
+                html: '0.5x',
+                value: 0.5,
+              },
+              {
+                html: '1.5x',
+                value: 1.5,
+              },
+              {
+                html: '2.0x',
+                value: 2.0,
+              },
+            ],
+            onSelect: (item) => {
+              art.playbackRate = item.value;
+              return item.html;
+            },
+          },
+        ],
+        controls: [
+          {
+            position: 'right',
+            html: 'PIP',
+            tooltip: 'Picture in picture',
+            click: () => {
+              art.PIP = true;
+            },
+          },
+        ],
+        layers: [],
+        contextmenu: [
+          {
+            html: 'Quality',
+            tooltip: 'Switch quality',
+            submenu: [
+              {
+                html: 'Auto',
+                click: () => {
+                  art.switchQuality(0);
+                },
+              },
+            ],
+          },
+        ],
+        highlight: [],
+        thumbnails: {},
+        subtitle: {},
+        ads: {},
+      });
+
+      // 监听播放器事件
+      art.on('ready', () => {
+        // 设置音量
+        art.volume = parseFloat(volSlider.value);
+        updateVolUI();
+
+        // 如果有保存的播放位置，则跳转到该位置
+        if (currentPlayTime > 0) {
+          art.seek = currentPlayTime;
+        }
+
+        // 同步播放/暂停状态
+        syncPlayPauseState();
+      });
+
+      art.on('play', () => {
+        $('pIcon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+        requestWakeLock();
+        updateProgressBar();
+      });
+
+      art.on('pause', () => {
+        $('pIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+        releaseWakeLock();
+      });
+
+      art.on('timeupdate', () => {
+        updateProgressBar();
+      });
+
+      art.on('seeked', () => {
+        // 当用户拖动进度条后，更新本地存储
+        saveVideoProgress(videoId);
+      });
+
+      art.on('volumechange', () => {
+        volSlider.value = art.volume;
+        updateVolUI();
+      });
+
+      art.on('ended', () => {
+        releaseWakeLock();
+        // 清除当前视频信息
+        localStorage.removeItem('current_video');
+        // 自动播放下一个
+        playNext();
+      });
+
+      // 保存当前视频信息
+      localStorage.setItem('current_video', JSON.stringify({ m3u8, name, videoId }));
+    }
+
+    // 定义缺失的变量
+    let isDragging = false;
+    let lastCurrentTime = 0;
+
+    // 生成视频ID的函数
+    function generateVideoId(url) {
+      let hash = 0;
+      for (let i = 0; i < url.length; i++) {
+        const char = url.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash |= 0;
+      }
+      return url.length + '_' + Math.abs(hash).toString(36);
+    }
+
+    // 保存视频进度的函数
+    function saveVideoProgress(videoId) {
+      if (art && art.currentTime) {
+        const history = JSON.parse(localStorage.getItem('video_history') || '{}');
+        history[videoId] = art.currentTime;
+
+        if (art.duration && art.currentTime > art.duration - 5) {
+          delete history[videoId];
+        }
+
+        localStorage.setItem('video_history', JSON.stringify(history));
+      }
+    }
+
+    // 同步播放/暂停状态
+    function syncPlayPauseState() {
+      if (art && !art.paused) {
+        $('pIcon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+      } else {
+        $('pIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+      }
+    }
+
+    // ArtPlayer 跳转功能
+    window.artPlayerSeek = s => {
+      if (art) {
+        art.seek += s;
+      }
+    };
+
+    function preloadAfterSeek(seekTime) {
+      // ArtPlayer 内部已处理预加载，无需额外操作
+    }
+
+    const handleProgress = (e, isFinal = false) => {
+      if (!wrapRect) wrapRect = wrap.getBoundingClientRect();
+      let clientX;
+      if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+      } else if (e.changedTouches && e.changedTouches.length > 0) {
+        clientX = e.changedTouches[0].clientX;
+      } else {
+        clientX = e.clientX;
+      }
+      const p = Math.max(0, Math.min(1, (clientX - wrapRect.left) / wrapRect.width));
+      const newTime = p * (art ? art.duration : 0);
+      
+      if (isFinal) {
+        if (!isNaN(newTime) && art && art.duration > 0) {
+          art.seek = newTime;
+        }
+        isDragging = false;
+        
+        if (typeof preloadAfterSeek === 'function') {
+          preloadAfterSeek(newTime);
+        }
+      } else if (isDragging) {
+        if (art && art.duration > 0) {
+          bar.style.width = (art.currentTime / art.duration * 100) + "%";
+        }
+        $('timeBox').innerText = `${fmt(art ? art.currentTime : 0)} / ${fmt(art ? art.duration : 0)}`;
+      }
+    };
+
+    wrap.onmousedown = (e) => {
+      e.preventDefault();
+      if (!video.duration) return;
+      isDragging = true;
+      wrapRect = wrap.getBoundingClientRect();
+      handleProgress(e);
+      
+      video.removeEventListener('timeupdate', updateProgressBar);
+    };
+
+    window.onmousemove = (e) => {
+      if (isDragging) {
+        handleProgress(e);
+      }
+    };
+
+    window.onmouseup = (e) => {
+      if (isDragging) {
+        handleProgress(e, true);
+        video.addEventListener('timeupdate', updateProgressBar);
+      }
+    };
+
+    document.addEventListener('touchmove', function(e) {
+      if (isDragging) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    wrap.ontouchstart = (e) => {
+      e.preventDefault();
+      if (!video.duration) return;
+      isDragging = true;
+      wrapRect = wrap.getBoundingClientRect();
+      handleProgress(e);
+      
+      video.removeEventListener('timeupdate', updateProgressBar);
+    };
+
+    wrap.ontouchmove = (e) => {
+      if (isDragging) {
+        e.preventDefault();
+        handleProgress(e);
+      }
+    };
+
+    wrap.ontouchend = (e) => {
+      if (isDragging) {
+        handleProgress(e, true);
+        video.addEventListener('timeupdate', updateProgressBar);
+      }
+    };
+    
+    wrap.ontouchcancel = (e) => {
+      if (isDragging) {
+        handleProgress(e, true);
+        if (art) {
+          art.on('timeupdate', updateProgressBar);
+        }
+      }
+    };
+
+    function updateProgressBar() {
+      if (art && art.duration && art.duration > 0) {
+        bar.style.width = (art.currentTime / art.duration * 100) + "%";
+        // ArtPlayer 通常不需要手动处理缓冲进度，因为它内部已处理
+        buf.style.width = "0%";
+        lastCurrentTime = art.currentTime;
+      } else {
+        bar.style.width = "0%";
+        buf.style.width = "0%";
+      }
+      $('timeBox').innerText = `${fmt(art ? art.currentTime : 0)} / ${fmt(art ? art.duration : 0)}`;
+    }
+
+    if (art) {
+      art.on('timeupdate', () => {
+        const currentVideo = localStorage.getItem('current_video');
+        if (currentVideo && !isDragging) {
+          try {
+            const data = JSON.parse(currentVideo);
+            const history = JSON.parse(localStorage.getItem('video_history') || '{}');
+            history[data.videoId] = art.currentTime;
+
+            if (art.duration && art.currentTime > art.duration - 5) {
+              delete history[data.videoId];
+            }
+
+            localStorage.setItem('video_history', JSON.stringify(history));
+          } catch (e) {}
+        }
+      });
+    }
+
+    // ArtPlayer 已在 startVideo 函数中处理了这些事件
+
+    // 由于ArtPlayer控制了播放器行为，我们不再需要直接绑定这些事件
+    // 但可以提供一些自定义的控制
+    
+    // 播放/暂停按钮控制
+    $('playBtn').onclick = () => {
+      if (art) {
+        if (art.paused) {
+          art.play();
+        } else {
+          art.pause();
+        }
+      } else {
+        playNext();
+      }
+    };
+    
+    $('nextBtn').onclick = () => playNext();
+    $('speedBtn').onclick = (e) => { e.stopPropagation(); $('speedMenu').classList.toggle('show'); };
+    $('pipBtn').onclick = async () => {
+      if (art) {
+        try {
+          art.PIP = !art.PIP;
+        } catch (error) {
+          console.log('PIP not supported:', error);
+        }
+      }
+    };
+
+    $('fullBtn').onclick = () => {
+      const node = $('playerNode');
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (art) {
+        art.fullscreen = true;
+      }
+    };
+
+    function isIOSDevice() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      const playerNode = $('playerNode');
+
+      if (document.fullscreenElement) {
+        playerNode.classList.add('fullscreen');
+      } else {
+        playerNode.classList.remove('fullscreen');
+      }
+    });
+
+    volSlider.oninput = (e) => { 
+      if (art) {
+        art.volume = e.target.value; 
+        art.muted = (parseFloat(e.target.value) === 0); 
+      } else {
+        // 如果art不存在，更新默认值
+        volSlider.value = e.target.value;
+      }
+      updateVolUI(); 
+    };
+    volBtn.onclick = () => { 
+      if (art) {
+        art.muted = !art.muted; 
+      }
+      updateVolUI(); 
+    };
+
+    document.querySelectorAll('.speed-item').forEach(i => {
+      i.onclick = (e) => {
+        e.stopPropagation(); 
+        if (art) {
+          art.playbackRate = parseFloat(i.dataset.val);
+        }
+        $('speedBtn').innerText = i.dataset.val + 'x';
+        document.querySelectorAll('.speed-item').forEach(el => el.classList.remove('active'));
+        i.classList.add('active'); $('speedMenu').classList.remove('show');
+      };
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (document.activeElement === searchInput) return;
+      const k = e.key;
+      if ([' ', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(k)) e.preventDefault();
+      if (k === ' ' || k.toLowerCase() === 'k') {
+        if (art) {
+          if (art.paused) art.play(); else art.pause();
+        } else {
+          playNext();
+        }
+      }
+      if (k === 'ArrowLeft') artPlayerSeek(-10);
+      if (k === 'ArrowRight') artPlayerSeek(10);
+      if (k === 'ArrowUp') { 
+        if (art) {
+          art.volume = Math.min(1, art.volume + 0.1); 
+          art.muted = false; 
+        }
+        updateVolUI(); 
+      }
+      if (k === 'ArrowDown') { 
+        if (art) {
+          art.volume = Math.max(0, art.volume - 0.1); 
+        }
+        updateVolUI(); 
+      }
+      if (k.toLowerCase() === 'f') $('fullBtn').click();
+      if (k.toLowerCase() === 'm') volBtn.click();
+    });
+
+    searchInput.onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        playNext(searchInput.value.trim());
+      }
+      e.stopPropagation();
+    };
+    window.seek = s => video.currentTime += s;
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        if (!video.paused) {
+          video.pause();
+        }
+      }
+    });
+
+    window.addEventListener('blur', function () {
+      if (!video.paused) {
+        video.pause();
+      }
+    });
+
+    window.onclick = (e) => {
+      if (!e.target.closest('.search-container')) resultsList.style.display = 'none';
+      $('speedMenu').classList.remove('show');
+    };
+
+    window.onload = () => {
+      if (isIOSDevice()) {
+        document.body.classList.add('ios-device');
+      }
+
+      video.volume = 0.5;
+      video.muted = true;
+      updateVolUI();
+      const saved = localStorage.getItem('current_video');
+      if (saved) {
+        const data = JSON.parse(saved);
+        startVideo(data.m3u8, data.name, false);
+      } else {
+        playNext();
+      }
+      
+      optimizeVideoPerformance();
+    };
+
+    function optimizeVideoPerformance() {
+      video.setAttribute('preload', 'metadata');
+      video.setAttribute('x-webkit-airplay', 'deny');
+      
+      // 优化渲染性能
+      video.style.transform = 'translateZ(0)';
+      video.style.willChange = 'transform';
+      
+      // 添加更完善的网络恢复处理
+      window.addEventListener('online', function() {
+        console.log('网络连接已恢复，重新优化播放参数');
+        if (hls) {
+          // 延迟一点时间再尝试恢复，确保网络稳定
+          setTimeout(() => {
+            hls.recoverMediaError();
+            // 更新缓冲区
+            if (video.currentTime) {
+              const currentTime = video.currentTime;
+              hls.startLoad(currentTime);
+            }
+          }, 1000);
+        }
+      });
+      
+      // 监听网络状态变化
+      window.addEventListener('offline', function() {
+        console.log('网络连接断开，准备在网络恢复后重连');
+      });
+    }
+
+    let lastCurrentTime = 0;
+    let stallDetectionTimer = null;
+
+    function monitorVideoPlayback() {
+      if (!video || !video.duration || video.paused) {
+        if (stallDetectionTimer) {
+          clearTimeout(stallDetectionTimer);
+          stallDetectionTimer = null;
+        }
+        return;
+      }
+
+      if (Math.abs(video.currentTime - lastCurrentTime) < 0.1) {
+        if (stallDetectionTimer) {
+          return;
+        }
+
+        stallDetectionTimer = setTimeout(() => {
+          console.log('检测到视频长时间卡顿，尝试自动恢复...');
+          // 不要建议手动刷新页面，而是尝试自动恢复
+          if (hls) {
+            hls.recoverMediaError();
+          } else if (video.src) {
+            // 重新加载视频源而不刷新整个页面
+            const currentTime = video.currentTime;
+            video.load();
+            video.currentTime = currentTime;
+            video.play().catch(e => console.log("自动恢复播放失败:", e));
+          }
+        }, 10000);
+      } else {
+        lastCurrentTime = video.currentTime;
+        if (stallDetectionTimer) {
+          clearTimeout(stallDetectionTimer);
+          stallDetectionTimer = null;
+        }
+      }
+    }
+
+    setInterval(monitorVideoPlayback, 3000);
+
+    video.addEventListener('play', () => {
+      lastCurrentTime = video.currentTime;
+      if (stallDetectionTimer) {
+        clearTimeout(stallDetectionTimer);
+        stallDetectionTimer = null;
+      }
+    });
+
+    video.addEventListener('pause', () => {
+      if (stallDetectionTimer) {
+        clearTimeout(stallDetectionTimer);
+        stallDetectionTimer = null;
+      }
+    });
+
+    video.addEventListener('seeked', () => {
+      lastCurrentTime = video.currentTime;
+    });
+  </script>
+</body>
+</html>
