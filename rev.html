@@ -1,80 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>JAV HLS Player</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <style>
-    body {
-      background: #111;
-      color: white;
-      font-family: Arial;
-      text-align: center;
-      padding: 20px;
-    }
-    input {
-      padding: 10px;
-      width: 200px;
-    }
-    button {
-      padding: 10px 15px;
-      margin-left: 10px;
-    }
-    video {
-      margin-top: 20px;
-      width: 80%;
-      max-width: 900px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>JAV HLS Player (Ultimate Fix)</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+body {
+  background: #0b0b0b;
+  color: #fff;
+  font-family: Arial;
+  text-align: center;
+  padding: 20px;
+}
+
+input {
+  padding: 10px;
+  width: 250px;
+}
+
+button {
+  padding: 10px 15px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+video {
+  margin-top: 20px;
+  width: 85%;
+  max-width: 1000px;
+  background: black;
+}
+
+#log {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #00ff88;
+  text-align: left;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  white-space: pre-wrap;
+}
+</style>
 </head>
+
 <body>
 
-<h2>JAV HLS Player</h2>
+<h2>JAV HLS Player (Ultimate)</h2>
 
-<input id="code" placeholder="Contoh: ABP-123">
-<button onclick="playVideo()">Play</button>
+<input id="input" placeholder="Kode / Link MissAV">
+<button onclick="start()">Play</button>
 
 <video id="video" controls></video>
 
+<div id="log"></div>
+
 <script>
-async function playVideo() {
-  const code = document.getElementById("code").value.toLowerCase();
-  if (!code) return alert("Masukkan kode video");
+function log(msg) {
+  console.log(msg);
+  document.getElementById("log").textContent += msg + "\n";
+}
+
+// ============================
+// NORMALIZE INPUT
+// ============================
+function getCode(input) {
+  input = input.trim().toLowerCase();
+
+  // kalau user paste full URL
+  if (input.includes("missav")) {
+    const parts = input.split("/");
+    return parts[parts.length - 1];
+  }
+
+  return input;
+}
+
+// ============================
+// EXTRACT M3U8 (ULTRA VERSION)
+// ============================
+function extractM3U8(html) {
+
+  // 1. ambil semua m3u8
+  const m3u8List = html.match(/https?:\/\/[^"'\\]+\.m3u8[^"'\\]*/g);
+  if (m3u8List && m3u8List.length) {
+    log("✔ Ditemukan beberapa m3u8:");
+    m3u8List.forEach(x => log(" - " + x));
+
+    return m3u8List[m3u8List.length - 1]; // ambil terakhir (biasanya terbaik)
+  }
+
+  // 2. parse NUXT data
+  const nuxt = html.match(/window\.__NUXT__\s*=\s*(\{.*?\});/s);
+  if (nuxt) {
+    try {
+      const json = JSON.parse(nuxt[1]);
+      const text = JSON.stringify(json);
+
+      const m3u8 = text.match(/https?:\/\/[^"]+\.m3u8/);
+      if (m3u8) {
+        log("✔ M3U8 dari NUXT");
+        return m3u8[0];
+      }
+    } catch (e) {
+      log("❌ Gagal parse NUXT");
+    }
+  }
+
+  // 3. sources array
+  const source = html.match(/sources\s*:\s*\[([^\]]+)\]/s);
+  if (source) {
+    const url = source[1].match(/https?:\/\/[^"'\\]+/);
+    if (url) {
+      log("✔ M3U8 dari sources");
+      return url[0];
+    }
+  }
+
+  // 4. UUID fallback
+  const uuid = html.match(/\/([0-9a-fA-F-]{36})\//);
+  if (uuid) {
+    log("✔ UUID fallback: " + uuid[1]);
+    return `https://surrit.com/${uuid[1]}/playlist.m3u8`;
+  }
+
+  return null;
+}
+
+// ============================
+// PLAY
+// ============================
+async function start() {
+
+  const input = document.getElementById("input").value;
+  const code = getCode(input);
+
+  document.getElementById("log").textContent = "";
+
+  if (!code) {
+    alert("Masukkan kode atau link");
+    return;
+  }
 
   try {
-    // ⚠️ GANTI dengan proxy kamu
-    const proxy = "https://corsproxy.io/?";
-    const url = proxy + encodeURIComponent(`https://missav.ws/dm1/en/${code}`);
+    log("🔍 Code: " + code);
 
-    const res = await fetch(url);
+    const target = `https://missav.ws/dm46/en/${code}`;
+
+    // 🔥 ganti proxy kalau perlu
+    const proxy = "https://api.allorigins.win/raw?url=";
+    const url = proxy + encodeURIComponent(target);
+
+    log("🌐 Fetch: " + target);
+
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0"
+      }
+    });
+
     const html = await res.text();
 
-    // parsing UUID
-    const match = html.match(/\/([0-9a-fA-F-]{36})\/index\.m3u8/);
-    if (!match) throw "UUID tidak ditemukan";
+    log("📄 HTML loaded, parsing...");
 
-    const uuid = match[1];
-    const m3u8 = `https://surrit.com/${uuid}/playlist.m3u8`;
+    // DEBUG potongan HTML
+    log("---- HTML SAMPLE ----");
+    log(html.substring(0, 500));
+    log("---------------------");
 
-    console.log("M3U8:", m3u8);
+    const m3u8 = extractM3U8(html);
+
+    if (!m3u8) {
+      throw "❌ M3U8 tidak ditemukan (proxy / struktur berubah)";
+    }
+
+    log("🎬 FINAL M3U8:");
+    log(m3u8);
 
     const video = document.getElementById("video");
 
     if (Hls.isSupported()) {
-      const hls = new Hls();
+      const hls = new Hls({
+        maxBufferLength: 30
+      });
+
       hls.loadSource(m3u8);
       hls.attachMedia(video);
+
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        log("▶ Play video");
         video.play();
       });
+
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        log("❌ HLS ERROR: " + data.type);
+      });
+
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = m3u8;
       video.play();
+    } else {
+      throw "Browser tidak support HLS";
     }
 
   } catch (err) {
-    alert("Gagal: " + err);
-    console.error(err);
+    log("ERROR: " + err);
+    alert(err);
   }
 }
 </script>
