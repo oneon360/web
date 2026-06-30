@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M3U Playlist Generator</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            font-size: 24px;
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #334155;
+            font-size: 14px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: #f8fafc;
+        }
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            background-color: #fff;
+        }
+        textarea {
+            font-family: monospace;
+            resize: vertical;
+        }
+        .grid-options {
+            display: table;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .grid-row {
+            display: table-row;
+        }
+        .grid-cell {
+            display: table-cell;
+            padding-right: 15px;
+            padding-bottom: 10px;
+            vertical-align: top;
+        }
+        .grid-cell:last-child {
+            padding-right: 0;
+        }
+        .btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+        .output-section {
+            margin-top: 25px;
+        }
+        .output-header {
+            display: table;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        .output-title {
+            display: table-cell;
+            font-weight: 600;
+            font-size: 16px;
+            color: #1e293b;
+            vertical-align: middle;
+        }
+        .output-actions {
+            display: table-cell;
+            text-align: right;
+            vertical-align: middle;
+        }
+        .btn-secondary {
+            background-color: #64748b;
+            padding: 8px 14px;
+            font-size: 12px;
+        }
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+        .btn-success {
+            background-color: #16a34a;
+            padding: 8px 14px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>M3U Playlist Generator</h1>
+    <p>Masukkan daftar channel dengan format <code>Nama Channel,URL</code> (satu baris per channel), tentukan group-title, properti Kodi, dan User-Agent kustom untuk men-generate file playlist .m3u secara otomatis.</p>
+    
+    <div class="form-group">
+        <label for="inputData">Daftar Channel (Format: Nama,URL)</label>
+        <textarea id="inputData" rows="6" placeholder="CCTV5体育1080p,http://173.208.212.130:8181/1080p/cctv5.m3u8&#10;CCTV5体育1080p,https://php.jdshipin.com:2096/TVOD/iptv.php?id=cctv5">CCTV5体育1080p,http://173.208.212.130:8181/1080p/cctv5.m3u8
+CCTV5体育1080p,https://php.jdshipin.com:2096/TVOD/iptv.php?id=cctv5</textarea>
+    </div>
+
+    <div class="grid-options">
+        <div class="grid-row">
+            <div class="grid-cell" style="width: 33%;">
+                <div class="form-group">
+                    <label for="groupTitle">Group Title (group-title="")</label>
+                    <input type="text" id="groupTitle" value="Sports" placeholder="Contoh: Sports, IPTV, dll">
+                </div>
+            </div>
+            <div class="grid-cell" style="width: 33%;">
+                <div class="form-group">
+                    <label for="tvgId">TVG ID (tvg-id="")</label>
+                    <input type="text" id="tvgId" placeholder="Opsional">
+                </div>
+            </div>
+            <div class="grid-cell" style="width: 34%;">
+                <div class="form-group">
+                    <label for="tvgLogo">TVG Logo URL (tvg-logo="")</label>
+                    <input type="text" id="tvgLogo" placeholder="Opsional URL Gambar">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="userAgent">HTTP User-Agent (#EXTVLCOPT:http-user-agent=)</label>
+        <input type="text" id="userAgent" value="Mozilla/5.0 (X11; Linux armv7l) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.9.7 Chrome/56.0.2924.122 Safari/537.36 Sky_STB_ST412_2018/1.0.0 (Sky, EM150UK, )" placeholder="Masukkan custom User-Agent jika diperlukan">
+    </div>
+
+    <div class="form-group">
+        <label for="kodiProp">Kodi Properties (#KODIPROP:inputstream.adaptive.manifest_type=)</label>
+        <input type="text" id="kodiProp" value="hls" placeholder="Contoh: hls, dash, mpd">
+    </div>
+
+    <button type="button" class="btn" onclick="generateM3U()">Generate M3U Playlist</button>
+
+    <div class="output-section">
+        <div class="output-header">
+            <div class="output-title">Hasil Playlist (.m3u)</div>
+            <div class="output-actions">
+                <button type="button" class="btn btn-secondary" onclick="copyToClipboard()">Salin Teks</button>
+                <button type="button" class="btn btn-success" onclick="downloadM3U()">Unduh File .m3u</button>
+            </div>
+        </div>
+        <textarea id="outputResult" rows="12" readonly placeholder="#EXTM3U akan muncul di sini..."></textarea>
+    </div>
+</div>
+
+<script>
+function generateM3U() {
+    const inputData = document.getElementById('inputData').value.trim();
+    const groupTitle = document.getElementById('groupTitle').value.trim();
+    const tvgId = document.getElementById('tvgId').value.trim();
+    const tvgLogo = document.getElementById('tvgLogo').value.trim();
+    const userAgent = document.getElementById('userAgent').value.trim();
+    const kodiProp = document.getElementById('kodiProp').value.trim();
+
+    if (!inputData) {
+        alert('Silakan masukkan data nama dan URL channel terlebih dahulu.');
+        return;
+    }
+
+    let m3uResult = "#EXTM3U\n";
+    const lines = inputData.split('\n');
+
+    lines.forEach(line => {
+        if (line.trim() === '' || !line.includes(',')) return;
+        
+        // Memisahkan nama dan url berdasarkan tanda koma pertama
+        const commaIndex = line.indexOf(',');
+        const name = line.substring(0, commaIndex).trim();
+        const url = line.substring(commaIndex + 1).trim();
+
+        // Build string #EXTINF
+        let extinf = `#EXTINF:-1 tvg-id="${tvgId}" tvg-logo="${tvgLogo}" group-title="${groupTitle}",${name}`;
+        m3uResult += extinf + "\n";
+
+        // Tambahkan opsi VLCOPT jika User-Agent diisi
+        if (userAgent) {
+            m3uResult += `#EXTVLCOPT:http-user-agent=${userAgent}\n`;
+        }
+
+        // Tambahkan opsi KODIPROP jika properti diisi
+        if (kodiProp) {
+            m3uResult += `#KODIPROP:inputstream.adaptive.manifest_type=${kodiProp}\n`;
+        }
+
+        // Tambahkan URL Stream
+        m3uResult += `${url}\n`;
+    });
+
+    document.getElementById('outputResult').value = m3uResult;
+}
+
+function copyToClipboard() {
+    const outputText = document.getElementById('outputResult');
+    if (!outputText.value) {
+        alert('Belum ada data untuk disalin. Silakan klik Generate terlebih dahulu.');
+        return;
+    }
+    outputText.select();
+    outputText.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    alert('Playlist berhasil disalin!');
+}
+
+function downloadM3U() {
+    const outputText = document.getElementById('outputResult').value;
+    if (!outputText) {
+        alert('Belum ada data untuk diunduh. Silakan klik Generate terlebih dahulu.');
+        return;
+    }
+    
+    const blob = new Blob([outputText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'playlist_generated.m3u';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
